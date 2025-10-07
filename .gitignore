@@ -35,6 +35,9 @@ build
 auto/
 *.el
 
+# allow this one
+!.dir-locals.el
+
 # Backup / temp files
 *~
 *.bak
