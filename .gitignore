@@ -4,7 +4,7 @@
 tmp/
 
 # Build folder
-/build/
+build
 
 # LaTeX intermediate files
 *.aux
@@ -29,6 +29,11 @@ tmp/
 *.fdb_latexmk
 *.pdf_tex
 *.run.xml
+
+# Emacs
+.auctex-auto/
+auto/
+*.el
 
 # Backup / temp files
 *~

@@ -39,9 +39,9 @@
 
 % Includes the front pages (cover and etc.)
 \pagestyle{empty}
-\includepdf[pages={1},pagecommand={},scale=1]{Front/Cover/template}
+\includepdf[pages={5}, pagecommand={}, fitpaper=true]{Front/main}
 \cleardoublepage
-\includepdf[pages={2},pagecommand={},scale=1]{Front/Cover/template}
+\includepdf[pages={1},pagecommand={},scale=1]{Front/main}
 \cleardoublepage
 \pagestyle{fancy}
 
@@ -101,7 +101,8 @@
 
 %%% -----------  ADD CHAPTERS HERE ------------------ %%%
 
-\input{Chapters/ChapterTemplate}
+% \input{Chapters/ChapterTemplate}
+\input{Chapters/001_introduction}
 % Add others as needed
 
 
