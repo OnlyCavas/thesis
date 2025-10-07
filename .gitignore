@@ -1,0 +1,63 @@
+.DS_Store
+.idea
+*.log
+tmp/
+
+# Build folder
+/build/
+
+# LaTeX intermediate files
+*.aux
+*.bbl
+*.blg
+*.brf
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.ist
+*.xdv
+*.synctex.gz
+*.fdb_latexmk
+*.pdf_tex
+*.run.xml
+
+# Backup / temp files
+*~
+*.bak
+*.backup
+*.swp
+*.swo
+
+# macOS system files
+.DS_Store
+
+# Emacs
+*.elc
+*.#*
+\#*\#
+*.emacs.desktop
+.emacs.desktop.lock
+.emacs.d/
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# Neovim
+*.un~
+*.swp
+*.swo
+.nvim/
+
+# NixOS / nix
+result/
+*.drv

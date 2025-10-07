@@ -1,0 +1,127 @@
+
+%-------------------------------------------------------------------------
+%	QUOTATION PAGE
+%-------------------------------------------------------------------------
+%\quotepage{Matt Smith as \emph{The Doctor}, written by Matthew Graham}
+%{
+%	I am and always will be the optimist, the hoper of far-flung hopes and the
+%	dreamer of \newline improbable dreams
+%}
+
+%-------------------------------------------------------------------------
+%	DEDICATORY
+%-------------------------------------------------------------------------
+
+%\begin{dedicatory}
+%	Dedicated to (optional) 
+%\end{dedicatory}
+
+%-------------------------------------------------------------------------
+%	ACKNOWLEDGEMENTS PAGE
+%-------------------------------------------------------------------------
+\addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
+\begin{acknowledgements}
+
+Acknowledge ALL the people!
+
+\end{acknowledgements}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{3}}
+%\addvspacetoc{0.3cm} % Add a gap in the Contents, for aesthetics
+
+
+%-------------------------------------------------------------------------
+%	ABSTRACT PAGE (PORTUGUESE)
+%-------------------------------------------------------------------------
+\addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
+\begin{abstract}[
+	thesistitle={Titulo da Tese em Portugês},
+	title={Resumo},
+	degree={Mestrado Integrado em Engenharia Física},
+	nameconnector={por},
+        keywordsname={Palavras-chave},
+        keywords={física (keywords em português)}]
+\begin{otherlanguage}{portuguese}
+
+Este tese é sobre alguma coisa
+
+
+
+\end{otherlanguage}
+\end{abstract}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{3}}
+%-------------------------------------------------------------------------
+%	ABSTRACT PAGE
+%-------------------------------------------------------------------------
+\addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
+\begin{abstract}
+
+This thesis is about something, I guess.
+
+\end{abstract}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{3}}
+
+%-------------------------------------------------------------------------
+%	LIST OF CONTENTS/FIGURES/TABLES
+%-------------------------------------------------------------------------
+
+\addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
+
+\tableofcontents % Write out the Table of Contents
+
+\addtocontents{toc}{\protect\setcounter{tocdepth}{3}}
+\addvspacetoc{0.3cm}
+
+%\listoftables % Write out the List of Tables
+
+\listoffigures % Write out the List of Figures
+
+
+
+%\addvspacetoc{0.3cm}
+
+%-------------------------------------------------------------------------
+%	PHYSICAL CONSTANTS/OTHER DEFINITIONS
+%-------------------------------------------------------------------------
+
+%\begin{listofcontants}
+%	\const{My little ponny test of magical rainbow}{$mn/mp$}
+%    {$2.997\ 924\ 58\times10^{8}\ \mbox{ms}^{-\mbox{s}}$}
+%   \const{Vaccuum permeability test of magical rainbow for a specific case of
+%   condensed matter physics}
+%   {$\epsilon_0$}{$2.997\ 924\ 58\times10^{8}\ \mbox{ms}^{-\mbox{s}}$}
+%	\const{Speed of Light test of magical rainbow}{$c$}
+%    {$2.997\ 924\ 58\times10^{8}\ \mbox{ms}^{-\mbox{s}}$}
+%\end{listofcontants}
+
+
+%-------------------------------------------------------------------------
+%	SYMBOLS
+%-------------------------------------------------------------------------
+
+%\begin{listofsymbols}
+%	\symb{$F_{\mu\nu}$}{Maxwell tensor}{F}
+%	\symb{$a$}{distance}{m}
+%	\\
+%	\symb{$\omega$}{angular frequency}{rads$^{-1}$}
+%\end{listofsymbols}
+
+
+%-------------------------------------------------------------------------
+%	NOTATION
+%-------------------------------------------------------------------------
+
+% \newcommand\notationname{Notation and Conventions}
+% \addtotoc{\notationname}
+% \fancyhead[LO]{\textsc{\notationname}}
+
+% \input{Notation}
+
+
+
+%-------------------------------------------------------------------------
+%	ABBREVIATIONS
+%-------------------------------------------------------------------------
+
+\newacronym{ann}{ANN}{Artificial Neural Network}
+
+\printglossary[type=\acronymtype,title={List of Abbreviations}]

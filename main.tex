@@ -1,0 +1,134 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Masters/Doctoral Thesis
+%
+% %%%%% IMPORTANT %%%%%
+% 1) Edit Front/vars.tex
+% 2) Compile Front/main.tex
+% 3) Edit vars.tex
+% 4) Edit precontent.tex
+%
+% BEFORE ANYTHING ELSE
+% You can also set some interesting stuff in the preamble.tex file
+% If you know what you're doing.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% The default font size and two-sided printing
+% For a one-sided printing change the flag "twoside" to "oneside"
+\documentclass[11pt, oneside, table,xcdraw]{Thesis}
+
+
+%-------------------------------------------------------------------------
+%   PREAMBLE AND SETTINGS
+%-------------------------------------------------------------------------
+% Add the preamble. You can change various settings in here
+\input{preamble}
+
+% Thesis settings. THIS IS VERY IMPORTANT YOU CHANGE
+\input{vars}
+% ------------------
+
+
+%-------------------------------------------------------------------------
+%	DOCUMENT
+%-------------------------------------------------------------------------
+
+\begin{document}
+
+% Start counting pages in an unused scheme to fix backref
+\pagenumbering{Alph}
+
+% Includes the front pages (cover and etc.)
+\pagestyle{empty}
+\includepdf[pages={1},pagecommand={},scale=1]{Front/Cover/template}
+\cleardoublepage
+\includepdf[pages={2},pagecommand={},scale=1]{Front/Cover/template}
+\cleardoublepage
+\pagestyle{fancy}
+
+%----------- Failed attempt to make cover page in latex ------------------
+
+% Cover page
+%\newgeometry{bindingoffset=0cm,
+%	top=1.27cm,
+%	outer=1.27cm,
+%	inner=1.27cm,
+%	bottom=1.27cm}
+
+%\pagestyle{empty}
+%
+%\begin{picture}(-5,0)(2.5,0)
+%% MSc symbol
+%\put(331.8,-808.061){\includegraphics[width=267.6pt,height=464.25pt]{Front/Cover/MSc.png}}
+%% FEUP logo
+%\put(382,-345){\includegraphics[width=155.9pt]{Front/Cover/FEUP.png}}
+%% FCUP logo
+%\put(360.5,-293){\includegraphics[width=183pt]{Front/logos/fcup.png}}
+%\end{picture}
+%
+%%\makebox[12cm][l]{\ttitle}
+%
+%\vfill
+%\parbox[t][12cm][t]{12cm}{\bf\fontsize{55}{0}\selectfont\ttitle}
+%\vfill
+%
+%\restoregeometry
+
+%-------------------------------------------------------------------------
+
+% Use roman page numbering style (i, ii, iii, iv...) for the pre-content pages
+\frontmatter
+
+% Title page
+%\maketitle
+
+% Edit this file!
+\input{precontent}
+
+
+%-------------------------------------------------------------------------
+%	THESIS CONTENT - CHAPTERS
+%-------------------------------------------------------------------------
+
+\addvspacetoc{0.3cm}
+
+% Begin numeric (1,2,3...) page numbering
+\mainmatter
+
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter. \textsc{#1}}{}}
+%\fancyhead[LO]{\leftmark}
+
+
+%%% -----------  ADD CHAPTERS HERE ------------------ %%%
+
+\input{Chapters/ChapterTemplate}
+% Add others as needed
+
+
+%-------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%-------------------------------------------------------------------------
+\addvspacetoc{0.5cm}
+\addtotoc{Bibliography}
+
+%\fancyhead[LO]{\textsc{Bibliography}}
+
+ % The references are stored in the file "Bibliography.bib"
+\bibliography{Bibliography}
+
+%-------------------------------------------------------------------------
+%	THESIS CONTENT - APPENDICES
+%-------------------------------------------------------------------------
+
+\appendix % Cue to tell LaTeX that the following 'chapters' are Appendices
+
+%%% -----------  ADD APPENDIX HERE ------------------ %%%
+
+\input{Appendices/AppendixTemplate}
+%\input{Appendices/AppendixB}
+%\input{Appendices/AppendixC}
+
+\backmatter
+
+
+\end{document}
