@@ -1,0 +1,49 @@
+\chapter{State of the Art}
+\label{chap:state_of_the_art}
+
+\section{P2P file-sharing}%
+\label{sec:p2p_networks}
+
+\subsection{BitTorrent Protocol Architeture}%
+\label{subsec:bittorrent_protocol_architeture}
+%% 1. falar sobre a história sobre Bit Torrent
+%% 2. Speak about the actual protocol - % docs - https://www.bittorrent.org/beps/bep_0003.html
+% - How BitTorrent works (trackers, peers, pieces, swarms)
+% i can explain how ovaroll BT - BitTorrent works, explaining all the concepts that it brings
+% 1. How torrent files help in node discovery
+% 2. What are trackers and what are their jobs (diference of trackers and the DHT)
+%%%% [Your Client] → [Tracker Server] → "Here are 50 peers with this file!"
+%%     ← Tracker returns list of IP:Port pairs
+%%     [Your Client] → Connects directly to those peers
+%%
+% 2. What are peers how dht is used in bit torrent
+% 3. What are pieces and swarms.
+% 4. Talk about performance -> https://www.researchgate.net/publication/245396846_Analyzing_and_Improving_BitTorrent_Performance
+
+% - Peer wire protocol -> explain further
+% - Piece selection algorithms (rarest first) -> here i can explain the algoritm
+% - Tit-for-tat mechanism the mechanism, and i should easy out to the next subsection that will handle in detail the Kademlia usage in BT
+
+O protocolo BitTorrent funciona ao repartir um ficheiro grande em vários pedaços, que depois são transferidos por vários utilizadores em simultâneo, estes são chamados de peers. Ao invês de efetuarem o download a partir de um só servidor, os utilizadores efetuam a transferência de pedaços de outros utilizadores, e por consequência partilham pedaços que já possuêm fazendo as transferencias mais rápidas e eficases.
+
+Um pequeno ficheiro \textbf{.torrent} contêm os metadados que são utilizados pelos trackers para identificar outros peers que contêm os pedaços de forma a coordenar o processo do download. O BitTorrent utiliza parte da implementação de um protocolo P2P baseado em Distributed HashTable Kademlia para conseguir encontrar outros nodes na rede.
+
+%% How it works
+% 1. a client clicks on a .torrent file, which have a list of SHA1 hashes with the pieces of the file
+% 2. Bit Torrent Client connects to a Tracker, which contain a list of downloading/sharing peers, and the tracker searches peers with that same .torrent file, and gives you like 60 peers with that same file
+% 3. Utilizando um bitfield, um peer A diz, e tenho: [1, 5, 10, 200] um B: [2, 5, 11, 201], estes podem trocar pedaços que não tenhem
+
+\subsection{Distributed Hash Tabels and Peer Discovery}%
+\label{subsec:dht_and_pd}
+% Explain how kademlia is used and Bit Torrent implements part of the kademlia P2P protocol and how it's done
+% Trackless torrents
+% peer discovery (i can talk slighty about Sybil attacks and connect directly with 2.2. where it will talk about the many attacks against P2P networks)
+
+\subsubsection{Kademlia DHT}%
+\label{subsubsec:kademlia_dht}
+
+\subsection{Performance Characteristics}%
+\label{subsec:performance_characteristics}
+
+\section{TEE on P2P networks}%
+\label{sec:tee_p2p_networks}
