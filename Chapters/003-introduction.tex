@@ -1,0 +1,11 @@
+\chapter{Introduction}
+\label{Introduction}
+
+\section{BitTorrent}
+\label{BitTorrent}
+
+Hoje em dia o BitTorrent é um protocolo P2P muito utilizado para distribuir arquivos de grandes quantidade de dados, normalmente muito utilizado em pirataria ou conteúdos que de grande dimensão que necessitam de muita largura de banda para efetuar a sua transferência. (Facto curioso sobre os números de utilização do BitTorrent.)
+De forma a tornar eficaz a transmissão destes conteúdos, este armazena os metadados do conteúdo num ficheiro \textbf{.torrent}, este contém informação: metadados, urls para os trackers, ips para os nodes bootstrap do BitTorrent, etc...
+É sabido que para que os peers se consigam conectar com o BitTorrent precisam de um agent centralizado, \textbf{Tracker}, este é um peer especializado em fornecer uma list de peers mais prováveis, que possam fornecer os \textbf{hashes} dos chunks dos ficherios. Desta forma, o peer pode realizar a transferência de cada chunk necessário até conseguir obter uma copia do ficheiro original juntando os chunks distribuidos.
+Outra sugestão são os PEX.
+Além dos Trackers e os PEX, o BitTorrent supporta também a conexão por DHT (Distributed Hash Table), que ao contrário de depender de \textbf{Trackers}, esta alterativa é verdadeiramente descentralizada, a rede BitTorrent depende de peers bootstrap que servem de porta de entrada de outros peers na rede geral. Na verdade o BitTorrent é o kademlia algorithm modificado para este efeito.
