@@ -7,7 +7,7 @@ compile:
 
 # Fix repo
 fix-repo:
-  git lfs install
+  git lfs install --local
   git lfs pull
 
 # Build PDF using latexmk and XeLaTeX
