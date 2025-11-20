@@ -24,10 +24,6 @@
 % - Piece selection algorithms (rarest first) -> here i can explain the algoritm
 % - Tit-for-tat mechanism the mechanism, and i should easy out to the next subsection that will handle in detail the Kademlia usage in BT
 
-O protocolo BitTorrent funciona ao repartir um ficheiro grande em vários pedaços, que depois são transferidos por vários utilizadores em simultâneo, estes são chamados de peers. Ao invês de efetuarem o download a partir de um só servidor, os utilizadores efetuam a transferência de pedaços de outros utilizadores, e por consequência partilham pedaços que já possuêm fazendo as transferencias mais rápidas e eficases.
-
-Um pequeno ficheiro \textbf{.torrent} contêm os metadados que são utilizados pelos trackers para identificar outros peers que contêm os pedaços de forma a coordenar o processo do download. O BitTorrent utiliza parte da implementação de um protocolo P2P baseado em Distributed HashTable Kademlia para conseguir encontrar outros nodes na rede.
-
 %% How it works
 % 1. a client clicks on a .torrent file, which have a list of SHA1 hashes with the pieces of the file
 % 2. Bit Torrent Client connects to a Tracker, which contain a list of downloading/sharing peers, and the tracker searches peers with that same .torrent file, and gives you like 60 peers with that same file

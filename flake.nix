@@ -18,6 +18,10 @@
             zathura
             just
             git-lfs
+
+            # LaTeX LSP and grammar checking
+            texlab
+            ltex-ls
           ];
 
           shellHook = ''

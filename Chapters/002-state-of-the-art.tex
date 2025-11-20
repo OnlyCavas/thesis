@@ -1,5 +1,5 @@
-\chapter{Introduction}
-\label{Introduction}
+\chapter{State of the Art}
+\label{state-of-the-art}
 
 % ""
 % Overview of P2P file-sharing protocols (BitTorrent, Gnutella, etc.)
@@ -9,12 +9,75 @@
 \section{BitTorrent Protocol}
 \label{BitTorrent}
 
-Normalmente, quando se pretende transferir conteúdos multimédia da internet, estes são disponiblizados atravÊs de magnet links, que utilizam HTTP. Desta forma, tudo o custo da operação recaí sobre o servidor que é responsável por distribuir estes conteúdos, que normalmente será o CDN mais próximo do utilizador. Este processo, necessita de bastante largura de banda entre o utilizador e o servidor, o que seria impossível transferir ficheiros inteiros de uma só vez. Para esse efeito, antes da tranferência dos conteúdos, o servidor primeiro começa por dividir os conteúdos em vários pedaços e calcula os seus hashes, de seguida constitue um ficheiro de metadados que vai armazenar esses mesmos hashes, junto com as informações do ficheiro. Desta forma, o cliente transfere primeiro o metafile, tem acesso aos hashs corretos e pede ao servidor cada chunk, verificando-o com o seu respetivo hash no fim para confirmar a sua integridade. No final, quando reúnido todos os hashs, obtêm uma copia do conteúdo original. Contudo, apesar de aproveitar mais a largura de banda disponivel, tudo o custo da operação recaí sobre esse mesmo servidor. Além disso, o servidor é considerado como "Single Source of Truth", o que significa que caso esse não consiga disponiblizar mais esse conteúdo, não existe outra forma do obter.
+Traditional HTTP downloads rely on centralized servers (CDN), creating a single point of failure where all operation cost falls on the hosting server. In contrast, BitTorrent, one of the most widely used P2P protocols, distributes this load across multiple peers in a swarm, significantly reducing the burden on individual participants.
 
-Por outro lado, pode-se utilizar o BitTorrent um dos protocolos P2P mais utilizados hoje em dia (colocar métricas), este permite transfêrencias teóricamente mais rápidas e distribuidas, tomando partido de uma rede P2P que permite compartilhar os conteúdos multimédia entre os peers dentro do swarm.
+BitTorrent achieves this distribution by splitting files into fixed-size chunks (typically 256KB to 4MB, depending on file size). For each chunk, a SHA1 is calculated to verify integrity. These hashes are stored in a .torrent metadata file, which peers use to verify that downloaded chunks are authentic and uncorrupted. Peers then exchange these chunks, propagating them accros the swarm until all peers possess complete copies.
 
-%% talk about the actual structure and stuff, mainly the algorithm that it uses and all!
-Visto que o BitTorrent é um protocolo P2P, necessita de uma forma para que o cliente consiga entender como entrar no swarm e entender como obter os chunks para que consiga uma copia do ficheiro que prentende. Para isto, um ficheiro com os metadados necessários é disponiblizado, \textbf{.torrent}. Este, contém os hashes dos chunks que constituem o conteúdo que vai ser transferido e contém a forma como o client vai interagir com a rede, normalmente contém: os urls do trackers, ou ips dos bootstraps para o DHT, ou a conexão através de PEX. Normalmente, o \textbf{.torrent} é criado pelo \textbf{Seeder} que disponibliza o ficheiro, e é distribuido por outras fontes.
+%% .torrent structure %%
+\subsection{The .torrent Metadata File}
+\label{torrent_file}
+Before peers can participate in a swarm, they must obtain the \textbf{.torrent} file, which serves as the blueprint for the entire download process. This file contains all necessary metadata encoded in Benconding format.
+
+A typical .torrent file includes:
+
+\begin{itemize}
+  \item \textbf{announce:} The URL(s) of tracker(s) that coordinate the swarm
+  \item \textbf{info:} A dictionary containing:
+    \begin{itemize}
+      \item \textbf{name:} The suggested filename or directory name
+      \item \textbf{piece length:} The size of each chunk (typically 256KB-4MB)
+      \item \textbf{pieces:} A concatenated string of SHA-1 hashes for all chunks
+      \item \textbf{length/files:} File size (single file) or file list (multi-file torrents)
+    \end{itemize}
+  \item \textbf{nodes:} (Optional) Bootstrap nodes for DHT-based peer discovery
+  \item \textbf{info hash:} A SHA-1 hash of the info dictionary, serving as
+    the unique identifier for the torrent
+\end{itemize}
+
+Figure 1.1 shows examples of .torrent files using different peer discovery mechanisms.
+
+The \textbf{.torrent} file is typically created by the initial seeder and distributed through external channels (websites, forumns, etc...). Also, the tracker URL and peer discovery method embbeded in this file determine how peers will interact with the network, each distinct security and privacy issues.
+
+To understand how this distributed system operates, it is essencial to identity the different roles that peers assume within a BitTorrent swarm, each serving distint functions in file distribution process.
+
+\subsection{Roles in the BitTorrent Ecosystem}
+The BitTorrent network consists of several key participants:
+
+\begin{itemize}
+  \item \textbf{Seeders}: Peers that posses 100\% of the file and only upload chunks to others. At least one seeder must exists for a torrent to remain viable; without seeders, new peers cannot obtain a complete copy. Seeders are critical for swarm health and longevity.
+
+  \item \textbf{Leechers (Downloaders):}: Peers with incomplete copies of the file (less then 100\%). They simultaneously download missing chunks whule uploading chunks they already verified. The term "leecher" sometimes carries negative connotations, refering to peers that download without adequately uploading in return, violating the reciprocity principle that BitTorrent relies upon.
+
+  \item \textbf{Trackers:} Specialized servers that do not store or transfer file content. Instead, they maintain lists of active peers in each swarm and facilitate peer discovery by providing IP addresses of other participants. When a peer joins a swarm, it announces itself to the tracker, which responds with a list of other peers to connect to. However, this creates a privacy concern: trackers can log all IP addresses and associate them with specific content being downloaded.
+\end{itemize}
+
+While trackers have historically been the primary peer discovery mechanism, their centralized nature presents both operational vulnerabilities (single points of failure) and privacy risks (activity logging). This has led to the development of descentralized alternatives, discussed in <Section (peer discovery)>
+
+\subsection{Peer Discovery Mechanisms}
+\label{peer_discovery}
+%%[Trackers, PEX, DHT]
+
+\subsection{Data Exchange Strategies}
+\label{data_exchange}
+%% speak about Rarest First and Choking Algorithms
+
+Once peers are connected, BitTorrent employs specific algorithms to
+optimize distribution and enforce fairness.
+
+\subsubsection{Rarest First Strategy}
+
+Peers prioritize downloading the rarest pieces in the swarm first...
+[1 paragraph explanation]
+[Brief security note: helps ensure piece availability]
+
+\subsubsection{Choking Algorithm}
+
+To prevent freeloading and optimize bandwidth usage, BitTorrent uses a
+tit-for-tat mechanism...
+[1-2 paragraphs]
+[Security relevance: trust/reputation, but vulnerable to strategic behavior]
+
+%% -- example --
 
 %% utilizam bson - um compressor especial no BitTorrent
 %% 1. mostrar em json format vários casos, quando em:
@@ -25,25 +88,6 @@ Visto que o BitTorrent é um protocolo P2P, necessita de uma forma para que o cl
 %% Merkle Trees, para calcular a integridade dos próprios hashs dos chunks
 %% https://en.wikipedia.org/wiki/Torrent_file <- explain
 %% https://www.bittorrent.org/beps/bep_0003.html <- another font, but it's not wikipedia
-
-\begin{itemize}
-  \item \textbf{Announce} -
- \end{itemize}
-
-\subsection{Roles in the BitTorrent Swarm}
-\begin{itemize}
-  \item \textbf{Trackers:} São nodes dedicados centralizados ou semi-centralizados, que não disponiblizam nenhum conteúdo multimédia, limitam-se apenas a disponiblizar listas de ips de nodes no swarm, estes são  importantes para ajudar outros nodes a entrarem no swarm. Normalmente, após os nodes se conectarem, este comunicam diretamente entre si, utilizando o tracker para conhecer novos nodes, que possam conter parte dos chunks que necessitam para completar a transfência do contéudo que pertendem.
-
-  \item \textbf{Downloaders (Leechers):} Estes são nodes que têm menos de 100\% do ficheiro original, o seu trabalho é realizar a transferência dos chunks que lhe faltam para completar a copia do ficheiro, enquanto realizam o carregamento dos chunks que já possuem e que são validados para outros peers. Além disso, podem ser conhecidos também como leechers, contudo este nome pode ser conotado negativamente, visto que podem ser nodes que apenas efetuam o download e não praticam o carregamento para outros nodes, prejudicando a distribuição na rede.
-
-  \item \textbf{Seeders:} Os seeders são nodes que possuem 100\% do ficheiro, portanto apenas pratica o carregamento de chunks para outros nodes e não realiza a transferência de outros nodes. Estes nodes são essenciais, visto que caso não existam mais seeders na rede de um determinado ficheiro, pode-se concluir que é ímpossivel obte-lo por completo, desta forma é necessário existir pelo menos um seeder para efetuar uma transferência.
-
-  \item \textbf{Peers:} Estes são cada um dos nodes que fazem parte do swarm, podem ser Seeders ou Downloaders.
-\end{itemize}
-
-\subsection{Peer Discovery Mechanisms}
-\label{peer_discovery}
-%%[Trackers, PEX, DHT]
 
 \subsection{Security and Privacy Issues in BitTorrent}
 \label{issues_bittorrent}
@@ -57,14 +101,8 @@ Visto que o BitTorrent é um protocolo P2P, necessita de uma forma para que o cl
 
 
 % 2. Speak how it works, overview -> structure of .torrent all of it, kinda explain how it works too!
-%   3.1 Speak about Trackers -> correlate with Tor, and TEE
-%   3.2 Speak about PEX ->  did not understand quite this, but some day i will
-%   3.3 Speak about DHT -> speak about sybil attacks and eclipse attacks
+%   3.1 Speak about Trackers -> correlate with Tor, and TEE (Peer Discovery)
+%   3.2 Speak about PEX ->  did not understand quite this, but some day i will (Explain more or less, and it's limitations, paper cite)
+%   3.3 Speak about DHT -> speak about sybil attacks and eclipse attacks (explain basecly kademlia, cite it, and give examples of attacks and how to mitigate them at least my response to it)
 % 4. Choking Algorithms
 % 4. Rarest First
-
-%Hoje em dia o BitTorrent é um protocolo P2P muito utilizado para distribuir arquivos de grandes quantidade de dados, normalmente muito utilizado em pirataria ou conteúdos que de grande dimensão que necessitam de muita largura de banda para efetuar a sua transferência. (Facto curioso sobre os números de utilização do BitTorrent.)
-%De forma a tornar eficaz a transmissão destes conteúdos, este armazena os metadados do conteúdo num ficheiro \textbf{.torrent}, este contém informação: metadados, urls para os trackers, ips para os nodes bootstrap do BitTorrent, etc...
-%É sabido que para que os peers se consigam conectar com o BitTorrent precisam de um agent centralizado, \textbf{Tracker}, este é um peer especializado em fornecer uma list de peers mais prováveis, que possam fornecer os \textbf{hashes} dos chunks dos ficherios. Desta forma, o peer pode realizar a transferência de cada chunk necessário até conseguir obter uma copia do ficheiro original juntando os chunks distribuidos.
-%Outra sugestão são os PEX.
-%Além dos Trackers e os PEX, o BitTorrent supporta também a conexão por DHT (Distributed Hash Table), que ao contrário de depender de \textbf{Trackers}, esta alterativa é verdadeiramente descentralizada, a rede BitTorrent depende de peers bootstrap que servem de porta de entrada de outros peers na rede geral. Na verdade o BitTorrent é o kademlia algorithm modificado para este efeito.
