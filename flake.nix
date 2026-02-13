@@ -8,7 +8,6 @@
 
   outputs =
     {
-      self,
       nixpkgs,
       flake-utils,
       ...
@@ -24,84 +23,97 @@
             latexmk
           ]
         );
+
+        utils.stripText =
+          name: if nixpkgs.lib.hasSuffix ".tex" name then nixpkgs.lib.removeSuffix ".tex" name else name;
+
+        mkThesis = import (./nix/mkPdf.nix) {
+          inherit pkgs tex utils;
+        };
+
       in
-      rec {
+      {
 
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
             tex
-            zathura
-            just
             git-lfs
             texlab
             ltex-ls
           ];
 
           shellHook = ''
-            echo "LaTeX + just environment loaded!"
+            echo "LaTeX environment loaded!"
             echo "latexmk version: $(latexmk --version)"
-            echo "Commands: just build, just rebuild, just open, just clean"
-            echo "Final PDF: nix build .#build-draft && open result/thesis.pdf"
+            echo "Commands: nix run, nix run .#header"
+            echo ""
+            echo "          nix run -> compile to pdf"
+            echo "          nix run .#header compile only header"
+            echo ""
           '';
         };
 
-        packages.build-draft = pkgs.stdenvNoCC.mkDerivation {
-          pname = "draft";
-          version = "2026-02";
+        packages = rec {
+          compile-header = mkThesis {
+            name = "header";
+            entryMainTex = "main.tex";
+            build_src = ./Front;
+            outputName = "header.pdf";
+          };
 
-          src = ./.;
+          default =
+            let
+              base = mkThesis {
+                name = "thesis";
+                version = "2026-02-13";
+                entryMainTex = "main.tex";
+                build_src = ./.;
+                outputName = "thesis.pdf";
+              };
+            in
+            base.overrideAttrs (old: {
+              buildInputs = old.buildInputs or [ ] ++ [ compile-header ];
 
-          nativeBuildInputs = [
-            tex
-            pkgs.git
-            pkgs.perl
-          ];
-
-          preBuild = ''
-            git lfs install --local || true
-            git lfs pull || true
-          '';
-
-          buildPhase = ''
-            runHook preBuild
-
-            export XDG_CACHE_HOME=$(mktemp -d -t xdg-cache.XXXXXX)
-            mkdir -p $XDG_CACHE_HOME/fontconfig
-
-            export TEXMFVAR=$(mktemp -d -t texmfvar.XXXXXX)
-            export TEXMFCONFIG=$(mktemp -d -t texmfconfig.XXXXXX)
-            export TEXMFHOME=$(mktemp -d -t texmfhome.XXXXXX)
-            export TEXMFCACHE=$TEXMFVAR
-
-            unset TEXMFCNF || true
-
-            latexmk \
-              -pdf \
-              -xelatex \
-              -shell-escape \
-              -interaction=nonstopmode \
-              -file-line-error \
-              -f \
-              -outdir=build \
-              main.tex || { cat build/main.log || true; exit 1; }
-
-            runHook postBuild
-          '';
-
-          installPhase = ''
-            runHook preInstall
-            mkdir -p $out
-            cp build/main.pdf $out/thesis.pdf || { echo "PDF missing!"; exit 1; }
-            runHook postInstall
-          '';
-
-          doCheck = true;
-          checkPhase = ''
-            [ -f build/main.pdf ] || { echo "PDF missing!"; exit 1; }
-          '';
+              preBuild = ''
+                echo "Preparing header PDF ..."
+                cp -v ${compile-header}/header.pdf Front/main.pdf || {
+                  echo "ERROR: could not copy header.pdf"
+                  ls -la ${compile-header} || true
+                  exit 1
+                }
+              '';
+            });
         };
 
-        packages.default = packages.build-draft;
+        apps = {
+          default = {
+            type = "app";
+            program = toString (
+              pkgs.writeShellScript "build-and-open-header" ''
+                ${pkgs.coreutils}/bin/echo "Building thesis..."
+                ${pkgs.nix}/bin/nix build
+                ${pkgs.coreutils}/bin/echo "Opening PDF..."
+                ${
+                  if pkgs.stdenv.isDarwin then "/usr/bin/open" else "${pkgs.xdg-utils}/bin/xdg-open"
+                } result/thesis.pdf
+              ''
+            );
+          };
+
+          header = {
+            type = "app";
+            program = toString (
+              pkgs.writeShellScript "build-and-open-header" ''
+                ${pkgs.coreutils}/bin/echo "Building header..."
+                ${pkgs.nix}/bin/nix build .#compile-header
+                ${pkgs.coreutils}/bin/echo "Opening PDF..."
+                ${
+                  if pkgs.stdenv.isDarwin then "/usr/bin/open" else "${pkgs.xdg-utils}/bin/xdg-open"
+                } result/header.pdf
+              ''
+            );
+          };
+        };
       }
     );
 }
