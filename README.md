@@ -7,6 +7,44 @@ LaTeX version of the thesis layout available at [http://sigarra.up.pt/fcup](http
 
 All font rights belong to Microsoft.
 
+## Quick Start with Nix
+
+This project uses Nix flakes for reproducible builds. No need to install LaTeX manually!
+
+### Prerequisites
+- [Nix package manager](https://nixos.org/download.html) with flakes enabled
+- Git (for version control)
+
+### Building the Thesis
+
+**Build and open the full thesis:**
+```bash
+nix run
+```
+
+**Build and open just the header:**
+```bash
+nix run .#header
+```
+
+**Build without opening:**
+```bash
+nix build              # Full thesis → result/thesis.pdf
+nix build .#compile-header  # Header only → result/header.pdf
+```
+
+**Development environment (for manual editing/compilation):**
+```bash
+nix develop
+# Now you have access to: latexmk, texlab, zathura, and more
+```
+
+### Available Commands in Dev Shell
+
+Once inside `nix develop`, you can use traditional LaTeX tools or the provided `just` recipes (if you create a `justfile`).
+
+## Manual Setup (Without Nix)
+
 ## Requisites and Compiling
 
 - Step 1: Edit the front/vars.tex file
