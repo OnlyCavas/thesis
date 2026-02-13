@@ -6,6 +6,9 @@ tmp/
 # Build folder
 build
 
+# Nix Build
+result
+
 # LaTeX intermediate files
 *.aux
 *.bbl
