@@ -1,8 +1,3 @@
-* State of the Art
-:PROPERTIES:
-:CUSTOM_ID: sota
-:END:
-
 # ""
 # Overview of P2P file-sharing protocols (BitTorrent, Gnutella, etc.)
 # Introduction to BitTorrent

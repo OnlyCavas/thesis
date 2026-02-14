@@ -109,21 +109,34 @@
               ];
 
               preBuild = ''
+                CHAPTER_FILE=$(mktemp)
+
                 echo "Translating Org mode to LaTeX"
                 for texfile in ${convert}/*.tex; do
                     cp -v "$texfile" Chapters/
-                  done || {
-                    echo "ERROR: could not copy tex files"
-                    ls -la ${convert} || true
-                    exit 1
-                  }
 
-                  echo "Preparing header PDF ..."
-                  cp -v ${compile-header}/header.pdf Front/main.pdf || {
-                    echo "ERROR: could not copy header.pdf"
-                    ls -la ${compile-header} || true
-                    exit 1
-                  } '';
+                    basename=$(basename "$texfile" .tex)
+                    echo "\\input{Chapters/$basename}" >> "$CHAPTER_FILE"
+                done || {
+                  echo "ERROR: could not copy tex files"
+                  ls -la ${convert} || true
+                  exit 1
+                }
+
+                echo "Applying Chapter Outlet"
+                cat $CHAPTER_FILE
+
+                ${pkgs.gnused}/bin/sed -i -e "/%<chapter-outlet>/ {
+                    r $CHAPTER_FILE
+                    d
+                }" main.tex
+
+                echo "Preparing header PDF ..."
+                cp -v ${compile-header}/header.pdf Front/main.pdf || {
+                  echo "ERROR: could not copy header.pdf"
+                  ls -la ${compile-header} || true
+                  exit 1
+                } '';
             });
 
         };
