@@ -22,7 +22,7 @@ This project uses Nix flakes for reproducible builds. No need to install LaTeX m
 nix run
 ```
 
-**Force compilation
+**Force compilation**
 ```bash
 nix run .#compile
 ```
