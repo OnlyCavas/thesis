@@ -22,6 +22,11 @@ This project uses Nix flakes for reproducible builds. No need to install LaTeX m
 nix run
 ```
 
+**Force compilation
+```bash
+nix run .#compile
+```
+
 **Build and open just the header:**
 ```bash
 nix run .#header
