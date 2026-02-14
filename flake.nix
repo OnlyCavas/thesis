@@ -39,6 +39,10 @@
               day = builtins.substring 6 2 dateOnly;
             in
             "${year}_${month}_${day}";
+
+          open = if pkgs.stdenv.isDarwin then "/usr/bin/open" else "${pkgs.xdg-utils}/bin/xdg-open";
+          echo = "${pkgs.coreutils}/bin/echo";
+          nix = "${pkgs.nix}/bin/nix";
         };
 
         mkThesis = import (./nix/mkPdf.nix) {
@@ -72,7 +76,8 @@
             echo "latexmk version: $(latexmk --version)"
             echo "Commands: nix run, nix run .#header"
             echo ""
-            echo "          nix run -> compile to pdf"
+            echo "          nix run -> to open or compile to pdf"
+            echo "          nix run .#compile -> compile to pdf"
             echo "          nix run .#header compile only header"
             echo "" '';
         };
@@ -127,14 +132,30 @@
           default = {
             type = "app";
             program = toString (
-              pkgs.writeShellScript "build-thesis" ''
-                ${pkgs.coreutils}/bin/echo "Building thesis..."
-                ${pkgs.nix}/bin/nix build
-                ${pkgs.coreutils}/bin/echo "Opening PDF..."
+              pkgs.writeShellScript "" ''
+                PDF_PATH="result/draft_${utils.formatDate self.lastModifiedDate}.pdf"
 
-                ${
-                  if pkgs.stdenv.isDarwin then "/usr/bin/open" else "${pkgs.xdg-utils}/bin/xdg-open"
-                } result/draft_${utils.formatDate self.lastModifiedDate}.pdf ''
+                if [ -f "$PDF_PATH" ]; then
+                  ${utils.echo} "Opening existing $PDF_PATH..."
+                  ${utils.open} "$PDF_PATH"
+                else
+                  ${utils.echo} "PDF not found, building..."
+                  ${utils.nix} run .#compile
+                fi
+              ''
+            );
+          };
+
+          compile = {
+            type = "app";
+            program = toString (
+              pkgs.writeShellScript "build-thesis" ''
+                ${utils.echo} "Building thesis..."
+                ${utils.nix} build
+                ${utils.echo} "Opening PDF..."
+
+                ${utils.open} "result/draft_${utils.formatDate self.lastModifiedDate}.pdf"
+              ''
             );
           };
 
@@ -142,13 +163,12 @@
             type = "app";
             program = toString (
               pkgs.writeShellScript "build-and-open-header" ''
-                ${pkgs.coreutils}/bin/echo "Building header..."
-                ${pkgs.nix}/bin/nix build .#compile-header
-                ${pkgs.coreutils}/bin/echo "Opening PDF..."
+                ${utils.echo} "Building header..."
+                ${utils.nix} build .#compile-header
+                ${utils.echo} "Opening PDF..."
 
-                ${
-                  if pkgs.stdenv.isDarwin then "/usr/bin/open" else "${pkgs.xdg-utils}/bin/xdg-open"
-                } result/header.pdf ''
+                ${utils.open} "result/header.pdf"
+              ''
             );
           };
         };
