@@ -1,0 +1,25 @@
+* Strictly an example
+
+** Labels
+
+* Introduction
+:PROPERTIES:
+:CUSTOM_ID: btw
+:END:
+
+** Tables
+
+| Name  | Age | City   |
+|-------+-----+--------|
+| Fernando |  22 | Porto  |
+| Ana   |  25 | Lisboa |
+
+** Images
+
+#+BEGIN_EXPORT latex
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\columnwidth]{Figures/ChapterTemplate/20160517_123603.jpg}
+\caption{My caption}
+\end{figure}
+#+END_EXPORT

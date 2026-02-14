@@ -1,4 +1,4 @@
-import re, glob 
+import re, glob
 
 
 def main(paths):
@@ -23,7 +23,7 @@ def main(paths):
                     split_ref = line.split(r"\ref{")
 
                     if len(split_label) != 1:
-                        
+
                         for lab in split_label[1:]:
                             this_label = lab.split('}')[0]
 
@@ -33,7 +33,7 @@ def main(paths):
                                 all_labels[this_label] = 0
 
                     if len(split_ref) != 1:
-                        
+
                         for ref in split_ref[1:]:
                             this_ref = ref.split('}')[0]
 
@@ -41,9 +41,9 @@ def main(paths):
                                 all_refs[this_ref] += 1
                             except KeyError as e:
                                 all_refs[this_ref] = 1
-        
 
-    differences =  all_labels.keys() - all_refs.keys() 
+
+    differences =  all_labels.keys() - all_refs.keys()
 
     return differences if differences else "No differences between labels and refs"
 
