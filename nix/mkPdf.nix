@@ -1,4 +1,5 @@
 {
+  self,
   pkgs,
   tex,
   utils,
@@ -6,11 +7,11 @@
 
 {
   name ? "draft",
-  version ? "2026-02-13",
+  version ? utils.formatDate self.lastModifiedDate,
   entryMainTex ? "main.tex",
   extraBuildArgs ? "-pdf -xelatex",
   extraLatexmkFlags ? "",
-  outputName ? "${name}.pdf",
+  outputName ? "${name}_${version}.pdf",
   build_src ? "./.",
 }@args:
 

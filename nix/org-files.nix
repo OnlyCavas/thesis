@@ -4,13 +4,9 @@
 }:
 
 pkgs.stdenvNoCC.mkDerivation {
-  name = "convert-org-files";
-  version = "2.0";
+  name = "org2tex";
   src = src;
-
   nativeBuildInputs = [ pkgs.pandoc ];
-
-  buildInputs = [ pkgs.pandoc ];
 
   buildPhase = ''
     mkdir -p $out
@@ -23,6 +19,7 @@ pkgs.stdenvNoCC.mkDerivation {
           --top-level-division=chapter \
           --template=templates/chapter.tex \
           -V graphics=false \
+          --listings \
           -o "$out/$basename.tex"
       fi
     done

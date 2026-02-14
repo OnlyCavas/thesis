@@ -8,6 +8,7 @@
 
   outputs =
     {
+      self,
       nixpkgs,
       flake-utils,
       ...
@@ -25,10 +26,29 @@
           ]
         );
 
-        utils.stripText =
-          name: if nixpkgs.lib.hasSuffix ".tex" name then nixpkgs.lib.removeSuffix ".tex" name else name;
+        utils = {
+          stripText =
+            name: if nixpkgs.lib.hasSuffix ".tex" name then nixpkgs.lib.removeSuffix ".tex" name else name;
 
-        mkThesis = import (./nix/mkPdf.nix) { inherit pkgs tex utils; };
+          formatDate =
+            dateStr:
+            let
+              dateOnly = builtins.substring 0 8 (toString dateStr);
+              year = builtins.substring 0 4 dateOnly;
+              month = builtins.substring 4 2 dateOnly;
+              day = builtins.substring 6 2 dateOnly;
+            in
+            "${year}_${month}_${day}";
+        };
+
+        mkThesis = import (./nix/mkPdf.nix) {
+          inherit
+            self
+            pkgs
+            tex
+            utils
+            ;
+        };
 
         org2tex = import ./nix/org-files.nix {
           inherit pkgs;
@@ -71,11 +91,8 @@
             let
 
               base = mkThesis {
-                name = "thesis";
-                version = "2026-02-13";
                 entryMainTex = "main.tex";
                 build_src = ./.;
-                outputName = "thesis.pdf";
               };
 
             in
@@ -110,16 +127,17 @@
           default = {
             type = "app";
             program = toString (
-              pkgs.writeShellScript "build-and-open-header" ''
+              pkgs.writeShellScript "build-thesis" ''
                 ${pkgs.coreutils}/bin/echo "Building thesis..."
                 ${pkgs.nix}/bin/nix build
                 ${pkgs.coreutils}/bin/echo "Opening PDF..."
 
                 ${
                   if pkgs.stdenv.isDarwin then "/usr/bin/open" else "${pkgs.xdg-utils}/bin/xdg-open"
-                } result/thesis.pdf ''
+                } result/draft_${utils.formatDate self.lastModifiedDate}.pdf ''
             );
           };
+
           header = {
             type = "app";
             program = toString (
