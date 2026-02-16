@@ -1,4 +1,7 @@
 ** BitTorrent Protocol Fundamentals
+:PROPERTIES:
+:CUSTOM_ID: bt_start
+:END:
 
 P2P networks can be the solution to improve the user space privacy, and a way to users fight back against lack those whom try to de-anonymize their fingerprint online. And, this technology has been proven over and over, being used in telecommunications, like *Matrix* and it this case in file-sharing like *Bit Torrent*, providing ways for them to share media resources, without being tracked or take down.
 

@@ -1,0 +1,4 @@
+** TEE (Trusted Execution Environment)
+:PROPERTIES:
+:CUSTOM_ID: trusted_execution_environment
+:END:

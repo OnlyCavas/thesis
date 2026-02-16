@@ -1,4 +1,7 @@
 *** Monitoring Distributed Trackers and DHTs
+:PROPERTIES:
+:CUSTOM_ID: monitoring_distributed_trackers
+:END:
 
 # (citeme: 005, read once again to check all the facts)
 

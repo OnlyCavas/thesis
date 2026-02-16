@@ -1,4 +1,7 @@
 *** Security Considerations in BitTorrent
+:PROPERTIES:
+:CUSTOM_ID: security_bt_considerations
+:END:
 
 # (cime: 008 and last)
 
@@ -20,6 +23,9 @@ This means, even with relatively low bandwidth, threat actors can benefit from *
 
 
 *** Sybil Attacks in BitTorrent
+:PROPERTIES:
+:CUSTOM_ID: sybil_attacks
+:END:
 
 # [check: proof of work?]
 
@@ -43,6 +49,9 @@ Nevertheless, these mitigations aim to increase as much as possible the amount o
 
 
 *** Collusion Attacks
+:PROPERTIES:
+:CUSTOM_ID: collusion_attacks
+:END:
 
 This presents one of the most dangerous attacks at BitTorrent networks, because its extremely difficult both detect and neutralize. It consists of a malicious group of peers that operate under the guidance of a central leader, that coordinates the subordinated peers to perform correlated attacks against the system. Furthermore, on reputation-based systems their goal is to both: decrease the reputation scores of honest peers and to inflate the scores of malicious peers.
 

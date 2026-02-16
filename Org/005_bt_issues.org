@@ -1,6 +1,9 @@
 # (citeme: 006_darknets)
 
 *** Trackers and Community Types: Public vs. Private (Darknets)
+:PROPERTIES:
+:CUSTOM_ID: trackers_types_communities
+:END:
 
 *Trackers* also play a key role in interconnecting peers by providing updated lists of active participants within a swarm, these will be explain in further detail ahead. BitTorrent communities fall into two main categories: *public networks*, and *private networks*.
 
@@ -23,6 +26,9 @@ It is of most importance in any BitTorrent network to maintain an appropriate SL
 # (citeme: 006_darknets)
 
 **** The Predator-Prey Model
+:PROPERTIES:
+:CUSTOM_ID: predatory_model
+:END:
 
 The *Predator-Prey Model*, it's adapted from ecology, servers as a mathematical framework to improve and analyze the long term sustainability of *PTs*. This paper the authors, they map the dynamics of both *seeders* and *leechers* to the classic Lotka-Volterra equations with logistic growth for the *prey*. In order to account for realistic resource limits, that it's not perceived on the original model exponential growth.
 
@@ -65,6 +71,9 @@ By actively simulating these dynamics, the authors [cite], this model tries to i
 
 # (citeme - 004_attacks...)
 *** Free-Riding and Incentive Mechanisms
+:PROPERTIES:
+:CUSTOM_ID: free_riding_mechanisms
+:END:
 
 Free riding is the act of taking advantage of BitTorrent's file-sharing downloading content system without actually contributing nothing or very few resources back to the network overall capacity. Moreover, current research and real world observations, show that the protocol's original mechanisms no longer ensure the guarantee of universal cooperation among peers.
 
@@ -99,6 +108,9 @@ These clients cause a great impact on the *swarm* performance, as the number of 
 
 
 *** Torrent Poisoning and Anti-Piracy Measures
+:PROPERTIES:
+:CUSTOM_ID: torrent_poisoning
+:END:
 
 Torrent Poisoning, is a deliberate attempt to degrade the performance and reliability of swarms sharing copyrighted resources. The paper explains it as an act of intentionally sharing corrupted data or deploying multiple attempts to try to impede inter peer downloads. Multimedia industries and other organizations use these methods to prevent sharing copyrighted content on P2P rogue networks, which the goals consists into overload as much as possible, trying to decrease the overall download rate of the swarm.
 
@@ -112,6 +124,9 @@ According to the authors of the paper [cite], the number of anti-piracy attacker
 
 
 *** Flash Crowds in BitTorrent Swarms
+:PROPERTIES:
+:CUSTOM_ID: flash_crowds_on_swarms
+:END:
 
 A Flashcrowd refers to a sudden, massive wave of newcomers joining a network or service. In BitTorrent, this phenomenon manifests as a fast increase in peer arrivals on the swarm, dramatically expanding the swarm size, with a great number of concurrent clients seeking to download a specific resource within the network. Flashcrowds pose a significant challenge to BitTorrent swarms. The sudden flux of leechers overwhelms the available upload capacity of the current seeders, leading to a severe performance loss, increasing backlogs, and reducing overall responsiveness.
 
