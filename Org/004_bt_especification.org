@@ -34,9 +34,19 @@ The entire metadata file is a single *bencoded dictionary* containing the essent
 
 *** Peer Connections
 
-# explain uTP, that is a udp version of tcp, but with congestion control, just like QUIC, this will be fun 😏
-
 Taking a deeper insight inside of Bit Torrent's *peer protocol*, we can observe that it operates over *TCP* or *uTP*. Also, peer connections are *symmetrical*. Which means, that *messages* sent in both directions look the same. The peer protocol checks the look up table stored inside of the metadata file, *.torrent*, and selects the pieces by their index, starting at zero. When one finish downloading a piece and checks that the hash matches, it than announces it to its peers.
+
+**** uTP
+
+BitTorrent clients typically communicate with trackers using HTTP over TCP, following a specified *Peer Discovery Mechanism*available on the *metadata file* (.torrent). However, this approach isn't ideal and brings significant protocol overhead.
+
+# (citeme: utp 010)
+
+At the Ethernet layer, each packet carries about 14 bytes of overhead, at IP layer about 20 bytes, at the TCP layer about 20 bytes and then an additional overhead at the Application Layer (HTTP). For example, a typically request and response, like a tracker queries to return a list of peers, accordingly [cite] requiring about 10 packets and roughly 1206 bytes in total.
+
+By switching over to a UDP-based protocol will substantially decrease overhead. As a UDP tracker protocol, uses only 4 packets and approximately 618 bytes for a similar operation, thus achieving a reduction of about 50% in overall traffic volume. For an individual clients, this ends up saving roughly 1 KB per hour which is almost nothing. However, as *trackers* serve millions of peers, then manage a load reduction of about 50%, highly improving performance per peer.
+
+Moreover, a *UDP based* protocol doesn't need connection establishment, tear down, and complex parsing of HTTP headers. This approach simplifies tracker implementation, requiring less code, reduces CPU and memory demands, and improves overall performance and scalability. On the other hand, UDP is an unreliable, connectionless protocol that lacks a builtin retransmission's of packages and congestion control features, that are present in TCP. Because of this, the application layer must implement these features itself, and audit reliability and fairness oversharing bandwidth.
 
 **** Connection State
 
