@@ -1,4 +1,4 @@
-*** Torrent File Specification
+*** Torrent File Format and Specification
 
 Before any peer can join the *swarm* (the group of peers sharing a specific file or set of files), it needs to know on how to interact with the *BitTorrent* network and locate the desired content. To achieve this, it relies on a *Metadata File*, that is also known as *.torrent*. The *.torrent* file is encoded using *Bencoding*, a simple, binary-safe serialization format designed specifically for Bit Torrent. It basely supports four data types:
 
@@ -32,11 +32,9 @@ The entire metadata file is a single *bencoded dictionary* containing the essent
     + *path*: it represents a list of UTF-8 encoded strings that corresponds to subdirectories names, which the last is the actual filename. Which means that a *zero length* list represents an error.
 
 
-*** Peer Connections
-
 Taking a deeper insight inside of Bit Torrent's *peer protocol*, we can observe that it operates over *TCP* or *uTP*. Also, peer connections are *symmetrical*. Which means, that *messages* sent in both directions look the same. The peer protocol checks the look up table stored inside of the metadata file, *.torrent*, and selects the pieces by their index, starting at zero. When one finish downloading a piece and checks that the hash matches, it than announces it to its peers.
 
-**** uTP
+*** uTP (UDP Tracker Protocol)
 
 BitTorrent clients typically communicate with trackers using HTTP over TCP, following a specified *Peer Discovery Mechanism*available on the *metadata file* (.torrent). However, this approach isn't ideal and brings significant protocol overhead.
 
@@ -48,7 +46,7 @@ By switching over to a UDP-based protocol will substantially decrease overhead. 
 
 Moreover, a *UDP based* protocol doesn't need connection establishment, tear down, and complex parsing of HTTP headers. This approach simplifies tracker implementation, requiring less code, reduces CPU and memory demands, and improves overall performance and scalability. On the other hand, UDP is an unreliable, connectionless protocol that lacks a builtin retransmission's of packages and congestion control features, that are present in TCP. Because of this, the application layer must implement these features itself, and audit reliability and fairness oversharing bandwidth.
 
-**** Connection State
+*** Connection State
 
 # (citeme - 001_torrent)
 Moreover, each connection contains two bits of state in either end:
@@ -60,7 +58,7 @@ Moreover, each connection contains two bits of state in either end:
 
   Once a connection is started by a peer, it starts out choked and not interested. Then, when data is being transferred, *downloaders* should keep several piece request queued up at once in order to get good *TCP performance*, this process is called *pipelining*. On the other side, requests which can't be written out to the TCP buffer immediately should be queued up in memory rather than kept in an application-level network buffer. So they can all be thrown out when a choke happens.
 
-**** Pipelining and Performance
+*** Pipelining and Performance
 
 # maybe not put his, it feels not that important, or could be an image or code
   The ongoing peer wire protocol consists of a handshake followed by a never-ending stream of length-prefixed messages. The handshake starts with character nineteen (decimal) followed by the string 'Bit Torrent protocol'. The leading character is a length prefix, put there in the hope that other new protocols may do the same and thus be trivial distinguishable from each other.

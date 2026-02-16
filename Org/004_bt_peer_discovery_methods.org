@@ -1,8 +1,6 @@
-*** Peer Discovery Methods
-
 In order to others exchange their chunks of files with other peers, it's paramount that they manage to communicate with each other. One of the most used mechanisms for Peer discovery* are centralized *trackers*.
 
-**** Trackers
+*** Trackers
 
 These are *centralized dedicated servers* that *don't store* or *transfer any file* resources. Instead, they focus on maintaining a list of active *peers* in each swarm. At any given time, a client can request a list of new peers from a *tracker* that will give it, a random subset of *IP addresses* of other participants on the swarm, that may have what he is looking for.
 
@@ -16,7 +14,7 @@ Also, because of its centralized approach to peer discovery isn't very scalable,
 
 # (citeme - kademlia)
 
-**** Distributed Hash Table (DHT)
+*** Distributed Hash Table (DHT)
 
 Nowadays, modern *Bit Torrent* has evolved with robust decentralised alternatives that try to mitigate this vulnerabilities and reduce or eliminate reliance on trackers. In this case, a peer can leverage the same *.torrent* metadata file to use the following *Peer Discover*
 
@@ -27,7 +25,7 @@ It's a Hash Table, almost like a simple key-value database distributed over a ne
 This is an improvement against the normal Trackers, because it becomes much harder to newcomers to be tracked, and adds more points of failure to the network, making it harder to suffer from DOS attacks.
 
 # (citeme - 002_pex)
-**** Peer Exchange (PEX)
+*** Peer Exchange (PEX)
 
 # [check: about implementations]
 # [check: actual usefulness of implementation]

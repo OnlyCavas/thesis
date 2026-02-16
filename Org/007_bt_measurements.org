@@ -1,4 +1,4 @@
-*** Distributed Tracker Monitoring
+*** Monitoring Distributed Trackers and DHTs
 
 # (citeme: 005, read once again to check all the facts)
 

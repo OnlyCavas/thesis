@@ -1,0 +1,53 @@
+*** Security Considerations in BitTorrent
+
+# (cime: 008 and last)
+
+Their study evaluates these attacks against three main BitTorrent clients: *Azureus* (now called Vuze), *µTorrent*, and *BitTornado*. In order to conduct the following experiment, they used a modified version of *BitTornado* client with the objective to create an instrumented attack client. Also, they developed a BitTorrent traffic analyser to Monitoring and quickly the bandwidth used by the seed against honest leechers and threat attacks over time.
+
+The researchers consider two natural seed attacks, that threat actors seek to reduce or ideally prevent the uploading of blocks:
+
++ *Bandwidth Attack*
+
+  Adversaries exploit vulnerabilities in BitTorrent's seeding algorithm and the asymmetric nature of typical access links, like *DSL*, *cable*, Fiber to Home, where upload bandwidth is significantly lower than the download bandwidth. Moreover, in traditional bandwidth first seeding algorithm, like the one used in *BitTornado* , the seed *unchokes* most *leechers* enabling them to upload while periodically evaluating their upload rates. Every 30 seconds, the *seed* chokes the slowest unchoked *leecher* and replace it with a randomly selected peer via an optimistic unchocking. Furthermore, in this attack attackers join the *torrent* early and attempt to consume most of the seed's unchoke slots by performing downloads at higher rates than those achievable by honest peers. As a result, this clogs the available upload bandwidth of the seeder, eventually *starving honest leechers*.
+
++ *Connection Attack*
+
+  Knowing that a seed maintains up to x TCP connections slots available, the sources indicate typically about 50 connections that can be configurable. Of these, up to x are unchocked for active uploading. Known this, the attack aims to exhaustion all connections slots that it can with malicious peers, preventing honest peers from currently establish connections. In order to accomplish this, it requires early detection of the torrent and effectively occupied the slots. Thus, maintaining connections without consuming excessive bandwidth, where an attacker may periodically download small amounts of data. The low bandwidth behaviour distinguishes this attack from a pure bandwidth exhaustion.
+
+Researchers [cite] done several experiments simulating the *Flashcrowd effect*, where 5 honest leechers were connected first to a seed. After being connected, all the adversaries were launched concurrently, followed by the remaining 25 leechers. Also, they configured the seed with about 4 unchoke slots and a maximum 59 connections slots overall. For further testing, they analysed the code and documented its connection management and state transition logic, of the *Vuze* client. They demonstrated that, the *Vuze* client incoming requests are accepted right away, unless the connection limit is meet. On top of that, also implements a finite queue called "Discovered Peers" that may be discovered by the *tracker*, *DHT* or *PEX*, through gossiping. Also, if there is free slots available, *Vuze* performs "Optimistic Disconnect" by starting outbound connections with the oldest peers in his queue.
+
+This means, even with relatively low bandwidth, threat actors can benefit from *Vuze* unchoke criteria, which prefers peers with high download rate and low downloaded data from the seed. Low downloaded resources allow attackers to gain access to some unchoke slots. By saturating slots, this prevents honest leechers from maintaining active connections longer than 5 minutes. Thus, progressively disconnect them via Optimistic Disconnect, while adversaries persistently try to reoccupy available slots. Keep in mind that, even attackers may suffer occasionally disconnection, but if they manage to maintain a high reconnecting rate they further increase dominance.
+
+
+*** Sybil Attacks in BitTorrent
+
+# [check: proof of work?]
+
+The resilience of BitTorrent's swarms is highly dependent on how effective its identity management within the P2P architecture. More precisely, which algorithm is used for the decentralised peer discovery mechanisms. A weak or nonexistence verification mechanisms of newcomers makes the network highly vulnerable to *Sybil Attacks*. Where an adversary tries to flood the DHT with dishonest or malicious peers in order to manipulate the routing tables, eclipse honest peers, try to pollute trustworthy resources or disrupt swarm operations.
+
+Several mitigations strategies try to place a barrier of defence for such attacks. A common approach, that is vetted and implemented in some popular P2P networks, is the demand of a *Proof Of Work* (PoW): where newcomers nodes solve a computational hard puzzle before full participation, which than is verified by bootstrap nodes. Thus, forcing threat actors to waste a significant resources, proportional to their computational power when attempting to overflow the network with rogue peers.
+
+Other or additional methods, as discussed in relevant literature, include a human verification challenges such as *CAPTCHAs* during the bootstrapping or admission process, which imposes a non computational but physical const that aim to harm scalability in automated attacks.
+
+In the case of BitTorrent, implementations impose a lighter, protocol-level defences to mitigate *Sybil Attacks*, such as:
+
++ *DHT Node Id enforcement:*
+
+    Binds its node ids to external IPS to limit one-machine Sybil farms
+
++ *Reputation based filtering:*
+
+    Where peers keep a score, that is calculated by how it contributes to the network, via shared choke lists.
+
+Nevertheless, these mitigations aim to increase as much as possible the amount of computational power and operational costs that an attacker must be willing to waste and gather, to make a *Sybil Attack* actually reliable. Thus, demotivating large scale attacks in P2P systems, where unchecked collective attacks pose as one of the most severe threats that can decrease significantly performance.
+
+
+*** Collusion Attacks
+
+This presents one of the most dangerous attacks at BitTorrent networks, because its extremely difficult both detect and neutralize. It consists of a malicious group of peers that operate under the guidance of a central leader, that coordinates the subordinated peers to perform correlated attacks against the system. Furthermore, on reputation-based systems their goal is to both: decrease the reputation scores of honest peers and to inflate the scores of malicious peers.
+
+This approach misbalance the fairness among participants and shifts the global belief about who actually are the trustworthy peers. They achieve this, by systematically spreading false information about themselves and others across the network.
+
+Moreover, this paper [cite], explain even further the *collusion attacks* alongside other popular attacks to P2P networks, like: *Lying-Piece*, *Fake-Block*, *Chatty-Peer*. These attacks collectively aim to decreases and harm the overall swarm performance, and eventually take it down.
+
+
