@@ -1,93 +1,18 @@
-# ""
-# Overview of P2P file-sharing protocols (BitTorrent, Gnutella, etc.)
-# Introduction to BitTorrent
+** Bit Torrent
 
-** BitTorrent Protocol
-:PROPERTIES:
-:CUSTOM_ID: bit_torrent_protocol
-:END:
+P2P networks can be the solution to improve the user space privacy, and a way to users fight back against lack those whom try to de-anonymize their fingerprint online. And, this technology has been proven over and over, being used in telecommunications, like *Matrix* and it this case in file-sharing like *Bit Torrent*, providing ways for them to share media resources, without being tracked or take down.
 
+In this section, I will highlight how *Bit Torrent* actually works, how it can be used, which are vulnerabilities that can jeopardize both the network and de-anonymize contributors.
 
-Traditional HTTP downloads rely on centralized servers (CDN), creating a single point of failure where all operation cost falls on the hosting server. In contrast, BitTorrent, one of the most widely used P2P protocols, distributes this load across multiple peers in a swarm, significantly reducing the burden on individual participants.
+*Bit Torrent* is one of the most used technologies on the context of *P2P (Peer-to-Peer) content distribution networks*. According to Bit Torrent Protocol specification (citeme), it presents an advantage over plain HTTP were multiple downloads can happen concurrently for the same file, safeguarding against one HTTP Server handling multiple requests. In simple terms, it works by downloaders upload to each other the "chunks" or "pieces" that they possess to the network, making it possible to spread parts of its file across many peers, distributing the load of the HTTP operation.
 
-BitTorrent achieves this distribution by splitting files into fixed-size chunks (typically 256 KB to 4 MB, depending on file size). For each chunk, an SHA1 is calculated to verify integrity. These hashes are stored in a .torrent metadata file, which peers use to verify that downloaded chunks are authentic and uncorrupted. Peers then exchange these chunks, propagating them across the swarm until all peers possess complete copies.
+This network all peers are contributors that can be identified by following *entities*:
 
-*** The .torrent Metadata File
-:PROPERTIES:
-:CUSTOM_ID: torrent_metadata_file
-:END:
++ *Downloaders (Leechers)*:
 
-Before peers can participate in a swarm, they must obtain the *.torrent* file, which serves as the blueprint for the entire download process. This file contains all necessary metadata encoded in *Benconding* format.
+  These are *peers* with incomplete copies of a given file (less than 100%). Normally, they try concurrently download missing *chunks*, while positively uploading another *chunks* that were already verified to the swarm. The terminology "*leecher*" in some context it carries some negative connotations, which mainly refers to peers that only download without adequately uploading in return, which violates the reciprocity principle that BitTorrent it's built on. This actually harms the network, as its breaks the balance between *seeders* and *downloaders*.
 
-A typical .torrent file includes:
++ *Seeders (Uploaders)*:
 
-+ *announce*: The URL(s) of tracker(s) that coordinate the swarm
+  These are *peers* that have 100% of the file, and normally only upload to others. Normally, are dedicated "server" peers that have the complete copies of the shared resources. This means it always must exists at least one *seeder* in order for a torrent to remain viable. Without this assurance, there isn't any guarantee that a newcomer to the network can effectively fetch all *pieces* of a *torrent*. *Seeders* are critical for a swarm health and longevity.
 
-+ *info*: A dictionary containing:
-
-  + *name*: The suggested filename or directory name
-
-  + *piece length*:  The size of each chunk (typically 256 KB - 4 MB)
-
-  + *pieces*:  A concatenated string of SHA-1 hashes for all chunks
-
-  + *length/files*: File size (single file) or file list (multi-file torrents)
-
-+ *nodes*: (Optional) Bootstrap nodes for DHT-based peer discovery
-
-+ *info hash*: An SHA-1 hash of the info dictionary, serving as the unique identifier for the torrent
-
-Figure 1.1 shows examples of .torrent files using different peer discovery mechanisms.
-
-The *.torrent* file is typically created by the initial seeder and distributed through external channels (websites, forum's, etc.). Also, the tracker URL and peer discovery method embedded in this file determine how peers will interact with the network, each distinct security and privacy issues.
-
-To understand how this distributed system operates, it is essential to identity the different roles that peers assume within a BitTorrent swarm, each piece of serving distinct functions in file distribution process.
-
-*** Roles in the BitTorrent Ecosystem
-:PROPERTIES:
-:CUSTOM_ID: roles_bit_torrent_ecosystem
-:END:
-
-The BitTorrent network consists of several key participants:
-
-+ *Seeders*: Peers that posses 100\% of the file and only upload chunks to others. At least one seeder must exists for a torrent to remain viable; without seeders, new peers cannot obtain a complete copy. Seeders are critical for swarm health and longevity.
-
-+ *Leechers (Downloaders)*: Peers with incomplete copies of the file (less than 100\%). They simultaneously download missing chunks while uploading chunks they already verified. The term "leecher" sometimes carries negative connotations, referring to peers that download without adequately uploading in return, violating the reciprocity principle that BitTorrent relies upon.
-
-+ *Trackers*: Specialized servers that do not store or transfer file content. Instead, they maintain lists of active peers in each swarm and facilitate peer discovery by providing IP addresses of other participants. When a peer joins a swarm, it announces itself to the tracker, which responds with a list of other peers to connect to. However, this creates a privacy concern: trackers can log all IP addresses and associate them with specific content being downloaded.
-
-While trackers have historically been the primary peer discovery mechanism, their centralized nature presents both operational vulnerabilities (single points of failure) and privacy risks (activity logging). This has led to the development of decentralised alternatives, discussed in <Section (peer discovery)>
-
-*** Peer Discovery Mechanisms
-:PROPERTIES:
-:CUSTOM_ID: pex
-:END:
-
-# [Trackers, PEX, DHT]
-
-Speak about (*Trackers*, *PEX*, *DHT*)
-
-*** Data Exchange Strategies
-:PROPERTIES:
-:CUSTOM_ID: data_exchange_strategies
-:END:
-
-# speak about Rarest First and Choking Algorithms
-
-Once peers are connected, BitTorrent employs specific algorithms to
-optimize distribution and enforce fairness.
-
-**** Rarest First Strategy
-:PROPERTIES:
-:CUSTOM_ID: rarest_first_strategy
-:END:
-
-Peers prioritize downloading the rarest pieces in the swarm first...
-
-**** Choking Algorithm
-:PROPERTIES:
-:CUSTOM_ID: rarest_first_strategy
-:END:
-
-To prevent freeloading and optimize bandwidth usage, BitTorrent uses a
-tit-for-tat mechanism...

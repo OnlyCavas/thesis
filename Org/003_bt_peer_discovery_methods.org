@@ -1,0 +1,48 @@
+*** Peer Discovery Methods
+
+In order to others exchange their chunks of files with other peers, it's paramount that they manage to communicate with each other. One of the most used mechanisms for Peer discovery* are centralized *trackers*.
+
+**** Trackers
+
+These are *centralized dedicated servers* that *don't store* or *transfer any file* resources. Instead, they focus on maintaining a list of active *peers* in each swarm. At any given time, a client can request a list of new peers from a *tracker* that will give it, a random subset of *IP addresses* of other participants on the swarm, that may have what he is looking for.
+
+Despite being a crucial *entity* for other peers discovering themselves and thus connecting to the swarm. However, their usage can inflict privacy issues. As *trackers* keep record of all peers that are active inside the swarm, it logs their *IP Address* and later link them to specific content being downloaded, thus de-anonymizing them and partially leak their actions inside the network.
+
+# (citeme = PirateBay stuff, needs 002_pex)
+# (citeme = attacks, then explain whenever?)
+
+Also, because of its centralized approach to peer discovery isn't very scalable, as the network grows so do the *trackers* to keep up with the increase of files and new peers. This paper, also refers that at the time, one of the most popular Bit Torrent networks *PirateBay*, was suffering of multiple TCP time-outs. Not only that, but because they are centralized they can be point out as *Single Point of Failure* and possibly exploited by DoS attacks to week the swarm or take it down.
+
+
+# (citeme - kademlia)
+
+**** Distributed Hash Table (DHT)
+
+Nowadays, modern *Bit Torrent* has evolved with robust decentralised alternatives that try to mitigate this vulnerabilities and reduce or eliminate reliance on trackers. In this case, a peer can leverage the same *.torrent* metadata file to use the following *Peer Discover*
+
+# (citeme - 002_pex)
+# [check: Kademlia methods, and cite it too!, and read a bit to confirm information]
+It's a Hash Table, almost like a simple key-value database distributed over a network of computers, that are referred as nodes. All nodes keep record of a key-value pair locally and later between them find values with the respective keys. One of the most well known implementations is *Kademlia*, and in case of Bit Torrent, their DHT implementations is Kademlia-based. Which means, that it has implemented STORE, FIND_VALUE, FIND_NODE and PING methods that enable with a key of 20 bytes, like Bit Torrent most implementations use SHA-1 hash function, retrieve the peer closest to the provided key. In order for a client to join the DHT, it needs a tracker like node, that serve the role of bootstrapping. According to the authors of this paper [cite], these remain one of the most used: the *Azureus DHT* and the *Mainline DHT*. Also, *Mainline DHT* is used by a very large part of the client implementations with support to DHT, including the most popular ones: *UTorrent*, *BitComent*, and *Mainline*.
+
+This is an improvement against the normal Trackers, because it becomes much harder to newcomers to be tracked, and adds more points of failure to the network, making it harder to suffer from DOS attacks.
+
+# (citeme - 002_pex)
+**** Peer Exchange (PEX)
+
+# [check: about implementations]
+# [check: actual usefulness of implementation]
+# (citeme: cite each client, and cite the paper where you get that)
+
+Once a peer has initiated a connection using one of the last discussed *Peer Discovery Mechanisms*, it allows peers in a *torrent* gossip with each other in specified time frames with a list of *active peers* they know. Thus, exchanging between themselves, peers that they already know. Which means, after the initial bootstrapping, peers can depend on other peers that implement a version of PEX protocol. Thus, dramatically expanding the swarm faster without relying on *trackers* and *bootstrap nodes* to find new optimal peers. The authors of this papers, discuss some implementations of the PEX protocol that some clients use: *AZ_PEX*, used by *Azureus Clients*, *UT\_PEX*, which are used mainly by *uTorrent*, *qTorrent*, etc. and *BC\_PEX* by *BitComent* clients.
+
+# (citeme: 002_pex, part of the experiment, and stuff)
+Evaluating the PEX performance is paramount to understand how it can impact the performance of Bit Torrent. [] authors of the paper, made an experiment to determine how *PEX* impacts the download efficiency of a BT client. They prepared a lab environment with randomly selected 100 torrents with different sizes, mainly acquired on the following platforms: *Pirate Bay* and *Mininova*.
+
+Throughout the experiment, they observed that the download time of some torrents decreased significantly, when PEX was allowed, stating that the mean value of the speedup ration was 0.07, which basely meant that the download time had a reduction of about 7%. This means, that PEX can improve the client connectivity and help to reduce its download time.
+
+Also, they discover that using *PEX* protocol, a given client could quickly establish about *25 outgoing connections* with other peers, while when wasn't being used *PEX*, a client managed only *5 outgoing connections*. However, because Bit Torrent's choking algorithm, the more connections a peer has, more opportunities to be optimistically unchoked by others. Which translates to a drop on the number of the outgoing connections, because on the experiment once the client finished to download a file, half of the outgoing connections dropped. Also, because of the high connections number the download rate wasn't very promising. On the other hand, once the client gathered a good amount of chunks, it could trade with even more peers, increasing the overall download rate.
+
+Furthermore, they observed that the client could gather a great amount of peer addresses, only a few moments after a tracker initial connection. This, decreasing the amount of requests to the *tracker*, and allows the peer to improve its *searching ratio*, inside the swarm. They concluded that, *PEX* actually helped to acquire a great number of peer addresses upon connection, and with more connections could obtain more upload slots, that translated to faster download rate accordingly.
+
+
+

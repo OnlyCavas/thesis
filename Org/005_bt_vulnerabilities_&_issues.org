@@ -1,0 +1,78 @@
+# (citeme - 004_attacks...)
+*** Free Riding
+
+Free riding is the act of taking advantage of BitTorrent's file-sharing downloading content system without actually contributing nothing or very few resources back to the network overall capacity. Moreover, current research and real world observations, show that the protocol's original mechanisms no longer ensure the guarantee of universal cooperation among peers.
+
+As explained earlier, BitTorrent heavenly relies on the *reciprocity principle*: which is downloaders (leechers) are expected to upload already verified pieces to others, either while downloading or after its completion, in order to sustain the swarm. This mutual contribution not only keeps pieces circulating, but maintains the high availability for other peers, and it actually justifies the existence of a decentralised P2P file-sharing network. Without enough uploading, the overall system loses efficiency: which will cause download rates to drop, rarest pieces not be available and increasing the chance of not torrents die.
+
+The already baked in incentive tool is the *Tit-For-Tat* (TFT) mechanism (along with choking/unchoking). Developed by Bram Cohen, the creator of the Bit Torrent protocol, where peers would prefer to upload data to those who upload back to them, while "choking" to non-contributors. Optimistic unchoking would happen periodically allowing free uploads to new or random peers, thus helping newcomers to bootstrap and discovering potentially better alternatives.
+
+Despite this approach in place, this paper authors highlight there are several ways to exploit modern swarms:
+
++ *Strategic Manipulation:* The authors mention that in recent studies, show that users are not longer encouraged to follow the best practices, as there are clients that actively don't get back to the network.
+
++ *Auction vs. Fairness:* According to them, other research suggests that BitTorrent doesn't apply fairness on there tit-for-tat system, implying that "acts like an auction to decide which peers to serve".
+
++ *Optimistic unchoke Exploitation*: Where free-riders leverage this protocol mechanism that was supposed to help newcomers, they use it to download files without ever reciprocating.
+
+# On top of that, they highlight some clients that exploit this BitTorrent vulnerabilities, *BitThief* and *BitTyrant*.
+Moreover, clients like *BitThief* and *BitTyrant* represent a major challenge for BitTorrent protocol, because they can prove that the incentive structures designed to ensure that cooperation can be exploited.
+
+# [check: verify this information, and get the citation]
+
++ *BitThief:*
+
+  This rogue client never contributes with any real data. It achieves high download rates by connecting wit has many peers at it can, trying to maximize its own download rate.
+
+# [check: verify this information, and get the citation]
+
++ *BitTyrant:*
+
+    Another rogue client that tries to dynamically adapts the upload rate following the neighbours peers to calculate the exactly minimum necessary contribution to maximize its download rate.
+
+These clients cause a great impact on the *swarm* performance, as the number of free riders increases, so it decreases the overall system capacity for the rest of the peers, that play by the rules. Thus, harming the good peers that both take and contribute back to the network.
+
+
+*** Torrent Poisoning (Anti-Piracy Tactics)
+
+Torrent Poisoning, is a deliberate attempt to degrade the performance and reliability of swarms sharing copyrighted resources. The paper explains it as an act of intentionally sharing corrupted data or deploying multiple attempts to try to impede inter peer downloads. Multimedia industries and other organizations use these methods to prevent sharing copyrighted content on P2P rogue networks, which the goals consists into overload as much as possible, trying to decrease the overall download rate of the swarm.
+
+They achieve this, in several ways, like:
+
++ *Deployment of dishonest clients*: Active deployment or usage of dishonest clients that pollute the network and swarms, thus trying to decrease as much as possible the download rate.
+
++ *Mass-Scale Attacks*: Threat actors, try to gain control over the swarm, by deploying several rogue peers. Thus, performing *Sybil* attack, to overwhelm simultaneously honest peers from sharing protected resources.
+
+According to the authors of the paper [cite], the number of anti-piracy attacker is high enough, could provoke general swarm failure. Which presents a significant threat to the BitTorrent ecosystem, because some clients like the mention on the paper (like *Vuze* or *Transmission*). Which lack the security mechanisms to enable them to distinguish from an honest and dishonest peer, making them vulnerable to receive corrupted data over and over, damaging the overall network in the process.
+
+
+*** Sybil Attack
+
+# [check: proof of work?]
+
+The resilience of BitTorrent's swarms is highly dependent on how effective its identity management within the P2P architecture. More precisely, which algorithm is used for the decentralised peer discovery mechanisms. A weak or nonexistence verification mechanisms of newcomers makes the network highly vulnerable to *Sybil Attacks*. Where an adversary tries to flood the DHT with dishonest or malicious peers in order to manipulate the routing tables, eclipse honest peers, try to pollute trustworthy resources or disrupt swarm operations.
+
+Several mitigations strategies try to place a barrier of defence for such attacks. A common approach, that is vetted and implemented in some popular P2P networks, is the demand of a *Proof Of Work* (PoW): where newcomers nodes solve a computational hard puzzle before full participation, which than is verified by bootstrap nodes. Thus, forcing threat actors to waste a significant resources, proportional to their computational power when attempting to overflow the network with rogue peers.
+
+Other or additional methods, as discussed in relevant literature, include a human verification challenges such as *CAPTCHAs* during the bootstrapping or admission process, which imposes a non computational but physical const that aim to harm scalability in automated attacks.
+
+In the case of BitTorrent, implementations impose a lighter, protocol-level defences to mitigate *Sybil Attacks*, such as:
+
++ *DHT Node Id enforcement:*
+
+    Binds its node ids to external IPS to limit one-machine Sybil farms
+
++ *Reputation based filtering:*
+
+    Where peers keep a score, that is calculated by how it contributes to the network, via shared choke lists.
+
+Nevertheless, these mitigations aim to increase as much as possible the amount of computational power and operational costs that an attacker must be willing to waste and gather, to make a *Sybil Attack* actually reliable. Thus, demotivating large scale attacks in P2P systems, where unchecked collective attacks pose as one of the most severe threats that can decrease significantly performance.
+
+
+*** Collusion Attack
+
+This presents one of the most dangerous attacks at BitTorrent networks, because its extremely difficult both detect and neutralize. It consists of a malicious group of peers that operate under the guidance of a central leader, that coordinates the subordinated peers to perform correlated attacks against the system. Furthermore, on reputation-based systems their goal is to both: decrease the reputation scores of honest peers and to inflate the scores of malicious peers.
+
+This approach misbalance the fairness among participants and shifts the global belief about who actually are the trustworthy peers. They achieve this, by systematically spreading false information about themselves and others across the network.
+
+Moreover, this paper [cite], explain even further the *collusion attacks* alongside other popular attacks to P2P networks, like: *Lying-Piece*, *Fake-Block*, *Chatty-Peer*. These attacks collectively aim to decreases and harm the overall swarm performance, and eventually take it down.
