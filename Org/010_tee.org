@@ -2,3 +2,69 @@
 :PROPERTIES:
 :CUSTOM_ID: trusted_execution_environment
 :END:
+
+Despite all the policies and mechanisms implemented at BitTorrent's core, *Rarest First*, *Tit-For-Tat* (TFR) choking, *PEX* and more. Each one of them provide stability and performance against some of the problems discusses in previous sections: *Free Riding*, *Torrent Poisoning*. Ultimately, the protocol remains fundamentally vulnerable in open, untrusted swarms, where threat actors can leverage the fact it's a P2P protocol, and it's complicated to authenticate peers. Further complicating this attackers can articulate *Sybil* attacks and *Collusion* attacks, in order to manipulate honest peers to further propagate false information about their own, slowly turning the swarm, once again leveraging vulnerabilities within the DHT implementations. Or exploiting the dynamics of *Flashcrowds* trying to discourage peers to rely on that swarm.
+
+These problems exists from the lack of any verifiable trust anchor among peers, where every node operates by itself, without having a proper way to evaluate its integrity, and authenticity. This way, trying to detect dishonest peers and identify advance threats in large scale public swarms still poses a significant challenge that needs to be addressed. In order to mitigate these limitations hardware rooted mechanisms capable of establish *remote attestation* and *trusted execution* can be paramount to detect malicious peers or dishonest peers.
+
+# (citeme: 002)
+
+Before further explain *TEE* and introduce them, I am going to indicate some alike solutions that will be interesting along this section to explain how can *TEE* can be utilized to mitigate BitTorrent vulnerabilities. In light of this, these are some examples of hardware assisted security solutions:
+
+# (citeme: 001 - TMPS)
+
++ *Trusted Platform Modules (TPM)*:
+
+    Regular found on new devices, these are secure *crypto processors* that are bounded to the individual device. It offers services, like *key generation*, *key attestation*, *encryption* and its most use *authenticated integrity checks*, normally used in *Secure Boot* functionality, serving as the Operating System trust anchor.
+
+    # (citeme: 007 - TMPS)
+
+    In every *TPM* ships with a unique asymmetric key pair known as the Endorsement Key (EK), which is embedded bu the manufacturer during the production phase, which severs as the *root of trust* [cite]. Denote that the *EK* never leaves the *TPM*, but exposes a manufacturer issued EK certification that allows third parties to verify the *TPM authenticity* paramount to establish initial trust. However, it uses certified *Attestation Identity Keys* (AIKs), which are generated inside of the *TPM* and cryptographically bound to the *EK*, normally via wrapping. AIK enables production of signed quotes without exposing the *EK*, thus serving a major role in safeguarding the *root of trust*. Also, a *TPM* supports measured boot, also called *Secured Boot*, by extending Platform Configuration Registers (PRC), that are monotonic registers, with cryptographically with cryptographic hashes of the loaded code and configuration data.
+
++ *Hardware Security Modules (HSMs)*:
+
+  An *HSM* is a dedicated, physical cryptographic computing device that is designed to securely generate, store and manage cryptographic keys while allowing high assurance cryptographic operations entirely within its protected boundary. Unlike general propose crypto processors, this solutions poses as a hardened, tamper resistant protections. Therefore, protecting against physical intrusion attempts, probing, and preventing key extraction. These normally are certified to strict standards, emphasizing both logical and physical attack resistance.
+
++ *Secure Elements (SEs)*:
+
+  SEs are a compact, embedded alternative to an traditional *HSMs*, that implement the same core cryptographic functionality such as *secure key storage*, *key generation*, and isolation execution of operations directly as a co-processor integrated onto the IoT device. It can be seen in largely in *embedded devices*.
+
+# (citeme: 001, 002)
+
+*Trusted Execution Environments* (TEEs) are described as hardware backed approach to secure computation, that runs in a separation kernel, implemented as isolated execution contexts that are tightly integrated with the main CPU and *System on Chip* (SoC). By taking advantage of native SoC, resources that include memory encryption engines, direct access to hardware, and privileged modes, enable crypto operations and protected execution on general purpose CPUs, without needing other external modules. Additionally, it's tamper resistant and provides remote attestation capabilities that are imperative to prove trustworthiness for third-parties.
+
+The separation kernel is the core foundation component of *TEE*. Sources imply that was first introduce in [002:15], with the purpose of allowing coexistence of different systems that required different levels of security for the same platform. It achieves this by dividing the system into multiple partitions, guaranteeing stronger isolation between them, being distinct implemented by differently providers.
+
+The sources further explain that security requirements for separation kernels are described in *Separation Kernel Protection Profile* (SKPP) [002:17]. Furthermore, different from traditional kernels, this separation kernel is simpler providing both time and space partitioning:
+
++ *Spatial separation*: data can't be modified or read by other partitions.
+
++ *Temporal separation*: shared resources can't be leaked by other partitions.
+
++ *Control of Information*: communication between partitions happens strictly when necessary.
+
++ *Fault isolation*: a security breach can't mess with other partitions.
+
+Trusted Execution Environments can be divided into to closely related but distinct paradigms: *Secure Execution Environment* (SEE) and *Dynamic Root of Trust Measurement* (DRTM).
+
++ *Secure Execution Environment*:
+
+  These are a needed to achieve a full *TEE*, but doesn't acknowledged trust by default. But it's a process environment that guarantees several runtime protections such as: *authenticity*, by running code that can't be altered, *integrity*, by ensuring its runtime can't be tempered with. And *confidentiality* code, behaviour, and data can+t be observable by unauthorized applications, including the Operation System.
+
+  # (citeme: 001)
+
+SEE differs from *TEE* by omitting the *hardware Root of Trust* (RoT) in order to check integrity and authenticity of loaded code. On the other hand, it doesn't implement already defined secure mechanisms for updating applications or secure data. The authors of this paper, [cite] explicit defined a *TEE* as a trust enabled *SEE* that incorporates verifiable trust anchors, by remote attest ion and secure bootstrapping.
+
+# (citeme: 001)
+
++ *Dynamic Root of Trust Measurement* (DRTM)
+
+  It's a set of techniques that launch specific code pieces in an isolated environment without actively relying on possible previous compromised software. Also, the Trusted Computing Base (TCB)  of DRTM can run code outside of the isolated environment, however, it includes a small part of the main Operation System. Furthermore, it relies on main system memory for runtime execution, which may be susceptible to physical attacks on memory such as: *cold boots*, *bus probing*.
+
+  On the other side, *TEE* does resists such attacks through dedicated protected memory regions. Also, *DRTM* imposes constraints that effectively severely limit concurrency, which make the system free non secure execution until the isolation context sessions are complete. As a result, makes it unsuitable for multitasking system running non secure applications. More precisely, on a scenario where peers need to manage multiple connections, like on *PEX* or *DHT*.
+
+# (citeme: 001:[67]–[69])
+
+Also, *TEE* should resist against physical attacks by executing code on protected memory, although it may be susceptible to other form of attacks, such as: *side-channels attacks*, that will be explained further ahead. Moreover, *TEE* can also be used to implement hardware trusted environment solutions explained previously: *TPMs* and *HSMs* [cite].
+
+For this reason, they can be used in P2P settings like BitTorrent swarms, acting like *trust anchors* enabling peers to remotely attest other participants within the swarm. As a result, this facilitates the detection of malicious actor such as: *Sybil peer*, *dishonest BitTorrent client implementations*, and enforces honest conduct within the swarm. Also, it may be a way of further increase integrity checks on shared chunks, thus reassuring that chunk wasn't tampered with. Given this, may be a way to surpass known limitations of pure software based mechanisms that BitTorrent already implements.

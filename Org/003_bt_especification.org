@@ -87,3 +87,46 @@ Moreover, each connection contains two bits of state in either end:
 # maybe not put his, it feels not that important, or could be an image or code
 
 
+
+*** Rarest First
+
+# (citeme: 000 this is the first paper i ever read, the one who start it all!)
+
+BitTorrent motivates peers to keep contributing to the network and maintain overall reciprocity within the swarm through several key mechanisms, one of which being the *Rarest First* (RF) piece selection strategy.
+
+The BitTorrent's protocol, when selecting pieces to the next request, peers often prioritize the *rarest piece* among their connected neighbours, typically the pieces held by the fewest peers in their local cluster within the swarm. Moreover, the "local rarest first" approach have several benefits. As ensuring that peers are able to acquire unique or uncommon pieces, allowing for them to later upload them back to the network, propagating further this rarest pieces, thus improving overall reciprocity chances.
+
+By spreading rare pieces more efficiently, it reduces the likelihood that individual piece become unavailable, thus trying to mitigate whether a seeder departs from the swarm. Also, common pieces are deferred until later, trying to prevent redundant downloads from the seeder and allowing it to propagate more chunks and to more leechers efficiently.
+
+In swarms with increase constrains, imbalance by low quantity of seeders and high amount of leechers, rarest first algorithm significantly outperforms naive sequential or random peer selection. In case of many leechers concurrently request the same piece from the seeder, redundant transfers take place wasting resources. Instead, the rarest first algorithm tries to motivate peers to fetch different pieces from other peers, thus distributing further the load between low consumed seeders.
+
+This is paramount when the original seeder goes offline, condemning the torrent to an uncertain state, where a swarm may not be able to have all the pieces necessary to complete a file download, marking that torrent as irrecoverable. Therefore, *Rarest First* mitigates this by aggressively replicating the scarcest pieces first, thereby minimizing the chance of piece loss and enhancing swarm scalability and substantially.
+
+In order to solve this issue, a client initially selects random pieces until at least has completed one full piece, in some implementations 4 pieces are chosen randomly. Once a peer has something to offer, it switch's back to the standard rarest piece implementation. Therefore, solving the issue when a peer has no pieces yet, which blocks him to upload to the network, therefore can't benefit from reciprocity. Hence, this algorithm promotes piece diversity over the swarm, reduces dependency on seeders, and distributes to further peers scarcest pieces, greatly improving swarm robustness and scalability.
+
+
+*** End Game Mode
+
+On BitTorrent downloading process, towards the very end a common problem arises, where the last few missing sub-pieces may be requested by slower peers. As a result, it can create a significant delay on the download process, which may block the transfer all together, not only harming his performance, but the overall network. Because it will take more time to become a seeder, creating a cyclical pattern that eventually will spread within the swarm.
+
+In order to prevent this issue, some BitTorrent clients active the *End Game Mode*, when all remaining sub-pieces are already being requested. This mode, prevents bottleneck by aggressively send duplicate requests for every remaining sub-piece to all known peers that might have it. Hence, creating flooding of requests to ensure the client can obtain the final pieces from whoever delivers them first. However, this solution wastes an excessive amount of bandwidth and may clog other peers.
+
+Taking this into account, as soon as a sub-piece arrives from any peer, a client immediately cancels all duplicate requests for the same sub-piece from other peers. Actually the protocol relies on the BitTorrent's "cancel" message, to honour this approach.
+
+# (citeme: 000)
+
+Almost all modern clients already implement this behaviour by default, where the sources [cite] suggest *mainline BitTorrent*, *libtorrent*, *Transmission*, *qBittorrent*. Moreover, they present empirical measurements that effectively show that it significantly reduces latency without much noticeable overhead.
+
+
+*** Choking Algorithm (Tit-for-Tat Incentive Mechanism)
+
+
+(Citation: The foundational choking algorithm was introduced by Bram Cohen in "Incentives Build Robustness in BitTorrent" [Cohen, 2003], which remains the seminal paper on BitTorrent's incentive design. Subsequent empirical validations, such as Legout et al. [2006, 2007], confirm that rarest-first combined with the choking algorithm is sufficient for efficient piece diversity, reciprocity, and robustness against free-riders.)
+BitTorrent operates without any centralized resource allocation or global coordinator. Each peer independently seeks to maximize its own download rate in a decentralized manner. To achieve this while encouraging cooperation and discouraging free-riding (peers that only download without uploading), BitTorrent employs a variant of the tit-for-tat strategy from repeated game theory.
+Peers cooperate by unchoking (allowing uploads to) selected neighbors and withhold cooperation by choking (temporarily refusing to upload to) others. Choking is a soft, temporary refusal: the choked peer can still receive data if unchoked elsewhere, download metadata, or send control messages (e.g., HAVE, INTERESTED), and the TCP connection remains open—no renegotiation is required when unchoking occurs later.
+Although the choking logic is not part of the core BitTorrent wire protocol (BEP-0003), it is essential for achieving good performance in real swarms. A well-designed choking algorithm can fully utilize available upload capacity, provide consistent download rates to participating peers, and offer strong resistance to pure free-riders.
+Technical Details of the Choking Algorithm
+Each BitTorrent peer (in leecher state) maintains a fixed number of unchoked upload slots—4 by default (configurable in most clients). This cap ensures TCP congestion control can reliably saturate the peer's upload bandwidth without excessive contention or overhead.
+The key decision is which peers to unchoke. Selections are based strictly on the current download rate received from each interested neighbor (i.e., peers that have expressed INTERESTED and are downloading from the local peer).
+Measuring these rates accurately is non-trivial due to short-term fluctuations (e.g., peers joining/leaving, temporary congestion). Early implementations used long-term transfer totals, but performance suffered because bandwidth availability changes rapidly. The standard approach (used in mainline BitTorrent and most modern clients like libtorrent-based ones) employs a rolling 20-second average of the download rate to smooth noise while remaining responsive.
+To prevent wasteful oscillation ("fibrillation"—rapid choking/unchoking that prevents TCP from ramping up), peers re-evaluate and apply choking decisions only every 10 seconds. This interval is long enough for new TCP connections to reach full speed after unchoking.
