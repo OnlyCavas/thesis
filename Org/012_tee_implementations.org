@@ -1,0 +1,69 @@
+*** Intel Software Guard Extensions (SGX)
+
+# (citeme: 002, sgx)
+# (review: tdx, try to find some kind of paper of rfc or document that explain exacly)
+# (citeme: 007, Intel’s Software Guard extensions* (SGX) [55])
+# (citeme: 009: [23, 32])
+# (citeme: 009: 1st paragraphs last cite)
+
+Among of the most popular implementations of Trusted Execution Environments, *Intel Software Guard Extensions* (SGX) stands out of one of the widely researched *TEEs*. Introduced [cite] by the Skylake microarchitecture in 2015 and since then improved even further to *Trusted Domain Extensions* (TDX). Which provide similar protections but to Virtual Machine level, further isolating VMs from hypervisor features like *live migration* and *broader attestation* [review]. *SGX* allows developers to run some portion of application code in isolated regions of memory, which are denoted as *enclaves*., while offering security enhancements [cite] ensuring *confidentiality* and *code integrity*, even if the core platform is compromised.
+
+# (citeme: 009: [56, 34, 29])
+
+Moreover, in order to minimizing the attack surface compared to kernel level or hypervisor level isolated mechanisms, the Trusted Computing Base (TCB) is reduced to the CPU hardware and its microcode. For example, in the Linux environment, the *SGX* driver and runtime libraries execute at the user space, thus don't needing to be a part of TCB. Also, attending to its threat model, SGX considers all software, such as: operating system, drives, Virtual Machine Monitor (VMM), and some firmware components are considered untrusted by the *TEE*. Researchers also, mention compromised network cards [cite]
+
+An enclave its composed by a host application that invokes enclave functions via ECALLs. During its initialization, the CPU calculates authenticated measurements, of the enclave code to attest its integrity. These measurements enable local attestation between enclaves in the same platform, or remote attestation to an external third party, providing strong prof of genuine code execution, this process is further explain in the section [*Remote attestation*].
+
+# (citeme: 007 - SGX)
+# (citeme: 009 - isolation)
+# (citeme: 009 - memory)
+
+SGX enclaves while executing share their virtual address space with the host process, and run at the user mode, without being able to access [cite] privileged resources, such as: the filesystem, IDT, page and tables. This increase isolation [cite], protects both the confidentiality and integrity of the enclave's executing from any potential malicious software running in the same platform. Because of this, running demanding memory tasks highly increases resource consumption leading to performance lost. Moreover, an enclave host process is limited to 128 MB [cite] of memory. Thus, the developer is restrict to work with very limited resources, like other alternatives. Also, the memory management is done entirely by the untrusted Operating System, which also provides exception handling and I/O services. Also, enclave's memory inside of the processor is handled it in plaintext, while is encrypted whenever it's contents leave the CPU, ensuring that no external software can access it. This works, because all enclave code and data leaving the CPU is encrypted by the *Memory Encryption Engine* (MEE), which protects the SGX from *Direct Memory Access* (DMA) attacks from malicious peripherals. The sources [cite], also mention that software cache side-channel attacks aren't considered in the threat model.
+
+# (citeme: 009, sgx)
+# (citeme: 009, [39])
+
+Besides, SGX enclaves enable to store data persistently in a encrypted matter, which the sources call it *sealing*. Providing both [cite] *confidentiality* and *integrity* for persisted data, works by the *processor* giving a *sealing key* that only the enclave of the running platform can access it, using it later to *unseal* or *seal* new data. This practice, helps to prevent *rollback attacks* [cite] whenever the enclave is restarted.
+
+# (citeme: 009 - last cite, example)
+
+Researchers [cite] also mention that *SGX*, can serve as a solution for *transaction verification*, where an enclave could perform any operating in behalf of the user, using its private key wallet. However, in case an enclave [cite] is compromised an attacker could steal all users coins. Thus, gaining access to his *private key wallet*, which the researches state that it increments an /undesirable economic incentive to break their own SGX processors/, for example trough *physical attacks*.
+
+
+*** Secure Encrypted Virtualization (SEV)
+
+Another prominent implementation of Trusted Execution Environments is AMD *Secure Encrypted Virtualization* (SEV), which differs from Intel SGX by focusing on VM level rather than process level approach, while SEV focus primarily on confidential computing in cloud based environments. Also, SEV allows the creation of confidential virtual machines (CVMs) that protect guest memory from an untrusted hypervisor, which makes it more suitable for microservices deployment, *DRM* implementations, and other situations which require the usage of stronger isolation in virtualization.
+
+SEV isolates each VM by generating a unique encryption key per guest, these are hardware bonded and never exposed to any software including the hypervisor, and is managed exclusively by the AMD Secure Processor. Thus, ensuring transparent memory encryption and integrity protection. That said, neither the hypervisor nor other software components can tamper the encrypted memory or it's execute state.
+
+# (citeme: 002)
+
+As explained previously, Intel solution for cloud focused implementation, *Trust Domain Extensions* (TDX) targets a similar cloud threat model to SEV's. Although, accordingly with the sources [cite] SEV performs better in intense workloads, and it's transparent to the software running in this platform.
+
+Unlike SGX enclaves, which enforce isolation using the memory management unit [sgx-cite], SEV uses *Secure Memory Encryption* (SME), in order to encrypt guest memory, thus protecting against physical attackers and against privileged software or even other VMs within the hypervisor. More precisely, the SME it's hardware based memory encryption feature that encrypts data before its written on the main memory and decrypts it upon loading into the CPU cache. Actual encryption is performed right way using dedicated AES engines, with AES-128 for added protection against certain cipher block attacks.
+
+# (citeme: 002, sev, problems)
+
+Also, like *SGX* sources [cite] mention that cache side-channel attacks aren't considered in the threat model. Furthermore, they found a *vulnerability in SEV elliptic-curve implementation*, that would allow a threat actor to recover the *private key* that's used to derive the individual guest keys (VMs key), which would effectively break encryption.
+
+
+*** Arm TrustZone
+# Since 2004, ARM *TrustZone* [10]
+
+# (citeme: 002, trust zone)
+# (citeme: 001) [42]
+
+TrustZone is another popular implementation of Trusted Execution Environments, and provides hardware primitives on *ARM devices*, normally in embedded devices, mobile devices or laptops which means devices of low consumption. Also, it can be seen as virtualization with hardware support for memory, I/O and interrupt virtualization. Arm provides an abstraction of two virtual core VCPUs. Different from the other two alternatives, TrustZone splits the system into two different worlds.
+
++ *Normal World (non secure VCPU)*
+
+  This world contains all the untrusted and nonsensitive applications and parts of the operating system that are untrusted also.
+
++ *Secure Word (secure VCPU)*
+
+  Instead, the *secure world* is comprised of *Trusted Operating System* (TOS), also known a Rich Operation System, and with one or more *Trusted Application* (TA). These can run as a standalone secure service or be a bundled with a nonsensitive host application which executes inside of the *normal world*. The TOS provides process isolation, memory management, internal process communication, and other system services for cryptography, secure storage and key management, of which are supported inside of the TEE instance. On TrustZone the *secure world* comprises a single TEE instance, unlike the others alternatives that allow multiple instances.
+
+  This architecture enables TrustZone to integrate device drivers directly into the TOS, which allows for establishing a secure communication channels between peripherals, such as: fingerprint sensors, trusted input devices and TA. Thus, preventing data leakage or be tampered with by *normal world* software. Moreover, it supports secure *Direct Access Memory* (DMA) by allowing the TOS to gain ownership of a specific memory region of one or more SoC component by shot period of time, which can be: *CPU*, *GPU*, *LCD controller*. Nonetheless, ensuring that information transferred by DMA remains protected from unauthorized access by other components in the *normal world*.
+
+  The researchers further explain that the software component, Trusted Firmware (TF), allows the world switch and allows the communication between both worlds. Different from the other implementations, TrustZone can't protect itself of cached side-channels attacks, because it doesn't provide cache partitioning. Although, the sources mention that the greatest weakness is their single-TEE nature.
+
