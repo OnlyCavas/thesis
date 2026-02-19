@@ -8,6 +8,7 @@ BitThief
 BitTornado
 BitTyrant
 CAPTCHAs
+CRTM
 CVMs
 DHT
 DHTs
@@ -43,6 +44,8 @@ PirateBay
 PlanetLab
 PoC
 ROS
+RustMonitor
+RustMonitor's
 SEV
 SEV's
 SEs
@@ -53,6 +56,7 @@ SL
 SM
 SME
 SRE
+SVM
 Sactum
 SafeKeeper
 SigRL
@@ -70,12 +74,14 @@ TLB
 TMPs
 TOS
 TPM
+TPM's
 TPMs
 TrustZone
 UTF
 VCPU
 VCPUs
 VMM
+VMX
 VMs
 Volterra
 Vuze
@@ -83,10 +89,12 @@ WATZ
 anonymizing
 attester
 attester's
+auditable
 bencoded
 bencoding
 dns
 infohashes
+initramfs
 ip
 kpis
 leecher
@@ -107,3 +115,4 @@ unchoke
 unchoked
 unchokes
 unchoking
+vmlinuz
