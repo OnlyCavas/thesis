@@ -23,6 +23,7 @@ Flashcrowds
 Gnutella
 HSM
 HSMs
+HyperEnclave
 I/O
 I2P
 IAS
@@ -30,6 +31,7 @@ IDT
 IMA
 KB
 Kademlia
+L1
 Lotka
 MB
 MEE
@@ -47,8 +49,12 @@ SEs
 SGX
 SHA1
 SKPP
+SL
+SM
 SME
 SRE
+Sactum
+SafeKeeper
 SigRL
 Skylake
 TAs
@@ -60,6 +66,7 @@ TEEs
 TF
 TFR
 TFT
+TLB
 TMPs
 TOS
 TPM
@@ -72,6 +79,7 @@ VMM
 VMs
 Volterra
 Vuze
+WATZ
 anonymizing
 attester
 attester's

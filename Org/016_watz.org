@@ -1,0 +1,1 @@
+*** WATZ: A Trusted WebAssembly Runtime Environment with Remote Attestation for TrustZone

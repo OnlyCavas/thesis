@@ -1,0 +1,18 @@
+*** Sanctum: Extending Enclave Protection
+
+In this section, will be presented other solutions that leverage TEE primitives, with a focus of open or academic designs that address or try to improve upon limitations of commercial implementations already addressed.
+
+# (citeme: 002, Sanctum)
+# (citeme: 002, Costan et al. in 2016 [cite])
+
+One of them is *Sanctum* that presents itself as a framework proposed by [cite], for the open *RISC-V* architecture. This solution adopts a similar threat model that closely resembles that of *Intel SGX*, also it follows the same user space enclave implementation but with architectural differences and increased security.
+
+*Sanctum* is somewhat inspired by *SGX*, having their enclaves bundle nonsensitive host applications that also run in untrusted code that later invoke the enclave functions. And having the untrusted Operating System handle exceptions and giving the libraries that allow the integration between the enclave environment.
+
+Unlike *SGX*, which page tables are manage by the untrusted Operating System, each Sanctum enclave manages its own page tables, which are stored within enclave memory. Thus, preventing even the Operating System from observing faulty page patterns or try to infer accessing behaviour. Also, as explained earlier *SGX* implements critical enclave function's in microcode, [reason that could give sopa], while *Sanctum* implements critical behaviour on a software component called *Security Monitor* (SM). This component, executes at the highest privilege level in RISC-V, and acts like the core of the system's TCB. More precisely, it enables both *local* and *remote attestation*, enabling the enclave to verify its own integrity, attesting measurements, before its execution. Although, *Sanctum* doesn't encrypt the enclave code or data in main memory, but it provides a simple protection against DMA attacks, by adding two registers in the memory controllers to whitelist a direct access to the memory region. Making unauthorized being dropped, preventing any malicious peripherals, which could be controlled by a malicious software or Operating System from accessing enclave memory.
+
+Furthermore, *Sanctum* enforces strong isolation neither allowing the Operating system access the enclave memory nor the enclave access the Operating System's memory, even if they attempt to switch page tables. *Sanctum* achieves this by applying minimal hardware modifications to the *Page Table Walker* (PTW) in the CPU's *Memory Management Unit* (MMU). This approach blocks the address translations that later would map to unauthorized physical memory regions for the active current executes context.
+
+A major advantage over *SGX* and other commercial solutions, is the *Sanctum's* resilience to *cache side-channel attacks*. It tries to mitigate this issue, through *page colouring*, which is software to hardware technique that partitions the shared last level cache by assigning cache lines only to individual enclaves. Which later Combined with L1 cache and TLB flushing on context switches, this together prevents cache based leakage in access patterns or secrets.
+
+Despite, *Sactum* representing remarkable step to open source TEE implementations on RISC-V, it's approach to solve cache side-channels, can constrain memory layout and requires a carefuller allocation at boot time. Although, it served as inspiration to other frameworks that will be elaborated upon in subsequent sections, like: *Keystone*.
