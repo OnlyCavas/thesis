@@ -1,1 +1,20 @@
-*** WATZ: A Trusted WebAssembly Runtime Environment with Remote Attestation for TrustZone
+*** WATZ: A Trusted WebAssembly Runtime for TrustZone
+
+# (008, twine 27, 28)
+# (008, acc tee 34)
+# (008, selamda tee 35)
+
+WebAssembly can also coexists with Trusted Execution Environments, having several implementations using it, as such: *TWINE* [cite] which his an embedded trusted runtime for WebAssembly. It relies on the WebAssembly Micro Runtime (WAMR [cite]), which enables to run WASM applications inside *SGX* enclaves and use its libraries to interact with the secure filesystem. Others solutions are *AccTEE* [cite] and *SeLambda* [cite], which run WASM binaries also on Intel SGX enclaves using the V8 JavaScript engine. Comparing both solutions, SeLambda deploys serverless functions while AccTEE provides trusted resource accounting. Different from this solutions, *WATZ* uses *Arm TrustZone* as its TEE backend and *WASI* for system manipulation.
+
+*WATZ* enables a simpler way for a *WASM application* be executed inside the *trust world*, without being signed, enabling third party applications, manage to run on a trusted environment. WATZ consists of an attester, which is a TEE hosted WASM runtime and a verifier. When a WASM application is loaded from the *normal world* into *secure world*, this is done by WATZ copying the bytecode over to the *secure memory*, attest it, and runs it.
+
+WATZ it's a trusted runtime for running *WASM Applications* with *remote attestation capabilities* on an *ARM TrustZone* backend, it provides a lightweight remote attestation system, to fix the lack of builtin mechanisms for attestation while running WASM applications in TrustZone. They manage to implement the attestation process, by developing a new kernel module for the TEE, also they used a lightweight and embedded runtime WAMR [cite] which is ideal for the needed smaller fingerprint of TEE.
+
+It implements a secure sandbox in order to further isolate, and try to prevent vertical privilege escalations and lateral attacks. Leveraging the trust chain on the boot process, ensures that WATZ code it's not tempered with and it's authentic. Then upon loading a WebAssembly applications, WATZ stores its bytecode on a secure memory region and it's measured by hashing it's signature. This hash value along with hardware secret can be used by WATZ to generate the quote, that will enable a third party (verifier) to attest if is a genuine WebAssembly application being run on a TEE based environment.
+
+WATZ offers a great advantage over the other TEE solutions, because as WASM it's bytecode and supports WASI, it's not limited by C only development. Which means, a developer could use any programming language that compiles to WebAssembly, since WASI calls and further abstractions, like the usage of the GlobalPlatform, which is the API used to interact with TrustZone, handled by the compiler.
+
+By leveraging WATZ runtime WebAssembly applications are executed inside TrustZone, due to the memory sandboxing inherited from WASM, malicious applications loaded into WATZ, can't neither compromise the secure world nor access any resources from other applications. Despite, WASM sandbox allowing a safe isolated mechanism for running host software, any zero-day vulnerabilities can be leveraged to may attempt or leak sensitive data or arbitrary code execution.
+
+WATZ is quite relevant for BitTorrent in mobile or embedded ARM devices implementations. It could be used to develop a WebAssembly module that would run inside TrustZone to try to mitigate some of the BitTorrent vulnerabilities presented earlier, like peer attestation and chunk verification. Also, since many mobile devices already support WebAssembly natively and other 
+laptop devices also have access to TrustZone, could result on a future extension that could remote attest WASM modules directly on the browser. Thus, contributing for Web based BitTorrent clients, to mitigate *Sybil attacks* and try to impede *dishonest peers* to join the swarm.

@@ -1,5 +1,7 @@
 AIK
 AIKs
+AccTEE
+Alotugh
 Azureus
 BT
 Benconding
@@ -21,6 +23,7 @@ EK
 EPID
 Flashcrowd
 Flashcrowds
+GlobalPlatform
 Gnutella
 HSM
 HSMs
@@ -59,6 +62,7 @@ SRE
 SVM
 Sactum
 SafeKeeper
+SeLambda
 SigRL
 Skylake
 TAs
@@ -85,6 +89,7 @@ VMX
 VMs
 Volterra
 Vuze
+WAMR
 WATZ
 anonymizing
 attester
@@ -115,4 +120,5 @@ unchoke
 unchoked
 unchokes
 unchoking
+veracruz
 vmlinuz
