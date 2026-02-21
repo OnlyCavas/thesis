@@ -21,3 +21,19 @@ HyperEnclave adopts a secure design by RustMonitor and the enclave itself managi
 Similar to other TEEs solutions like *Intel SGX*, HyperEnclave adopts a SIGMA style attestation protocol for remote attestation. With this in mind, the enclave measurement is signed using the RustMonitor's attestation key, which constructs am Enclave Measurement Signature (EMS). Also, the TPM generates a TPM_Quote signed by the TPM's attestation key. Later, this quote includes PCR value that will measure all components on the booting process, *CRTM*, *BIOS*, *boot loader*, *vmlinuz (kernel)*, *initramfs*, then RustMonitor (the hypervisor) completing the trust chain. Next, the actual enclave and the verification of the generated HyperEnclave certificate. In case of a remote attestation, the verifier receives the attestation report, and validates it by comparing both measurements of the booted code and the enclave against known values. And checking the certificate chain of both TPM quote and RustMonitor's signature.
 
 Using *HyperEnclave* with BitTorrent swarms, leveraging its process based model, flexible privilege modes along with its hardware agnostic design could prove to be an interesting solution to for peer attestation. As explained earlier by running some parts of the BitTorrent components inside enclaves, such as: peer attestation, chunk integrity validation, among others, it could mitigate some of the attacks explained before. Although, current implementations are limited to the x86 architecture and doesn't support *ARM* or *RISC-V*, despite existing an active community interest in such extensions. Despite the limitations, *HyperEnclave* could still offer unified attestation framework across a full spectrum of BitTorrent swarm participants. As an open-source alternative that is fully auditable at any time, it represents an ideal foundation for an academic implementation of a custom, security enhanced BitTorrent client, enabling both client attestation between peers, testing client authenticity, chunk integrity checks. All of this, avoiding the dependence on strict proprietary hardware features, being platform agnostic.
+
+Beyond HyperEnclave, there other academic and open source TEE implementations that tackle other aspects, that could enhance trust within BitTorrent swarms:
+
++ *Komodo* [cite, 35], implements an SGX like enclave protection model on TrustZone backend.
+
++ *Keystone* [cite, 49], another TEE that supports RISC-V platforms.
+
++ *Genode* [cite, 35] by Genode Labs
+
++ *Open-TEE* [cite, 47] by Intel Collaborative Research Institute for Secure Computing
+
++ *SafeG* [cite, 48] by Nagoya University
+
++ *ViMoExpress* [cite, 49] by Electronic and Telecommunication Research Institute
+
++ *TLR* [cite, 8] by Microsoft Research

@@ -2,6 +2,7 @@ AIK
 AIKs
 AccTEE
 Alotugh
+Andrix
 Azureus
 BT
 Benconding
@@ -23,6 +24,7 @@ EK
 EPID
 Flashcrowd
 Flashcrowds
+Genode
 GlobalPlatform
 Gnutella
 HSM
