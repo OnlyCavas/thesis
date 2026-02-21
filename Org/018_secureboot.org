@@ -1,6 +1,0 @@
-*** Secure Boot
-#
-# One of the many usage of hardware assisted security solutions, like *TPM* is the *Secure Boot* that ensures if any modification is detected while bootstrapping the system
-#
-#
-#  1. *Secure Boot* assures that only code of a certain property can be loaded. If a modification is detected, the bootstrap process is interrupted. An example implementation of secure boot, as proposed by Arbaugh et al., is to verify the integrity of a succeeding component according to a given reference value [22]. Generally speaking, the design of secure boot consists of various stages, and therefore, a chain of trust is established.
