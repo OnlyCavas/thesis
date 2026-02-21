@@ -1,4 +1,4 @@
-*** Attacks and Vulnerabilities
+*** Attacks and Mitigations
 
 Trusted Execution Environments are often promoted as a almost perfect solution for secure execution on devices, but as explained previously they can be subject to a great number of attacks. These vulnerabilities threaten directly the *remote attestation*, *isolated execution* capabilities, exfiltrate secret keys.
 
