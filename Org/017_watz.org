@@ -1,4 +1,4 @@
-*** WATZ: A Trusted WebAssembly Runtime for TrustZone
+*** WATZ: Trusted WebAssembly Runtime with Remote Attestation for Arm TrustZone
 
 # (008, twine 27, 28)
 # (008, acc tee 34)

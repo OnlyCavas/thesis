@@ -1,6 +1,6 @@
-*** Attacks and Mitigations
+*** Security Issues and Known Attacks in TEEs
 
-Trusted Execution Environments are often promoted as a almost perfect solution for secure execution on devices, but as explained previously they can be subject to a great number of attacks. These vulnerabilities threaten directly the *remote attestation*, *isolated execution* capabilities, exfiltrate secret keys.
+Trusted Execution Environments are often promoted as an almost perfect solution for secure execution on devices, but as explained previously they can be subject to a great number of attacks. These vulnerabilities threaten directly the *remote attestation*, *isolated execution* capabilities, exfiltrate secret keys.
 
 # (citeme: 001, trust zone threat model, attacks)
 # (citeme: 003, [42, 45])

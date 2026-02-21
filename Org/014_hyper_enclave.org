@@ -1,4 +1,4 @@
-*** HyperEnclave: An Open and Cross-platform Trusted Execution Environment
+*** HyperEnclave: Cross-Platform Software-Based TEE
 
 # consider
   # *HyperEnclave* on commodity AMD servers and deployed the system in a world-leading FinTech company to support real-world privacy-preserving computations.

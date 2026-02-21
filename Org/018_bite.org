@@ -1,4 +1,4 @@
-*** BITE: Bitcoin Lightweight Client Privacy using Trusted Execution
+*** BITE: Privacy-Preserving Lightweight Clients using Trusted Execution
 
 BITE, proposed in [cite], is a solution for the bitcoin lightweight client, that delegates most of the computational and storage require on full blockchain nodes. As the paper explains, Bitcoin offers a private way to issue payments without being tracker by a centralized authority. But it requires the bitcoin user to download and process the entire chain, which it can be infeasible in devices with limited resources, like mobile or embedded devices.
 
