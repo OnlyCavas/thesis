@@ -2,5 +2,3 @@
 :PROPERTIES:
 :CUSTOM_ID: onion_or_garlic_is_the_question
 :END:
-
-god only knows
