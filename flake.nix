@@ -54,10 +54,37 @@
             ;
         };
 
-        org2tex = import ./nix/org-files.nix {
-          inherit pkgs;
-          src = ./Org;
-        };
+        org2tex =
+          dir: template:
+          import ./nix/org-files.nix {
+            inherit pkgs;
+            src = dir;
+            template = template;
+          };
+
+        syncTex = input: texFiles: ''
+          CHAPTER_FILE=$(mktemp)
+
+          echo "Translating Org mode to LaTeX"
+          for texfile in ${texFiles}/*.tex; do
+              cp -v "$texfile" ${input}/
+
+              basename=$(basename "$texfile" .tex)
+              echo "\\input{${input}/$basename}" >> "$CHAPTER_FILE"
+          done || {
+            echo "ERROR: could not copy tex files"
+            ls -la ${texFiles} || true
+            exit 1
+          }
+
+          echo "Applying ${input} Outlet"
+          cat $CHAPTER_FILE
+
+          ${pkgs.gnused}/bin/sed -i -e "/%<${pkgs.lib.toLower input}-outlet>/ {
+              r $CHAPTER_FILE
+              d
+          }" main.tex
+        '';
 
       in
       {
@@ -83,7 +110,8 @@
         };
 
         packages = rec {
-          convert = org2tex;
+          convertChapters = org2tex ./Org/Chapters ./Org/templates/chapter.tex;
+          convertAppendices = org2tex ./Org/Appendices ./Org/templates/chapter.tex;
 
           compile-header = mkThesis {
             name = "header";
@@ -94,42 +122,22 @@
 
           default =
             let
-
               base = mkThesis {
                 entryMainTex = "main.tex";
                 build_src = ./.;
               };
-
             in
 
             base.overrideAttrs (old: {
               buildInputs = old.buildInputs or [ ] ++ [
                 compile-header
-                convert
+                convertChapters
+                convertAppendices
               ];
 
               preBuild = ''
-                CHAPTER_FILE=$(mktemp)
-
-                echo "Translating Org mode to LaTeX"
-                for texfile in ${convert}/*.tex; do
-                    cp -v "$texfile" Chapters/
-
-                    basename=$(basename "$texfile" .tex)
-                    echo "\\input{Chapters/$basename}" >> "$CHAPTER_FILE"
-                done || {
-                  echo "ERROR: could not copy tex files"
-                  ls -la ${convert} || true
-                  exit 1
-                }
-
-                echo "Applying Chapter Outlet"
-                cat $CHAPTER_FILE
-
-                ${pkgs.gnused}/bin/sed -i -e "/%<chapter-outlet>/ {
-                    r $CHAPTER_FILE
-                    d
-                }" main.tex
+                ${syncTex "Chapters" convertChapters}
+                ${syncTex "Appendices" convertAppendices}
 
                 echo "Preparing header PDF ..."
                 cp -v ${compile-header}/header.pdf Front/main.pdf || {

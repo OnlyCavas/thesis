@@ -1,0 +1,6 @@
+* Appendix Title Here
+:PROPERTIES:
+:CUSTOM_ID: appendix_begin
+:END:
+
+Write your Appendix content here, for sure.
