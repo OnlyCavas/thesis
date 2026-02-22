@@ -1,4 +1,7 @@
 *** SafeKeeper: SGX-Based Password Protection with Client-Side Attestation
+:PROPERTIES:
+:CUSTOM_ID: safe_keeper
+:END:
 
 # (003, Some of them (e.g. [5, 11, 30]) make use of hardware-based trusted execution environments (TEEs) on the server side)
 

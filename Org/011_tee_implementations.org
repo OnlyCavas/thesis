@@ -1,4 +1,7 @@
 *** Intel Software Guard Extensions (SGX)
+:PROPERTIES:
+:CUSTOM_ID: intel_sgx
+:END:
 
 # (citeme: 002, sgx)
 # (review: tdx, try to find some kind of paper of rfc or document that explain exacly)
@@ -31,6 +34,9 @@ Researchers [cite] also mention that *SGX*, can serve as a solution for *transac
 
 
 *** Secure Encrypted Virtualization (SEV)
+:PROPERTIES:
+:CUSTOM_ID: secure_encrypted_virtualization
+:END:
 
 Another prominent implementation of Trusted Execution Environments is AMD *Secure Encrypted Virtualization* (SEV), which differs from Intel SGX by focusing on VM level rather than process level approach, while SEV focus primarily on confidential computing in cloud based environments. Also, SEV allows the creation of confidential virtual machines (CVMs) that protect guest memory from an untrusted hypervisor, which makes it more suitable for microservices deployment, *DRM* implementations, and other situations which require the usage of stronger isolation in virtualization.
 
@@ -48,6 +54,10 @@ Also, like *SGX* sources [cite] mention that cache side-channel attacks are cons
 
 
 *** Arm TrustZone
+:PROPERTIES:
+:CUSTOM_ID: arm_trustzone
+:END:
+
 # Since 2004, ARM *TrustZone* [10]
 
 # (citeme: 002, trust zone)

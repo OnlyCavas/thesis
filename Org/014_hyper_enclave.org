@@ -1,4 +1,7 @@
 *** HyperEnclave: Cross-Platform Software-Based TEE
+:PROPERTIES:
+:CUSTOM_ID: hyper_enclave
+:END:
 
 # consider
   # *HyperEnclave* on commodity AMD servers and deployed the system in a world-leading FinTech company to support real-world privacy-preserving computations.

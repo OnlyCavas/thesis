@@ -1,4 +1,7 @@
 *** WATZ: Trusted WebAssembly Runtime with Remote Attestation for Arm TrustZone
+:PROPERTIES:
+:CUSTOM_ID: watz
+:END:
 
 # (008, twine 27, 28)
 # (008, acc tee 34)

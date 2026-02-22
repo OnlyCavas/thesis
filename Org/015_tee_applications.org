@@ -1,4 +1,7 @@
 *** Remote Attestation in TEEs
+:PROPERTIES:
+:CUSTOM_ID: remote_attestation
+:END:
 
 # (citeme: 004 - remote attestation)
 

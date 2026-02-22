@@ -1,4 +1,7 @@
 *** Sanctuary: Multi-Enclave Extension for ARM TrustZone
+:PROPERTIES:
+:CUSTOM_ID: sanctuary
+:END:
 
 # (citeme: 002, sactum, Brasser et al. proposed Sanctuary in 2019)
 

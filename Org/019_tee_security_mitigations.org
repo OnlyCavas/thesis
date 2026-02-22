@@ -1,4 +1,7 @@
 *** Security Issues and Known Attacks in TEEs
+:PROPERTIES:
+:CUSTOM_ID: security_attacks
+:END:
 
 Trusted Execution Environments are often promoted as an almost perfect solution for secure execution on devices, but as explained previously they can be subject to a great number of attacks. These vulnerabilities threaten directly the *remote attestation*, *isolated execution* capabilities, exfiltrate secret keys.
 
@@ -17,6 +20,9 @@ Moreover, *Intel SGX* highly susceptible to internal leakage from *side channel 
 Other physical attacks like *cold boot attacks* or *bus snooping*, or sniffing on physical level on entities of data signals that carry data across physical components, these can be: trace on *PCB*, cables, bus lines between components. Knowing this, both *AMD SME* and *HyperEnclave* could be used to protect the enclave from physical attacks. In case of *AMD SME*, with memory encryption, data it's encrypted between memory buses, and only decrypted within the CPU. While *HyperEnclave* can mitigate some *side channel attacks*, compared to *Intel SGX*. Considering that, *RustMonitor* a software component present on the framework processes the guest page tables and page fault events, without the Operating System interferes, it can't be performed page table based attacks [cite]. Although, in its current state isn't design to protect against *transient attacks*.
 
 **** Side Channels Attacks
+:PROPERTIES:
+:CUSTOM_ID: side_channels
+:END:
 
 # (citeme: https://www.sciencedirect.com/topics/computer-science/side-channel, side channel)
 
@@ -25,6 +31,10 @@ A *side channel attack* [cite] aims to extract sensitive information from a vict
 Furthermore, in the context of TEE, physical side channels exploit hardware level properties, such as: power consumption, electromagnetic emissions, voltage fluctuations, activity provoke faulty behaviour created on memory or computation. On the other hand, *digital* side channels are performed on *software* level components by observing cache patterns, execution timings, branch prediction observe shared resources. Because of the isolation boundaries provided by *TEE* they are particularly vulnerable to cache based attacks, like timing differences from shared L1/L2/L3 cache.
 
 **** Transient Attacks
+:PROPERTIES:
+:CUSTOM_ID: transient_attacks
+:END:
+
 # (citeme: 002, 7)
 
 # (citeme: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8835233, Spectre attacks)

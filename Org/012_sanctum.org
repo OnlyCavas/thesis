@@ -1,4 +1,7 @@
 *** Sanctum: RISC-V Enclave Architecture
+:PROPERTIES:
+:CUSTOM_ID: sanctum
+:END:
 
 In this section, will be presented other solutions that leverage TEE primitives, with a focus of open or academic designs that address or try to improve upon limitations of commercial implementations already addressed.
 
