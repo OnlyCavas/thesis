@@ -2,3 +2,17 @@
 :PROPERTIES:
 :CUSTOM_ID: onion_or_garlic_is_the_question
 :END:
+
+While Trusted Execution Environments (TEEs) provided a way attest other peers or outsource code execution with strong isolation maintaining both confidentiality and integrity on the code being run on both remote and local devices. As a result, it could help to identify modified BitTorrent clients and dishonest peers within a swarm, thus mitigating the two prominent attacks. However, they don't inherently protect against network level threats such as traffic analysis, IP address correlation, thus trying to de-anonymize participants in a swarm. BitTorrent relies on *trackers*, *DHT bootstrap nodes* or other peers (PEX), if malicious can easily query the protocols metadata such as IP peers addresses, info-hashes to link download patterns, and try to build profiles on it.
+
+In order to counter these threats, BitTorrent could integrate with an Anonymous Communication (AC) overlay network that would be responsible for hiding IP addresses and disrupts traffic correlation. Furthermore, it will be discussed which it supports better *high bandwidth*, *bidirectional P2P traffic* and finds ways how can improve the increased network latency of adding an overlay.
+
+While *Tor* is excellent for low latency web browsing and hidden services, isn't the best overlay for high bandwidth P2P workloads. On top that, the Tor Project discourages BitTorrent usage due to relay overhead, bottlenecks at the exit nodes, possible circuit correlation resulting in worse performance for all users. On the other hand, I2P can be alternative option for anonymous BitTorrent downloads. Despite, not being as popular as Tor Project, it supports native BitTorrent clients, achieves better throughput than Tor, and it can run entire swarms inside the overlay without ClearNet leaks.
+
+# what is Onion Routing
+# what is Garlic Routing
+# What is I2P
+# How that works?, (How it works, garlic routing)
+# Tools of I2P
+# One versus the other
+# Conclude, why would I use I2P instead of Onion Routing

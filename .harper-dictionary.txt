@@ -13,6 +13,7 @@ BitTyrant
 CAPTCHAs
 CRTM
 CVMs
+ClearNet
 DHT
 DHTs
 DRTM
@@ -27,6 +28,8 @@ Flashcrowds
 Genode
 GlobalPlatform
 Gnutella
+HSDir
+HSDirs
 HSM
 HSMs
 HyperEnclave
@@ -35,6 +38,7 @@ I2P
 IAS
 IDT
 IMA
+IPs
 KB
 Kademlia
 L1
@@ -110,6 +114,9 @@ exfiltrate
 infohashes
 initramfs
 ip
+k1
+k2
+k3
 kpis
 leecher
 leechers
@@ -129,5 +136,6 @@ unchoke
 unchoked
 unchokes
 unchoking
+v3
 veracruz
 vmlinuz
