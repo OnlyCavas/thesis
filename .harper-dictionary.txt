@@ -25,6 +25,8 @@ EK
 EPID
 Flashcrowd
 Flashcrowds
+Floodfill
+Freenet
 Genode
 GlobalPlatform
 Gnutella
@@ -44,10 +46,13 @@ Kademlia
 L1
 L2
 L3
+LeaseSet
+LeaseSets
 Lotka
 MB
 MEE
 Mininova
+NetDB
 PCR
 PTW
 PTs
@@ -56,6 +61,8 @@ PlanetLab
 PoC
 QSEE
 ROS
+RouterInfo
+RouterInfos
 RustMonitor
 RustMonitor's
 SEV
@@ -63,6 +70,7 @@ SEV's
 SEs
 SGX
 SHA1
+SHA256
 SKPP
 SL
 SM
@@ -109,6 +117,7 @@ auditable
 bencoded
 bencoding
 bootloader
+darknet
 dns
 exfiltrate
 infohashes
@@ -122,6 +131,9 @@ leecher
 leechers
 libtorrent
 ln
+og
+outproxies
+outproxy
 pex
 prover
 prover's
