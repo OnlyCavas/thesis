@@ -37,6 +37,8 @@ HSMs
 HyperEnclave
 I/O
 I2P
+I2P's
+I2PSnark
 IAS
 IDT
 IMA
@@ -56,9 +58,11 @@ NetDB
 PCR
 PTW
 PTs
+Petersburg
 PirateBay
 PlanetLab
 PoC
+Privoxy
 QSEE
 ROS
 RouterInfo
@@ -119,6 +123,7 @@ bencoding
 bootloader
 darknet
 dns
+eepsites
 exfiltrate
 infohashes
 initramfs
@@ -137,6 +142,7 @@ outproxy
 pex
 prover
 prover's
+proxychains
 qBittorrent
 qTorrent
 s

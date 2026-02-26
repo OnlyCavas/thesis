@@ -1,0 +1,15 @@
+*** I2P Downsides and Vulnerabilities
+:PROPERTIES:
+:CUSTOM_ID: i2p_downsides_and_vulns
+:END:
+
+# (citeme: 005, 26 fixed lengths)
+# (citeme: 005, censorship)
+
+Nonetheless *I2P* isn't perfect either, just like *Tor* it suffers from traffic analysis, censorship and DHT poisoning attacks. That said, some countries try to ban this overlays, by blocking access to I2P reseed servers, which are necessary the bootstrapping process. Consequently, newcomers aren't able to access the I2P network, because they can't query the NetDB to fetch the RouterInfos of other peers. Also, another way widely used is Deep Packet Inspection (DPI), detecting traffic patterns of anonymity networks. In case of I2P, despite obfuscating its traffic to prevent direct payload analysis, flow analysis can still present a major issue being used to fingerprint I2P traffic by observing the first four handshakes between I2P routers. They are identified by their fixed lengths of *288*, *304*. *448* and 48 bytes [cite, 26]. On top of that, some compile blacklist of active I2P peer addresses and block the access to them, resulting on increased difficulties forming new I2P tunnels, restricting users from connecting to the network.
+
+# (citeme: 009, 20)
+# (citeme: 009, 39, 40)
+
+Furthermore, several research efforts have attempted to try to infer to characterize I2P client usage and network activity. More precisely, studies have monitored the I2P architecture to recover metadata, grouping client by behaviour, and estimate geographic distribution [cite]. For example, their analysis revealed a high concentration in certain regions, with Moscow averaging around 648 users per hour, Saint Petersburg with approximately 309 users and Munich about 16 users per hour. Despite a strong anonymizing layer, this measurements demonstrate that aggregate patterns of user activity can still be analysed. Also, attacks such selective Dos attacks [cite], by exploiting node selection to de-anonymize eepsite hosts (hidden services), combining DoS with Sybil attacks to break anonymity [cite].
+
