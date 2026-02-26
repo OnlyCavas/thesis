@@ -1,4 +1,4 @@
-*** Tor Vs. I2P
+*** Comparison: Tor vs. I2P
 :PROPERTIES:
 :CUSTOM_ID: tor_vs_i2p
 :END:

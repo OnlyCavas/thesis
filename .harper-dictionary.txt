@@ -3,6 +3,7 @@ AIKs
 AccTEE
 Alotugh
 Andrix
+Anonymizer
 Azureus
 BT
 Benconding
@@ -13,6 +14,7 @@ BitTyrant
 CAPTCHAs
 CRTM
 CVMs
+Chaum
 Chaumian
 ClearNet
 DHT

@@ -1,4 +1,4 @@
-*** I2P Downsides and Vulnerabilities
+*** Downsides and Vulnerabilities of I2P
 :PROPERTIES:
 :CUSTOM_ID: i2p_downsides_and_vulns
 :END:

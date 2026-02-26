@@ -1,4 +1,4 @@
-*** Tor Downsides and Vulnerabilities
+*** Downsides and Vulnerabilities of Tor
 :PROPERTIES:
 :CUSTOM_ID: tor_attacks
 :END:

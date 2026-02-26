@@ -4,15 +4,16 @@
 :END:
 
 # (citeme: 001, only Onion Routing)
-# speak a bit of onion routing
+# (citeme: 001,)
 
+Objectively anonymity is preventing eavesdropping and traffic analysis by maintaining the both the message and the identity of the messenger hidden. Bearing this in mind, around the 90s the concept of *Onion Routing* was developed by researchers at the U.S. Naval Research Laboratory as a general purpose infrastructure for anonymous communication over public networks. It's introduced the concept of Chaum mixes, therefore forming mix networks. Essentially, a mix it's a device that accepts a number of fixed sized messages from multiple sources, performs cryptographic operations over them and forwards them to the next mix randomly. This approach makes tracking messages difficult, even if correlating them by *size*, bit patterns, etc. The anonymity is guaranteed by the quantity of mixes that it can use. As a result, even if an onion router is shut down doesn't compromise the network. That said, the most important component on an *Onion Network*, it's the *Onion Proxy* that manages and builds anonymous connections. Additionally, it sanitises and correctly formats data streams to be compliant with the *Onion Network* required format.
 
 # Hence, no relay knows the full path, only the *guard node* knows
 
 # (citeme: 005, only Tor, Tor [9], [10] -> 006)
 # (citeme: the tor project web site)
 
-In 2006 the nonprofit organisation *The Tor Project* [cite] was constituted to further develop on the idea of using Onion Routing with the goal of increase privacy and anonymity while browsing the Internet. Anonymous browsing is achieved by routing the user traffic through several volunteer operated nodes that are denoted as *relays*, establishing a sequence where each relay peels of one layer of encryption, learning only the previous and next hop.
+In 2006 the nonprofit organisation *The Tor Project* [cite] was constituted to further develop on the idea of using *Onion Routing* with the goal of increase privacy and anonymity while browsing the Internet. Anonymous browsing is achieved by routing the user traffic through several volunteer operated nodes that are denoted as *relays*, establishing a sequence where each relay peels of one layer of encryption, learning only the previous and next hop.
 
 More precisely, when a user is about to connect to the overlay, it chooses one *Entry Node* randomly. This node knows the user IP address, but doesn't know the final destination. Than, Tor will try to find other two suitable relays to establishing the three hop circuit, that is responsible to create the anonymous tunneling. Once the path is laid out, the public keys such as k1, k2, k3 of each relay are fetched, to sequentially encrypt user data in layers. Because, asymmetric encryption, normally *RSA* or *elliptic curve Diffie-Hellman* (ECDH), isn't ideal for encrypt large inputs, these keys are used to push AES keys securely, that will encrypt the secret through the remaining nodes. Hence, only the relay node with the matching private key can unlock the symmetric key that will be used to decrypt the secret to the next node, without being able to read its content, unless they are the *exit node*. As a result, the final node is able to view the user content, and thus forward it to the corresponding final destination. Normally, an anonymity tunnel is composed by three hops, having only one *Intermediary Node*, however *Tor* allows configuring bigger circuits, but each one impacts performance. These nodes don't know nothing about the user, only the path forward to complete the circuit.
 
