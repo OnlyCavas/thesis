@@ -1,5 +1,33 @@
-*** Other AC
+*** Open Source Anonymity Networks
 :PROPERTIES:
 :CUSTOM_ID: other_ac
 :END:
 
+Beyond the commonest anonymity overlays, such as Tor and I2P, several others open source alternatives have explored similar themes. In spice of some being now inactive or obsolete, they influenced modern designs and highlight the major issues with anonymous networks.
+
+# (citeme: 008, jap)
+# (citeme: 008, 10)
+
++ *JAP or JonDo (Java Anonymous Proxy)*
+
+  A mix network develop in Germany that was created for web browsing with enhanced anonymity. Similarly to I2P it routes traffic through several intermediaries, denoted as mix. Unlike I2P the mixes are fixed and is primarily designed for web browsing at the ClearNet, therefore doesn't have hidden services. Eventually, the German Federal Bureau of Criminal Investigation, attacked [cite] the overlay leading to the shutdown of the project.
+
+# (citeme: 008, 12)
+
++ *MorphMix*
+
+  A P2P mix network where every client it's a mix. It's a decentralised network, advertised as a low latency and scalable network with strong protection against realistic observers [cite], offering a good performance overall.
+
++ *MUTE*
+
+  A P2P file sharing open source network that focus on anonymous distribution
+
++ *AntsP2P*
+
+  A pseudonymous P2P system achieves anonymity by routing user traffic through network that hide the physical location of each relay from other participants from the network.
+
++ *Mix minion*
+
+  Designed for anonymous emailing, it relies on volunteers operating relays, denoted as mixes. Once a sender writes the message, the client software breaks it into fixed size chunks, to prevent size based correlation. Than, each chunk is encrypted in multiple layers, just like the other alternatives adding a layer per mix, similar to onion routing. At the *final mix*, the message is forward to the recipient.
+
+These early open source projects despite some suffering scalability issues, legal pressure, lack of a solid community emphasized mix networks. These introduce latency by design, focusing on maintain a strong anonymity over speed, thus making them unsuitable for real-time applications. In contrast, performing very strongly in asynchronous communication like email. These limitations inspired the development of more P2P based successors, betting on anonymity system that would scale and perfrom better to provide both speed and anonymity.

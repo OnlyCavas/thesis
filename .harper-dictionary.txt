@@ -13,6 +13,7 @@ BitTyrant
 CAPTCHAs
 CRTM
 CVMs
+Chaumian
 ClearNet
 DHT
 DHTs
@@ -43,6 +44,8 @@ IAS
 IDT
 IMA
 IPs
+JAP
+JonDo
 KB
 Kademlia
 L1
@@ -54,6 +57,7 @@ Lotka
 MB
 MEE
 Mininova
+MorphMix
 NetDB
 PCR
 PTW
