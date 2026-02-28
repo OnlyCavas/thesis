@@ -1,3 +1,4 @@
+ACK
 AIK
 AIKs
 AccTEE
@@ -20,6 +21,7 @@ ClearNet
 DHT
 DHTs
 DRTM
+DTLS
 Darknets
 Diffie
 ECALLs
@@ -37,6 +39,7 @@ HSDir
 HSDirs
 HSM
 HSMs
+HoL
 HyperEnclave
 I/O
 I2P
@@ -44,6 +47,7 @@ I2P's
 I2PSnark
 IAS
 IDT
+IETF
 IMA
 IPs
 JAP
@@ -60,8 +64,10 @@ MB
 MEE
 Mininova
 MorphMix
+NATs
 NetDB
 PCR
+PLT
 PTW
 PTs
 Petersburg
@@ -71,6 +77,7 @@ PoC
 Privoxy
 QSEE
 ROS
+RTT
 RouterInfo
 RouterInfos
 RustMonitor
@@ -86,6 +93,7 @@ SL
 SM
 SME
 SMR
+SPDY
 SRE
 SVM
 Sactum
@@ -142,6 +150,7 @@ leecher
 leechers
 libtorrent
 ln
+middleboxes
 og
 outproxies
 outproxy
@@ -151,6 +160,7 @@ prover's
 proxychains
 qBittorrent
 qTorrent
+retransmitted
 s
 sota
 testbeds

@@ -1,0 +1,24 @@
+*** Attacks and Mitigations
+:PROPERTIES:
+:CUSTOM_ID: core_concepts
+:END:
+
+
+  # =?= *RETRY to mitigate resource exhaustion*
+  #
+  #         QUIC *traffic is almost entirely encrypted with TLS 1.3 to prevent the ossification that middleboxes cause on protocols like TCP [19].*
+  #
+  #         *During the first RTT*
+  #
+  #           A *server responds to an unverified client IP address*. This means that the server performs *cryptographic operations for a potentially spoofed client*. QUIC supports *RETRY messages [22]* to limit the attack surface of resource exhaustion attacks
+  #
+  #           RETRYs precede a typical *QUIC handshake* and *force the client to respond with a unique token*, which proves its *authenticity*.
+  #
+  #         Which adds a *complete RTT*, which conflicts with *QUIC original design goals*. Recent *QUIC server implementations such as NGINX or Picoquic support RETRY [20]* but based on the =backscatter=. They observe RETRY seems rarely deployed.
+# **Mitigating Resource Exhaustion with RETRY**
+#
+# QUIC encrypts nearly all traffic — including most headers — using a TLS 1.3-inspired handshake to prevent protocol ossification by middleboxes [19]. This encryption protects against tampering and inspection, but it also means servers must perform cryptographic operations for potentially spoofed client IPs during the first RTT.
+#
+# To limit the attack surface of resource-exhaustion attacks (e.g., amplification via spoofed Initial packets), QUIC supports **RETRY messages** [22]. Before committing significant resources (state, crypto ops), a server can send a RETRY packet containing a unique token. The client must echo this token in its next Initial packet, proving possession of the claimed IP address. This adds a full RTT to the handshake — conflicting with QUIC's low-latency goals — but effectively blocks unauthenticated floods.
+#
+# In practice, RETRY is optional and rarely deployed in production QUIC servers (e.g., NGINX, Picoquic) [20]. Operators often disable it due to **backscatter risks** (spoofed clients can cause servers to flood innocent victims with RETRY responses) and the added latency penalty. For a BitTorrent PoC, this trade-off is worth noting: enabling RETRY increases resilience against DoS but slightly raises connection setup time — a tunable parameter depending on swarm threat model.

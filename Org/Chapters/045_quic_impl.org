@@ -1,0 +1,12 @@
+*** Implementations
+:PROPERTIES:
+:CUSTOM_ID: quic_implementations
+:END:
+
+# **High-Performance QUIC Implementations: Kernel-Bypass Potential**
+#
+# While standard QUIC stacks often lag behind highly optimized TCP+TLS due to user-space overhead, recent work demonstrates that QUIC can achieve parity — or even slight superiority — with aggressive optimizations. A notable example is **picoquic-dpdk** [cite], a modified version of the picoquic IETF-compliant stack that bypasses the Linux kernel networking stack using **DPDK** (Data Plane Development Kit). By polling NIC queues directly, eliminating context switches, replacing sk_buff with mbufs, and batching send/receive operations, picoquic-dpdk achieves up to **3× higher throughput** than vanilla picoquic on a single core.
+#
+# In head-to-head tests against other QUIC implementations (picoquic, msquic, quicly, quiche) and an optimized TCP+TLS stack (picoTLS + OpenSSL), picoquic-dpdk matched or slightly outperformed TCP+TLS in goodput-based workloads while using equal CPU resources. Disabling TCP offloads (TSO, GRO, LRO) reduced TCP performance by a factor of 2, underscoring the kernel stack's hidden efficiency advantages. The authors attribute the gains to reduced system-call overhead, zero-copy processing, and NUMA-aware memory allocation — techniques directly applicable to high-bandwidth P2P applications.
+#
+# These results show that QUIC is not inherently slower than TCP; rather, its user-space nature offers a path to rapid evolution and kernel-bypass acceleration that TCP cannot match without major OS changes. For a BitTorrent PoC combining I2P anonymity and TEE attestation, such optimizations could make QUIC the dominant transport choice — delivering TCP-like throughput with QUIC's superior latency, loss resilience, and mobility support.

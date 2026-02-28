@@ -1,0 +1,39 @@
+*** Core Concepts
+:PROPERTIES:
+:CUSTOM_ID: core_concepts
+:END:
+
+# (citeme: https://datatracker.ietf.org/doc/html/rfc9000)
+# (citeme: 004, 41)
+# (citeme: 005, 2)
+
+# my text
+Starting from 2012, Google addressed this limitations by developing a new Application Layer protocol QUIC (Quick UDP Internet Connections), aiming to reduce the latency of web traffic, by eliminating TCP bottlenecks while maintaining the same level of security. That said, modifications to TCP protocol often require an update to the Operating System, as QUIC is a user space protocol using UDP as a transport layer protocol, making new changes easier. On top of that, enables QUIC to traverse middleboxes, because most Firewalls and NATs don't block UDP packages. Also, by encrypting and authenticating each packet avoid that these middleboxes tamper with them. To solve the dependency on TCP, QUIC rely is on *User Datagram Protocol* UDP for transport layer protocol. Similar to HTTP/2, QUIC also supports multiplexed streams which run over a single UDP connection between two endpoints, these are identify ed by a unique 64-bit ID. That said, whether a packet is lost within one of the streams, doesn't affect the others allowing the client and server exchanging data without stalls. Its main objectives are provide privacy and security, reducing the attack surface on the transport layer, like reflective attacks amplifications and resource exhaustion [41], while providing decreased latency per request and help mobile devices that connect faster on different networks. In 2021, QUIC was standardized by the IETF and has been growing ever since, being used by big techs like Facebook, Gmail, Instagram, Google Chrome, and YouTube [cite, 2].
+
+# (citeme: 005, )
+# (citeme: 006, [006, [8]])
+# (citeme: 007, quic, streams)
+
+TCP connections maintain a FIFO channel to guarantee the correct order of packages that are sent by the sender. For instance, if the package with index 5 comes before the package with index 3, the *Upper Layer Application* will have to wait until the package 3 is received, this delay is denoted as *Head Of Line* (HoL). QUIC solves this by supporting *multiplexing* data streams. Hence, creating several data streams over *one QUIC connection* [cite, 006], whenever a package arrives earlier and the order is not respected only stalls that stream, while the others keep flowing, while maintaining system compatibility. Streams on QUIC are lightweight abstractions that offer a bidirectional byte stream, they can be used for framing application messages and hold up to 264 bytes [cite] on a single stream. These are identified by a stream id, being statically allocated as odd ids or even ids for client and server to avoid collisions, respectively.
+
+# (citeme: 001 16)
+# (citeme: 005, )
+# (citeme: 007, )
+
+Connections over TCP require an initial full three-way handshake, even if connecting to already known servers, adding at least 1-RTT of overhead before any data exchanges. On top of that, combining with TLS 1.3 negotiation, will aggravate at least 2-RTT, or combining with TLS 1.2 will result in 3-RTT, before data exchange. QUIC address this both issues, by integrating its own encryption similar to TLS, *Datagram Transport Layer Security* (DTLS) natively and not optionally on a new connection. Thus, enforcing security by authenticating and encrypting the packet header and payload, resulting on a less extra round-trip, having an overhead of 1-RTT. However, for either resumed or already known servers connections, it supports 0-RTT resumption by embedding a 64-bit *Connection ID* in every packet, allowing both client and server establish a communication channel without an initial handshake. The connection ID is utilised by load balancers to forward the traffic to its destination. Also, instead of using the 5-tuple (IP and Port on TCP), by using the connection ID it identifies connections even if IP address change, which is really useful in mobile devices changing between networks. Once the connection is established with a network it can be transported to another network [cite, 005], this without disrupting any network services, being paramount for mobile devices, as they are constantly on the move. However, providing less overhead 0-RTT resumption can result an a bit less security being vulnerable to replay attacks.
+
+# (citme: 004, 40 (3 r-tts), 16)
+
+More precisely, QUIC employs several procedures in order to establish and resume connections efficiently. As explained earlier, if a client has previously cached information about a known server, such as connection ID, keys, transport parameters, it can immediately establish an encrypted connection with the server and send application data in a 0-RTT packet. However, whether the client doesn't support the server's QUIC version, the connection switch's to a state of version negotiation, until both sides agree on a version [16].
+
+# (citeme: 005)
+
+On the other hand, for a full initial handshake, where there wasn't a prior communication between both, the procedure completes typically in 1-RTT. The client starts by sending an *initial packet* containing a TLS Client Hello along with QUIC's parameters. After receiving the message, the server reply's with an *initial packet* carrying a Server TLS Hello, along with encrypted extensions, and its certificates. Finally, the client completes the handshake with a TLS Finished, often complementing it with application data, completing the 1-RTT. Furthermore, a QUIC packet is structure by two main sections: *Header* and *Payload*. The *header*, contains all the data necessary to guarantee that the package is forward correctly to its destination. Also, depending on its connection state, this section can be longer whenever it's the first exchange between entities, than its shorter for the rest of the communication. The *payload*, includes all the application data to be forward to the destination.
+
+# (citeme: 001 17)
+
+Additionally, QUIC tries to decrease latency caused by packet loss by proactively sending redundant data for critical packets, sacrificing about 5% of bandwidth to reduce retransmission latency. The authors note that, according to Google, this feature results in an 8% reduction in retransmissions despite the modest bandwidth overhead [17]. QUIC achieves this by each packet carrying a new packet number along with the others carrying retransmitted data, therefore solving the TCP ambiguity problem, by differentiate the ACK of the message and its retransmission one. Another mechanism is the *flow control*, that limits the receiver's buffer size, to avoid congestion blocking the receiver to intercept the rest of the packets of other streams.
+
+# (citeme: 002 5, maybe further explain TCP-cubic)
+
+QUIC uses UDP as its transport layer protocol, performing better than TCP improving latency due to the lack of a congestion control mechanisms, ordering overhead, and others. However, QUIC solves this issue by implementing its own congestion control mechanism at the application layer. Google reimplemented TCP-Cubic [5] congestion algorithm but giving liberty for users implement or pick their own congestion mechanisms.
