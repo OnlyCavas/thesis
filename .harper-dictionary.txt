@@ -1,4 +1,5 @@
 ACK
+ADSL
 AIK
 AIKs
 AccTEE
@@ -28,6 +29,7 @@ ECALLs
 ECDH
 EK
 EPID
+FEC
 Flashcrowd
 Flashcrowds
 Floodfill
@@ -163,6 +165,7 @@ qTorrent
 retransmitted
 s
 sota
+testbed
 testbeds
 uTP
 uTorrent
