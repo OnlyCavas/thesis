@@ -1,4 +1,4 @@
-*** SPDY (HTTP/2)
+*** SPDY and HTTP/2
 :PROPERTIES:
 :CUSTOM_ID: spdy
 :END:

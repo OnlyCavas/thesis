@@ -1,4 +1,3 @@
-ACK
 ADSL
 AIK
 AIKs
@@ -21,6 +20,7 @@ Chaumian
 ClearNet
 DHT
 DHTs
+DPFK
 DRTM
 DTLS
 Darknets
@@ -37,6 +37,7 @@ Freenet
 Genode
 GlobalPlatform
 Gnutella
+H2O
 HSDir
 HSDirs
 HSM
@@ -67,9 +68,11 @@ MEE
 Mininova
 MorphMix
 NATs
+NUMA
 NetDB
 PCR
 PLT
+PMD
 PTW
 PTs
 Petersburg
@@ -84,6 +87,8 @@ RouterInfo
 RouterInfos
 RustMonitor
 RustMonitor's
+SCID
+SCIDs
 SEV
 SEV's
 SEs
@@ -130,6 +135,7 @@ Volterra
 Vuze
 WAMR
 WATZ
+ack
 anonymizing
 attester
 attester's
@@ -139,6 +145,7 @@ bencoding
 bootloader
 darknet
 dns
+dpdk
 eepsites
 exfiltrate
 infohashes
@@ -153,15 +160,19 @@ leechers
 libtorrent
 ln
 middleboxes
+msquic
 og
 outproxies
 outproxy
 pex
+picoquic
+poolmode
 prover
 prover's
 proxychains
 qBittorrent
 qTorrent
+quicly
 retransmitted
 s
 sota

@@ -1,8 +1,9 @@
-*** Quic Performance
+*** Performance Evaluation and Measurements
 :PROPERTIES:
 :CUSTOM_ID: quic_performance
 :END:
 
+# (citem: 007, performance)
 # (citem: 001, performance)
 
 Several performance studies comparing the protocols TCP, SPDY, and early QUIC implementations have measured their impact on latency, throughput, and connection overhead ac cross different network conditions. For instance, researchers [cite] observed that QUIC could perform significantly worse than SPDY and TCP when downloading small web elements to construct a web page, on a metric they denote as *Page Load Time* (PLT). This degradation is due to the *packet pacing* mechanism, which deliberately spreads packet transmission over time in order to prevent queueing clog and congestion in the receptor's buffers. While this mechanism improves fairness it introduces delay, wile TCP tends to transmit them more aggressively in short fetches. For this reason, QUIC got higher PLT in high bandwidth connections, and lower on low bandwidth scenarios with large number of small objects.

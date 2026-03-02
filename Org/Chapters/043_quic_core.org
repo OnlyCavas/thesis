@@ -1,4 +1,4 @@
-*** Core Concepts
+*** Core Concepts and Design Principles of QUIC
 :PROPERTIES:
 :CUSTOM_ID: core_concepts
 :END:
@@ -37,3 +37,9 @@ Additionally, QUIC tries to decrease latency caused by packet loss by proactivel
 # (citeme: 002 5, maybe further explain TCP-cubic)
 
 QUIC uses UDP as its transport layer protocol, performing better than TCP improving latency due to the lack of a congestion control mechanisms, ordering overhead, and others. However, QUIC solves this issue by implementing its own congestion control mechanism at the application layer. Google reimplemented TCP-Cubic [5] congestion algorithm but giving liberty for users implement or pick their own congestion mechanisms.
+
+# (citeme: 003)
+
+Standard QUIC implementations often underperform optimized TCP+TLS stacks, because of the user space overhead and the kernel networking inefficiencies, such as: interrupts, context switches, system calls. The authors developed *picoquic-dpdk* [cite], that stands as a modified version of the IETF variant picoquic stack. They chose *picoquic* because of its minimal implementation following the IETF standards and being written in c, which meant it could be easily extended and simple to work with. Instead, of using the Linux Kernel, uses *Data Plane Development Kit* (DPFK) that is designed to improve the packet processing workloads. It applies several performance optimizations, by enabling Pool Mode Drivers (PMD), zero copy processing, NUMA aware memory allocation, huge pages, thus eliminating kernel intervention and bypassing the kernel networking stack.
+
+In further evaluations, their implementation *picoquic-dpdk* performed with three times higher throughput that the vanilla *picoquic* and pretty much got the same results for optimized TCP+TLS stack, in single core. Also, it manage to surpass performance-wise other QUIC stack implementations, such as: *msquic*, Microsoft implementation of QUIC, *quicly* an implementation designed primarily for H2O and *quiche* Cloud Flare implementation. That said, bypassing Linux Kernel improved the overall performance of QUIC, even QUIC stacks focus on performance, such as: *msquic* and *quicly*, their implementation outperform them.

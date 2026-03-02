@@ -1,0 +1,26 @@
+*** Why QUIC? Advantages for Trust-Enhanced BitTorrent
+:PROPERTIES:
+:CUSTOM_ID: quic_why
+:END:
+
+This section demonstrated that QUIC represents a significant evolution from TCP, offering true stream multiplexing without HoL blocking, lower connection latency, built-in encryption, enabled mobile devices to switch from LAN to WAN networks without breaking connections. On top of that, offered better loss recovery mechanism, such as: FEC, pacing, congestion control. Despite, some performance measurements indicate that QUIC sometimes is outperformed by HTTP/2 and HTTP/1.1 on low-churn and high-bandwidth scenarios, QUIC really shines on networks with low-bandwidth and high-churn improving latency and faster download times.
+
+# (citeme: bit torrent utp)
+
+uTP is already implemented in most modern BitTorrent clients and it was specifically designed to solve TCP problems with BitTorrent network demands, such as: *high-churn*, *lossy*, high download demand over UDP. It provides LEDBAT-based congestion control, built-in NAT traversal, and avoids known issues with TCP HoL blocking and connection establishment overhead. Which fits the BitTorrent context perfectly.
+
+Meanwhile, QUIC protocol developed by Google offers a modern and constantly improving that solves the concurrent issues with HTTP/2 and HTTP/1.1 and with other benefits that could improve BitTorrent protocol significantly:
+
++ *0-RTT resumption*
+
+  Requiring less round-trips when peers already know each other, making faster connections.
+
++ *Stream multiplexing*
+
+  A key advantage of QUIC is the ability to multiplex independent data streams over a single UDP socket connection between two peers. Thus, allowing over a single connection a peer with the same remote node, download multiple pieces in concurrency, sending, and responding to DHT messages (routing table updates, peer discovery), while exchanging data about the torrent (info-hash verification). While with uTP or TCP these connections would require opening several connections between both ends.
+
++ *Mandatory encryption*
+
+  QUIC forces encryption by default, encrypting both headers and payload. While on uTP it's possible it may be outdated or weak.
+
+By contrast QUIC delivers mobile support and standardized congestion control, outperforming uTP in mobile, lossy and high-RTT scenarios.

@@ -1,24 +1,14 @@
-*** Attacks and Mitigations
+*** Security Analysis, Attack Scenarios
 :PROPERTIES:
-:CUSTOM_ID: core_concepts
+:CUSTOM_ID: attacks_migrations
 :END:
 
+# (citeme: 005, state overflow)
+# (citeme: 004, state overflow)
+# (citeme: 005, refrective amplicatifation attacks)
+# (citeme: 004, refrective amplicatifation attacks)
+# (citeme: 004, attacks, 39)
 
-  # =?= *RETRY to mitigate resource exhaustion*
-  #
-  #         QUIC *traffic is almost entirely encrypted with TLS 1.3 to prevent the ossification that middleboxes cause on protocols like TCP [19].*
-  #
-  #         *During the first RTT*
-  #
-  #           A *server responds to an unverified client IP address*. This means that the server performs *cryptographic operations for a potentially spoofed client*. QUIC supports *RETRY messages [22]* to limit the attack surface of resource exhaustion attacks
-  #
-  #           RETRYs precede a typical *QUIC handshake* and *force the client to respond with a unique token*, which proves its *authenticity*.
-  #
-  #         Which adds a *complete RTT*, which conflicts with *QUIC original design goals*. Recent *QUIC server implementations such as NGINX or Picoquic support RETRY [20]* but based on the =backscatter=. They observe RETRY seems rarely deployed.
-# **Mitigating Resource Exhaustion with RETRY**
-#
-# QUIC encrypts nearly all traffic — including most headers — using a TLS 1.3-inspired handshake to prevent protocol ossification by middleboxes [19]. This encryption protects against tampering and inspection, but it also means servers must perform cryptographic operations for potentially spoofed client IPs during the first RTT.
-#
-# To limit the attack surface of resource-exhaustion attacks (e.g., amplification via spoofed Initial packets), QUIC supports **RETRY messages** [22]. Before committing significant resources (state, crypto ops), a server can send a RETRY packet containing a unique token. The client must echo this token in its next Initial packet, proving possession of the claimed IP address. This adds a full RTT to the handshake — conflicting with QUIC's low-latency goals — but effectively blocks unauthenticated floods.
-#
-# In practice, RETRY is optional and rarely deployed in production QUIC servers (e.g., NGINX, Picoquic) [20]. Operators often disable it due to **backscatter risks** (spoofed clients can cause servers to flood innocent victims with RETRY responses) and the added latency penalty. For a BitTorrent PoC, this trade-off is worth noting: enabling RETRY increases resilience against DoS but slightly raises connection setup time — a tunable parameter depending on swarm threat model.
+Despite, QUIC solving several issues by implementing on top of UDP, better security, packet flow, congestion control, ultimately inherit its vulnerabilities. That said, in order to perform cryptographic operations on the initial unverified handshake might be subject to two types of DoS attacks, as such: *state overflow* and *reflective amplification*. On State overflow attack [cite] an adversary performs several full handshakes towards the victim server, thus forcing to pre-allocate the connection state and perform asymmetric cryptography, generating the *Source Connection ID* (SCID), the connection identifier, along with its TLS certificates. During the first round-trip, an attacker leverages the fact the client is yet to be verified, so he can spoof the both IP address, ports or SCIDs to increase the number of states on server-side. Spoofed packets will eventually congest server's queues leading to reject legitimate user requests, resembling TCP flood attacks. On top of that, spoofing makes backtracking difficult, although the success of an attacker may depend on server state, memory limits, rate limiting policies. On *Reflective amplification* attacks, an adversary starts by sending several initial packets with spoofed IP victims to a QUIC server, which than replies with a larger initial packet and a TLS handshake, including the certificates. QUIC limits unverified responses to three times the request size, although attackers can pad initial packets to increase amplification, posing as a legitimate optimization for full certificates to reduce delays. Despite this, QUIC amplification attacks are not likely, due to other protocols such as: NTP and DNS suffer far more with 500 times and 60 times [39], respectively. Also, a certificate compression reduces the oversize replies to 1-9%. Additionally, an attacker normally tends to reuse their existing infrastructure and would have to slowly adapt to new protocols in order to conduct these attacks.
+
+

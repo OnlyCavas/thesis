@@ -1,19 +1,6 @@
-** QUIC (Quick UDP Internet Connections)
+** QUIC: A Modern Transport Protocol for Low-Latency, Secure Communication
 :PROPERTIES:
 :CUSTOM_ID: quic_intro
 :END:
 
 Indeed, BitTorrent thrives on raw, collective bandwidth by peers exchanging multiple chunks in concurrence, while choking freeloaders and prompting reciprocity. Since it's creating the protocol relied in TCP HTTP/1.1 for congestion aware downloads, but with slow starts, congestion control causes high churns P2P bursts. Despite having congestion control, one packet lost stalls the entire stream, etc.
-
-# set this after Bit Torrent
-
-# explain tcp, meaning http/1.1 and it's limitations - [x]
-# speak SPDY the evolution of http/2 - [x]
-# Explain QUIC
-# Talk about, why woudn't uTP and try something like QUIC over P2P/BT/TEE/I2P
-
-# Deep dive on QUIC
-# Explain better its advantages: 0-rtt, stream multiplexing, FEC, encryption
-# Duel on performance, both: downloading and exchanging
-
-# conclude and prepare TEE section
