@@ -1,0 +1,10 @@
+# set up acronyms
+#+MACRO: gls @@latex:\gls{$1}@@
+#+MACRO: glspl @@latex:\glspl{$1}@@
+#+MACRO: Gls @@latex:\Gls{$1}@@
+
+# declare acronyms macro
+#+MACRO: setac @@latex:\newacronym{$1}{$2}{$3}@@
+
+# image macro
+#+MACRO: figure @@latex:\begin{figure}[h] \centering \includegraphics[width=0.95\columnwidth]{Figures/$1} \caption{$2} \end{figure}@@

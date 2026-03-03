@@ -55,36 +55,91 @@
         };
 
         org2tex =
-          dir: template:
+          {
+            dir,
+            template ? ./Org/templates/chapter.tex,
+            auto_import ? true,
+          }:
           import ./nix/org-files.nix {
             inherit pkgs;
             src = dir;
             template = template;
+            auto_import = auto_import;
+            filters = [
+              "org-include.lua"
+            ];
+            configs = [
+              ./Org/config
+              ./Org/filters
+            ];
           };
 
-        syncTex = input: texFiles: ''
-          CHAPTER_FILE=$(mktemp)
+        syncTex =
+          {
+            input,
+            texFiles,
+            tex ? "main.tex",
+          }:
+          ''
+            CHAPTER_FILE=$(mktemp)
 
-          echo "Translating Org mode to LaTeX"
-          for texfile in ${texFiles}/*.tex; do
-              cp -v "$texfile" ${input}/
+            echo "Translating Org mode to LaTeX"
+            for texfile in ${texFiles}/*.tex; do
+                cp -v "$texfile" ${input}/
 
-              basename=$(basename "$texfile" .tex)
-              echo "\\input{${input}/$basename}" >> "$CHAPTER_FILE"
-          done || {
-            echo "ERROR: could not copy tex files"
-            ls -la ${texFiles} || true
-            exit 1
-          }
+                basename=$(basename "$texfile" .tex)
+                echo "\\input{${input}/$basename}" >> "$CHAPTER_FILE"
+            done || {
+              echo "ERROR: could not copy tex files"
+              ls -la ${texFiles} || true
+              exit 1
+            }
 
-          echo "Applying ${input} Outlet"
-          cat $CHAPTER_FILE
+            ${mergeTex {
+              input = input;
+              tex_file = "$CHAPTER_FILE";
+              target_file = tex;
+            }}
 
-          ${pkgs.gnused}/bin/sed -i -e "/%<${pkgs.lib.toLower input}-outlet>/ {
-              r $CHAPTER_FILE
-              d
-          }" main.tex
-        '';
+            trap 'rm -f "$CHAPTER_FILE"' EXIT
+          '';
+
+        setConfiguration =
+          {
+
+            input,
+            tex_file,
+            target_file,
+          }:
+          ''
+            CHAPTER_FILE=$(mktemp)
+
+            cat ${tex_file} >> "$CHAPTER_FILE"
+
+            ${mergeTex {
+              input = input;
+              tex_file = "$CHAPTER_FILE";
+              target_file = target_file;
+            }}
+
+            trap 'rm -f "$CHAPTER_FILE"' EXIT
+          '';
+
+        mergeTex =
+          {
+            input,
+            tex_file,
+            target_file,
+          }:
+          ''
+            echo "Applying ${input} Outlet"
+            cat ${tex_file}
+
+            ${pkgs.gnused}/bin/sed -i -e "/%<${pkgs.lib.toLower input}-outlet>/ {
+                r ${tex_file}
+                d
+            }" ${target_file}
+          '';
 
       in
       {
@@ -110,8 +165,18 @@
         };
 
         packages = rec {
-          convertChapters = org2tex ./Org/Chapters ./Org/templates/chapter.tex;
-          convertAppendices = org2tex ./Org/Appendices ./Org/templates/chapter.tex;
+          convertChapters = org2tex {
+            dir = ./Org/Chapters;
+          };
+
+          convertAppendices = org2tex {
+            dir = ./Org/Appendices;
+          };
+
+          convertConfig = org2tex {
+            dir = ./Org/config;
+            auto_import = false;
+          };
 
           compile-header = mkThesis {
             name = "header";
@@ -133,11 +198,26 @@
                 compile-header
                 convertChapters
                 convertAppendices
+                convertConfig
               ];
 
               preBuild = ''
-                ${syncTex "Chapters" convertChapters}
-                ${syncTex "Appendices" convertAppendices}
+                ${syncTex {
+                  input = "Chapters";
+                  texFiles = convertChapters;
+                }}
+
+                ${syncTex {
+                  input = "Appendices";
+                  texFiles = convertAppendices;
+                }}
+
+                cat "${convertConfig}/acronyms.tex"
+                ${setConfiguration {
+                  input = "Acronyms";
+                  target_file = "precontent.tex";
+                  tex_file = "${convertConfig}/acronyms.tex";
+                }}
 
                 echo "Preparing header PDF ..."
                 cp -v ${compile-header}/header.pdf Front/main.pdf || {
@@ -172,7 +252,7 @@
             program = toString (
               pkgs.writeShellScript "build-thesis" ''
                 ${utils.echo} "Building thesis..."
-                ${utils.nix} build
+                ${utils.nix} build -L
                 ${utils.echo} "Opening PDF..."
 
                 ${utils.open} "result/draft_${utils.formatDate self.lastModifiedDate}.pdf"

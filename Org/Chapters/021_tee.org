@@ -9,7 +9,7 @@ These problems exists from the lack of any verifiable trust anchor among peers, 
 
 # (citeme: 002)
 
-Before further explain *TEE* and introduce them, I am going to indicate some alike solutions that will be interesting along this section to explain how can *TEE* can be utilized to mitigate BitTorrent vulnerabilities. In light of this, these are some examples of hardware assisted security solutions:
+Before further explain *{{{gls(tee)}}}* and introduce them, I am going to indicate some alike solutions that will be interesting along this section to explain how can *TEE* can be utilized to mitigate BitTorrent vulnerabilities. In light of this, these are some examples of hardware assisted security solutions:
 
 # (citeme: 001 - TMPS)
 

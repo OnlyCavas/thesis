@@ -1,0 +1,4 @@
+#+INCLUDE: "macros.org"
+
+{{{setac(bt, BT, Bit Torrent)}}}
+{{{setac(tee, TEE, Trusted Execution Environment)}}}

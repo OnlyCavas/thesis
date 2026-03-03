@@ -14,7 +14,13 @@
 | Fernando |  22 | Porto  |
 | Ana   |  25 | Lisboa |
 
+** Acronyms
+
+{{{gls(bt)}}}
+
 ** Images
+
+{{{figure(ChapterTemplate/20160517_123609.jpg, My Caption)}}}
 
 #+BEGIN_EXPORT latex
 \begin{figure}[h]

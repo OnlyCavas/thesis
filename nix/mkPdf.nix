@@ -60,6 +60,10 @@ pkgs.stdenvNoCC.mkDerivation (
         -outdir=build \
         ${entryMainTex} || { cat build/${builtins.baseNameOf entryMainPDF}.log || true; exit 1; }
 
+      ls -la build/
+      cat build/main.acn || true
+      cat build/main.acr || true
+
       runHook postBuild
     '';
 
