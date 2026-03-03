@@ -8,3 +8,9 @@
 
 # image macro
 #+MACRO: figure @@latex:\begin{figure}[h] \centering \includegraphics[width=0.95\columnwidth]{Figures/$1} \caption{$2} \end{figure}@@
+
+# citations
+#+MACRO: cite @@latex:\cite{$1}@@
+#+MACRO: citep @@latex:\citep{$1}@@
+#+MACRO: citet @@latex:\citet{$1}@@
+#+MACRO: citewp @@latex:\cite[$1]{$2}@@

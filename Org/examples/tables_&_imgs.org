@@ -14,14 +14,28 @@
 | Fernando |  22 | Porto  |
 | Ana   |  25 | Lisboa |
 
+** Citations
+
+# only the number
+{{{cite(bt_001)}}}
+
+# author and number
+{{{citet(bt_001)}}}
+
 ** Acronyms
 
+# Trusted Environment Execution (TEE)
 {{{gls(bt)}}}
+
+{{{glspl(bt)}}}
+{{{Gls(bt)}}}
 
 ** Images
 
+# put figure, way better
 {{{figure(ChapterTemplate/20160517_123609.jpg, My Caption)}}}
 
+# old version
 #+BEGIN_EXPORT latex
 \begin{figure}[h]
 \centering

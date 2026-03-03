@@ -9,7 +9,7 @@ In this section, I will highlight how *Bit Torrent* actually works, how it can b
 
 # (citeme: 001)
 
-*Bit Torrent* is one of the most used technologies on the context of *P2P (Peer-to-Peer) content distribution networks*. According to Bit Torrent Protocol specification [cite], it presents an advantage over plain HTTP were multiple downloads can happen concurrently for the same file, safeguarding against one HTTP Server handling multiple requests. In simple terms, it works by downloaders upload to each other the "chunks" or "pieces" that they possess to the network, making it possible to spread parts of its file across many peers, distributing the load of the HTTP operation.
+*Bit Torrent* is one of the most used technologies on the context of *P2P (Peer-to-Peer) content distribution networks*. According to Bit Torrent Protocol specification {{{cite(bt_001)}}}, it presents an advantage over plain HTTP were multiple downloads can happen concurrently for the same file, safeguarding against one HTTP Server handling multiple requests. In simple terms, it works by downloaders upload to each other the "chunks" or "pieces" that they possess to the network, making it possible to spread parts of its file across many peers, distributing the load of the HTTP operation.
 
 This network all peers are contributors that can be identified by following *entities*:
 
