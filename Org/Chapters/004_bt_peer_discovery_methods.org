@@ -12,7 +12,7 @@ Despite being a crucial *entity* for other peers discovering themselves and thus
 # (citeme = PirateBay stuff, needs 002_pex)
 # (citeme = attacks, then explain whenever?)
 
-Also, because of its centralized approach to peer discovery isn't very scalable, as the network grows so do the *trackers* to keep up with the increase of files and new peers. This paper, also refers that at the time, one of the most popular Bit Torrent networks *PirateBay*, was suffering of multiple TCP time-outs. Not only that, but because they are centralized they can be point out as *Single Point of Failure* and possibly exploited by DoS attacks to week the swarm or take it down.
+Also, because of its centralized approach to peer discovery isn't very scalable, as the network grows so do the *trackers* to keep up with the increase of files and new peers. This paper {{{cite(bt_pex_002)}}}, also refers that at the time, one of the most popular Bit Torrent networks *PirateBay*, was suffering of multiple TCP time-outs. Not only that, but because they are centralized they can be point out as *Single Point of Failure* and possibly exploited by DoS attacks to week the swarm or take it down.
 
 # (citeme - kademlia)
 

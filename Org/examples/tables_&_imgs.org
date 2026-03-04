@@ -16,6 +16,8 @@
 
 ** Citations
 
+# https://zbib.org/ good website to get them
+
 # only the number
 {{{cite(bt_001)}}}
 
