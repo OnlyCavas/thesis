@@ -50,6 +50,15 @@ pkgs.stdenvNoCC.mkDerivation (
 
       unset TEXMFCNF || true
 
+      export FONTCONFIG_FILE=${
+        pkgs.makeFontsConf {
+          fontDirectories = [
+            "${tex}/share/texmf"
+            pkgs.corefonts
+          ];
+        }
+      }
+
       latexmk \
         ${extraBuildArgs} \
         ${extraLatexmkFlags} \

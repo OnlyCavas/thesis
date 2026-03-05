@@ -17,7 +17,10 @@
       system:
       let
 
-        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        };
 
         tex = pkgs.texlive.withPackages (
           ps: with ps; [
@@ -252,7 +255,7 @@
             program = toString (
               pkgs.writeShellScript "build-thesis" ''
                 ${utils.echo} "Building thesis..."
-                ${utils.nix} build -L
+                ${utils.nix} build
                 ${utils.echo} "Opening PDF..."
 
                 ${utils.open} "result/draft_${utils.formatDate self.lastModifiedDate}.pdf"
