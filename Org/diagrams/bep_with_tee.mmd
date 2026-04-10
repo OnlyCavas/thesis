@@ -1,0 +1,83 @@
+sequenceDiagram
+    participant P as Alice
+    participant B as Bob
+    participant N as Network
+
+    %% HANDSHAKE Alice
+    P ->> B: HANDSHAKE
+    note right of B: { info_hash, version, enclave_quote_a, sig(all fields) }
+    B ->> B: Verify enclave_quote_a vs manifest
+    note right of B: pub_key extracted from enclave_quote_a.user_data<br/>assert SHA256(pub_key) == user_data<br/>check version vs allowed_versions<br/>assert enclave_hash == manifest[version]
+    B ->> B: Verify sig vs extracted pub_key_a
+    note right of B: cache enclave_quote_a
+
+    %% HANDSHAKE Bob
+    B -->> P: HANDSHAKE
+    note left of P: { info_hash, version, enclave_quote_b, sig(all fields) }
+    P ->> P: Verify enclave_quote_b vs manifest
+    note left of P: pub_key extracted from enclave_quote_b.user_data<br/>assert SHA256(pub_key) == user_data<br/>check version vs allowed_versions<br/>assert enclave_hash == manifest[version]
+    P ->> P: Verify sig vs extracted pub_key_b
+    note left of P: cache enclave_quote_b
+
+    %% BITFIELD
+    P ->> B: BITFIELD
+    note right of B: { bitfield_bits, sig(bitfield_bits) }
+    B ->> B: Verify sig(bitfield_bits) vs cached pub_key_a
+
+    B -->> P: BITFIELD
+    note left of P: { bitfield_bits, sig(bitfield_bits) }
+    P ->> P: Verify sig(bitfield_bits) vs cached pub_key_b
+
+    %% INTERESTED / CHOKE
+    P ->> B: INTERESTED
+    note right of B: { sig(INTERESTED) }
+
+    alt Bob unchokes Alice
+        B -->> P: UNCHOKE
+        note left of P: { sig(UNCHOKE) }
+        P ->> P: Verify sig(UNCHOKE) vs cached pub_key_b
+
+        loop until all pieces received
+            P ->> B: REQUEST
+            note right of B: { index, begin, length, sig(index, begin, length) }
+            B ->> B: Verify sig(REQUEST) vs cached pub_key_a
+
+            B -->> P: PIECE
+            note left of P: { index, begin, data, sig(index, begin, data) }
+            P ->> P: Verify sig(PIECE) vs cached pub_key_b
+
+            P ->> N: HAVE
+            note right of N: { index, sig(index) } broadcast to all peers
+        end
+
+        P ->> B: NOT_INTERESTED
+        note right of B: { sig(NOT_INTERESTED) }
+
+    else Bob chokes Alice
+        B -->> P: CHOKE
+        note left of P: { sig(CHOKE) }
+        P ->> P: Verify sig(CHOKE) vs cached pub_key_b
+        note left of P: wait and retry later
+
+        opt Bob unchokes later
+            B -->> P: UNCHOKE
+            note left of P: { sig(UNCHOKE) }
+            P ->> P: Verify sig(UNCHOKE) vs cached pub_key_b
+
+            loop until all pieces received
+                P ->> B: REQUEST
+                note right of B: { index, begin, length, sig(index, begin, length) }
+                B ->> B: Verify sig(REQUEST) vs cached pub_key_a
+
+                B -->> P: PIECE
+                note left of P: { index, begin, data, sig(index, begin, data) }
+                P ->> P: Verify sig(PIECE) vs cached pub_key_b
+
+                P ->> N: HAVE
+                note right of N: { index, sig(index) } broadcast to all peers
+            end
+
+            P ->> B: NOT_INTERESTED
+            note right of B: { sig(NOT_INTERESTED) }
+        end
+    end

@@ -1,0 +1,51 @@
+sequenceDiagram
+    participant P as Alice
+    participant B as Bob
+    participant N as Network
+
+    %% HANDSHAKE
+    P ->> B: HANDSHAKE
+    note right of B: { info_hash, alice_id }
+    B -->> P: HANDSHAKE
+    note left of P: { info_hash, bob_id }
+
+    %% BITFIELD
+    P ->> B: BITFIELD
+    note right of B: { bitfield_bits }
+    B -->> P: BITFIELD
+    note left of P: { bitfield_bits }
+
+    %% INTERESTED / CHOKE
+    P ->> B: INTERESTED
+
+    alt Bob unchokes Alice
+        B -->> P: UNCHOKE
+
+        loop until all pieces received
+            P ->> B: REQUEST
+            note right of B: { index, begin, length }
+            B -->> P: PIECE
+            note left of P: { index, begin, data }
+            P ->> N: HAVE
+            note right of N: { index } broadcast to all peers
+        end
+
+        P ->> B: NOT_INTERESTED
+
+    else Bob chokes Alice
+        B -->> P: CHOKE
+        note left of P: wait and retry later
+
+        opt Bob unchokes later
+            B -->> P: UNCHOKE
+            loop until all pieces received
+                P ->> B: REQUEST
+                note right of B: { index, begin, length }
+                B -->> P: PIECE
+                note left of P: { index, begin, data }
+                P ->> N: HAVE
+                note right of N: { index } broadcast to all peers
+            end
+            P ->> B: NOT_INTERESTED
+        end
+    end

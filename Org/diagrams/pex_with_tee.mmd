@@ -1,0 +1,48 @@
+sequenceDiagram
+    participant P as Alice
+    participant B as Bob
+
+    P ->> B: PEX_HELLO
+    note right of B: { info_hash, version, enclave_quote_a,<br/>added: [ self, ...peers ], dropped: [],<br/>sig(all fields) }
+
+    B ->> B: Verify enclave_quote_a vs manifest
+    note right of B: pub_key extracted from enclave_quote_a.user_data<br/>assert SHA256(pub_key) == user_data<br/>check version vs allowed_versions<br/>assert enclave_hash == manifest[version]
+
+    B ->> B: Verify sig vs extracted pub_key_a
+    note right of B: cache enclave_quote_a
+
+    B -->> P: PEX_HELLO
+    note left of P: { info_hash, version, enclave_quote_b,<br/>added: [ self, ...peers ], dropped: [],<br/>sig(all fields) }
+
+    P ->> P: Verify enclave_quote_b vs manifest
+    note left of P: pub_key extracted from enclave_quote_b.user_data<br/>assert SHA256(pub_key) == user_data<br/>check version vs allowed_versions<br/>assert enclave_hash == manifest[version]
+
+    P ->> P: Verify sig vs extracted pub_key_b
+    note left of P: cache enclave_quote_b
+
+    note over P,B: quotes cached with TTL — periodic exchange
+
+    P ->> B: PEX_DELTA
+    note right of B: { info_hash, added: [ peers ], dropped: [ peers ],<br/>sig(all fields) }
+    B ->> B: Verify sig vs cached pub_key_a
+
+    B -->> P: PEX_DELTA
+    note left of P: { info_hash, added: [ peers ], dropped: [ peers ],<br/>sig(all fields) }
+    P ->> P: Verify sig vs cached pub_key_b
+
+    note over P,B: on TTL expiry — mutual re-attest
+
+    P ->> B: PEX_DELTA
+    note right of B: { info_hash, version, enclave_quote_a,<br/>added: [ peers ], dropped: [ peers ], sig(all fields) }
+    B ->> B: Verify enclave_quote_a vs manifest + sig
+    note right of B: cache enclave_quote_a
+
+    B -->> P: PEX_DELTA
+    note left of P: { info_hash, version, enclave_quote_b,<br/>added: [ peers ], dropped: [ peers ], sig(all fields) }
+    P ->> P: Verify enclave_quote_b vs manifest + sig
+    note left of P: cache enclave_quote_b
+
+    note over P,B: on disconnect
+
+    P ->> B: PEX_DELTA
+    note right of B: { info_hash, added: [], dropped: [ self ],<br/>sig(all fields) }

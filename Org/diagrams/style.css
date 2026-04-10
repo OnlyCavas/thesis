@@ -1,0 +1,6 @@
+/* Force the SVG to scale down, never up */
+svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}

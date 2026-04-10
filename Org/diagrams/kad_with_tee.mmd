@@ -1,0 +1,39 @@
+sequenceDiagram
+    participant P as NewComer
+    participant B as Bootstrap Node
+    participant N as Network
+
+    P ->> B: CHALLENGE_REQUEST
+    note right of B: enclave_pub_key
+
+    B -->> P: CHALLENGE_RESPONSE
+    note left of P: { challenge, difficulty }
+
+    rect rgb(200, 230, 220)
+        note over P: TEE enclave
+        P ->> P: Compute PoW + sign with TEE key
+    end
+
+    P ->> B: JOIN_REQUEST
+    note right of B: { pow, sig(pow ‖ enclave_quote ‖ version ‖ challenge),<br/>enclave_quote, version, challenge }
+
+    B ->> B: Verify enclave_quote vs manifest
+    note right of B: manifest = { allowed_versions: hashes }
+    B ->> B: Check version vs allowed_versions
+    B ->> B: Verify PoW sig vs TEE pubkey
+    note right of B: pub_key extracted from enclave_quote.user_data<br/>assert SHA256(pub_key) == user_data
+
+    B ->> P: JOIN_ACCEPT
+    note over P: { token[newcomer_quote, issuer_quote,<br/>issued_at, expire_at, challenge, sig(all fields)] }
+
+    P ->> P: Verify issuer_quote vs binary manifest
+    note over P: hardcoded fingerprint = { addr, enclave_hash,<br/>hash(pub_key), pub_key, enclave_sig }<br/>or .torrent nodes key
+
+    P ->> P: Extract pub_key from issuer_quote.user_data
+    P ->> P: Verify token.signature vs issuer pub_key
+    note over P: token integrity and issuer authentication confirmed
+
+    P ->> N: FIND_NODE(own_pub_key)
+    N -->> P: k nearest nodes
+
+    note over P: DHT active

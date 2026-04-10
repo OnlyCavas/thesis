@@ -147,25 +147,53 @@
       in
       {
 
-        devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
-            tex
-            git-lfs
-            texlab
-            ltex-ls
-            pandoc
-          ];
+        devShells.default =
+          let
+            buildCharts = pkgs.writeShellScriptBin "build-charts" ''
+              mkdir -p Figures/diagrams
 
-          shellHook = ''
-            echo "LaTeX environment loaded!"
-            echo "latexmk version: $(latexmk --version)"
-            echo "Commands: nix run, nix run .#header"
-            echo ""
-            echo "          nix run -> to open or compile to pdf"
-            echo "          nix run .#compile -> compile to pdf"
-            echo "          nix run .#header compile only header"
-            echo "" '';
-        };
+              for f in Org/diagrams/*.mmd; do
+                echo "Processing $f..."
+                ${pkgs.mermaid-cli}/bin/mmdc \
+                  -i "$f" \
+                  -o "Figures/diagrams/$(basename "$f" .mmd).pdf" \
+                  -p ./mermaid-config.json \
+                  --pdfFit \
+                  --viewportWidth 1200 \
+                  --scale 1 \
+                  -b transparent
+              done
+              echo "Done! Charts generated in Figures/diagrams/"
+            '';
+
+            linuxChrome = if !pkgs.stdenv.isDarwin then "${pkgs.chromium}/bin/chromium" else "";
+
+          in
+          pkgs.mkShell {
+            packages =
+              with pkgs;
+              [
+                tex
+                git-lfs
+                texlab
+                pandoc
+                mermaid-cli
+                buildCharts
+              ]
+              ++ (pkgs.lib.optional (!pkgs.stdenv.isDarwin) pkgs.chromium);
+
+            shellHook = ''
+              if [[ "$OSTYPE" == "darwin"* ]]; then
+                export PUPPETEER_EXECUTABLE_PATH="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+              else
+                export PUPPETEER_EXECUTABLE_PATH="${linuxChrome}"
+              fi
+              export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
+              echo "FCUP Thesis Environment Loaded"
+              echo "Run 'build-charts' to update your diagrams."
+            '';
+          };
 
         packages = rec {
           convertChapters = org2tex {

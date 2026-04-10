@@ -1,0 +1,28 @@
+sequenceDiagram
+    participant P as NewComer
+    participant B as Bootstrap Node
+    participant N as Network
+
+    P ->> B: CHALLENGE_REQUEST
+    note right of B: peer_pub_key
+
+    B -->> P: CHALLENGE_RESPONSE
+    note left of P: { challenge, difficulty }
+
+    P ->> P: Compute PoW + sign with private key
+
+    P ->> B: JOIN_REQUEST
+    note right of B: { pow, sig(pow ‖ peer_pub_key ‖ challenge),<br/>peer_pub_key, challenge }
+
+    B ->> B: Verify signature vs peer_pub_key pubkey
+
+    B ->> P: JOIN_ACCEPT
+    note over P: { token[newcomer_pub_key, issuer_pub_key,<br/>issued_at, expire_at, challenge, sig(all fields)] }
+
+    P ->> P: Verify token signature with<br/> issuer_pub_key extracted from token
+    note over P: token integrity and issuer authentication confirmed
+
+    P ->> N: FIND_NODE(newcomer_pub_key)
+    N -->> P: k nearest nodes
+
+    note over P: DHT active

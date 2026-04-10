@@ -1,0 +1,20 @@
+sequenceDiagram
+    participant P as Alice
+    participant B as Bob
+
+    P ->> B: PEX_HELLO
+    note right of B: { info_hash, self_addr,<br/>added: [peers], dropped: [] }
+    B -->> P: PEX_HELLO
+    note left of P: { info_hash, self_addr, added: [peers], dropped: [] }
+
+    note over P,B: periodic exchange
+
+    P ->> B: PEX_DELTA
+    note right of B: { info_hash, added: [peers], dropped: [peers] }
+    B -->> P: PEX_DELTA
+    note left of P: { info_hash, added: [peers], dropped: [peers] }
+
+    note over P,B: on disconnect
+
+    P ->> B: PEX_DELTA
+    note right of B: { info_hash, added: [], dropped: [self_addr] }

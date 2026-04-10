@@ -1,0 +1,10 @@
+{
+  "mermaidConfig": {
+    "sequence": {
+      "wrap": true,
+      "width": 180,
+      "messageMargin": 40,
+      "useMaxWidth": true
+    }
+  }
+}
