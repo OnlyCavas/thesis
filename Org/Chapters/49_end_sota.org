@@ -1,0 +1,1 @@
+# Write an integration bridge with the SOTA and PoC/Architecture
