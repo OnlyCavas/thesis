@@ -1,0 +1,35 @@
+** Transport Layer: BitTorrent over QUIC
+:PROPERTIES:
+:CUSTOM_ID: poc_bt_over_quic
+:END:
+
+# explain how I will integrate QUIC replacing entirely (TCP and UDP)
+#   1. Multiplexing:
+#     + Maintain an ephemeral connection with a single peer for all times
+
+#     + Than open a control stream (ephemeral stream)
+#       + (DHT) messages RPC MESSAGES (JOIN, FIND_VALUE, FIND_NODE, STORE, PING)
+#       + (PEX) messages
+#       + (BEP) messages (HANDSHAKE, BIT_FIELD)
+
+#     + Than open a stream for each downloading piece (1317 pieces == 1317 streams)
+#       - for a span of 5 to 10 concurrent pieces, +- 7~ streams open concurrently.
+#       - within each stream each piece will be broken into blocks.
+#       - meaning, if a piece stales, doesn't block the whole download
+#       - Only the key difference is that TCP needs to open several connections to do the same as QUIC.
+# 3.4 Transport Layer
+# The Transport Layer forms the foundation of the proposed architecture. It replaces the traditional BitTorrent transport protocols (TCP, UDP, and uTP) with QUIC as the single unified transport.
+# The main motivations for adopting QUIC are:
+#
+# Elimination of Head-of-Line (HoL) blocking: Unlike TCP, QUIC operates over UDP and supports independent streams within a single connection. This allows piece downloads to proceed without being blocked by delayed control messages or lost packets.
+# Reduced connection overhead: QUIC enables 0-RTT connection resumption, which is particularly beneficial in dynamic P2P environments with high churn.
+# Built-in encryption and multiplexing: QUIC provides TLS 1.3 by default and native support for multiple bidirectional streams, allowing the protocol to carry DHT queries, PEX messages, handshakes, choking signals, and piece transfers efficiently over one connection per peer.
+# Better performance in lossy networks: QUIC’s modern congestion control and loss recovery mechanisms are more suitable for the volatile nature of P2P swarms compared to uTP.
+#
+# In the proposed design, a single long-lived QUIC connection is maintained per peer for each torrent. This connection is structured with:
+#
+# One dedicated control stream for protocol signaling (DHT operations, PEX, BitTorrent Extended Protocol handshakes, and choking algorithm messages).
+# Multiple independent data streams for concurrent piece requests and transfers.
+#
+# This stream-based design enables true parallelism and better pipelining while maintaining a clean separation between control and data traffic.
+# The Transport Layer is designed to work transparently with the upper layers: all QUIC traffic is forwarded to the Anonymity Layer (I2P) via a SAM bridge, and critical cryptographic operations can be offloaded to the Trust Layer (TEE) when available.

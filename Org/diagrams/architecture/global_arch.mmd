@@ -1,0 +1,21 @@
+graph LR
+      subgraph PeerA["Peer A"]
+          direction TB
+          A1[BT Application] --> A2[QUIC]
+          A2 --> A3[SAM Bridge</br>DGRAM session]
+          A3 --> A4[i2pd]
+      end
+
+      subgraph Net["I2P Network"]
+          G1[Hop 1] --> G2[Hop 2] --> G3[Hop 3]
+      end
+
+      subgraph PeerB["Peer B"]
+          direction TB
+          B4[i2pd] --> B3[SAM Bridge</br>DGRAM session]
+          B3 --> B2[QUIC]
+          B2 --> B1[BT Application]
+      end
+
+      A4 <-->|garlic encrypted| Net
+      Net <-->|garlic encrypted| B4

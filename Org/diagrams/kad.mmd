@@ -17,9 +17,9 @@ sequenceDiagram
     B ->> B: Verify signature vs peer_pub_key pubkey
 
     B ->> P: JOIN_ACCEPT
-    note over P: { token[newcomer_pub_key, issuer_pub_key,<br/>issued_at, expire_at, challenge, sig(all fields)] }
+    note over P,N: { token[newcomer_pub_key, issuer_pub_key,<br/>issued_at, expire_at, challenge, sig(all fields)] }
 
-    P ->> P: Verify token signature with<br/> issuer_pub_key extracted from token
+    P ->> P: Verify token sig vs issuer_pub_key extracted from token
     note over P: token integrity and issuer authentication confirmed
 
     P ->> N: FIND_NODE(newcomer_pub_key)

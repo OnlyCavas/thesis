@@ -152,17 +152,43 @@
             buildCharts = pkgs.writeShellScriptBin "build-charts" ''
               mkdir -p Figures/diagrams
 
-              for f in Org/diagrams/*.mmd; do
-                echo "Processing $f..."
+              convert_mmd() {
+                local f="$1"
+                local relpath="''${f#Org/diagrams/}"
+                local subdir name outdir outfile
+
+                subdir="$(dirname "$relpath")"
+                name="$(basename "$f" .mmd)"
+                outdir="Figures/diagrams"
+
+                if [ "$subdir" != "." ]; then
+                  outdir="$outdir/$subdir"
+                fi
+
+                mkdir -p "$outdir"
+                outfile="$outdir/$name.pdf"
+
+                echo "Processing $f -> $outfile..."
                 ${pkgs.mermaid-cli}/bin/mmdc \
                   -i "$f" \
-                  -o "Figures/diagrams/$(basename "$f" .mmd).pdf" \
-                  -p ./mermaid-config.json \
+                  -o "$outfile" \
+                  -c ./mermaid-config.json \
+                  -C ./Org/diagrams/style.css \
                   --pdfFit \
-                  --viewportWidth 1200 \
-                  --scale 1 \
-                  -b transparent
+                  -w 2400 \
+                  -s 2
+
+                pdfcrop "$outfile" "$outfile" 2>/dev/null || true
+              }
+
+              for f in Org/diagrams/*.mmd; do
+                [ -f "$f" ] && convert_mmd "$f"
               done
+
+              for f in Org/diagrams/*/*.mmd; do
+                [ -f "$f" ] && convert_mmd "$f"
+              done
+
               echo "Done! Charts generated in Figures/diagrams/"
             '';
 
@@ -179,6 +205,8 @@
                 pandoc
                 mermaid-cli
                 buildCharts
+                liberation_ttf
+                source-sans-pro
               ]
               ++ (pkgs.lib.optional (!pkgs.stdenv.isDarwin) pkgs.chromium);
 
@@ -189,6 +217,9 @@
                 export PUPPETEER_EXECUTABLE_PATH="${linuxChrome}"
               fi
               export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+              export FONTCONFIG_FILE=${pkgs.makeFontsConf {
+                fontDirectories = [ pkgs.source-sans-pro pkgs.liberation_ttf ];
+              }}
 
               echo "FCUP Thesis Environment Loaded"
               echo "Run 'build-charts' to update your diagrams."

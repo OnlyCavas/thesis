@@ -6,6 +6,7 @@ Alotugh
 Andrix
 Anonymizer
 Azureus
+BEP
 BT
 Benconding
 BitComent
@@ -87,6 +88,7 @@ RouterInfo
 RouterInfos
 RustMonitor
 RustMonitor's
+SAM
 SCID
 SCIDs
 SEV
@@ -148,6 +150,7 @@ dns
 dpdk
 eepsites
 exfiltrate
+i2pd
 infohashes
 initramfs
 ip

@@ -1,10 +1,47 @@
 {
-  "mermaidConfig": {
-    "sequence": {
-      "wrap": true,
-      "width": 180,
-      "messageMargin": 40,
-      "useMaxWidth": true
-    }
+  "theme": "base",
+  "look": "classic",
+  "fontFamily": "Source Sans Pro, Liberation Sans, sans-serif",
+  "fontSize": 14,
+  "themeVariables": {
+    "actorBkg": "#EEEDFE",
+    "actorBorder": "#534AB7",
+    "actorTextColor": "#26215C",
+    "actorLineColor": "#888780",
+    "signalColor": "#3d3d3a",
+    "signalTextColor": "#3d3d3a",
+    "noteBkgColor": "#E1F5EE",
+    "noteTextColor": "#04342C",
+    "noteBorderColor": "#0F6E56",
+    "labelBoxBkgColor": "#faf9f7",
+    "labelBoxBorderColor": "#D3D1C7",
+    "labelTextColor": "#3d3d3a",
+    "loopTextColor": "#3d3d3a",
+    "primaryColor": "#E1F5EE",
+    "primaryBorderColor": "#0F6E56",
+    "primaryTextColor": "#04342C",
+    "secondaryColor": "#EEEDFE",
+    "secondaryBorderColor": "#534AB7",
+    "secondaryTextColor": "#26215C",
+    "tertiaryColor": "#faf9f7",
+    "tertiaryBorderColor": "#D3D1C7",
+    "tertiaryTextColor": "#3d3d3a",
+    "clusterBkg": "#faf9f7",
+    "clusterBorder": "#D3D1C7",
+    "edgeLabelBackground": "#faf9f7",
+    "lineColor": "#3d3d3a"
+  },
+  "sequence": {
+    "wrap": true,
+    "width": 200,
+    "height": 65,
+    "messageMargin": 40,
+    "noteMargin": 15,
+    "boxTextMargin": 10,
+    "useMaxWidth": false
+  },
+  "flowchart": {
+    "useMaxWidth": false,
+    "htmlLabels": true
   }
 }

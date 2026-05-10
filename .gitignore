@@ -9,6 +9,8 @@ build
 # Nix Build
 result
 
+hollow
+
 # LaTeX intermediate files
 *.aux
 *.bbl
