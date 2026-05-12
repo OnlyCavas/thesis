@@ -3,33 +3,20 @@
 :CUSTOM_ID: poc_bt_over_quic
 :END:
 
-# explain how I will integrate QUIC replacing entirely (TCP and UDP)
-#   1. Multiplexing:
-#     + Maintain an ephemeral connection with a single peer for all times
+# [link(sota)]
+As established in Chapter 2, QUIC solves many limitations of TCP and UDP in P2P environments. This section details how QUIC is integrated as the only transport protocol within the proposed architecture, replacing both TCP and UDP, and removing the need for uTP entirely.
 
-#     + Than open a control stream (ephemeral stream)
-#       + (DHT) messages RPC MESSAGES (JOIN, FIND_VALUE, FIND_NODE, STORE, PING)
-#       + (PEX) messages
-#       + (BEP) messages (HANDSHAKE, BIT_FIELD)
+A unique QUIC connection is maintained per peer when the first torrent session establish their connection. In contrast to traditional BitTorrent client that may open multiple TCP connections for the same peer for different purposes. By establishing a single connection per peer reduces connection overhead, which significantly simplifies connection management, as all streams are controlled by a unique connection sharing a congestion window and flow control context.
 
-#     + Than open a stream for each downloading piece (1317 pieces == 1317 streams)
-#       - for a span of 5 to 10 concurrent pieces, +- 7~ streams open concurrently.
-#       - within each stream each piece will be broken into blocks.
-#       - meaning, if a piece stales, doesn't block the whole download
-#       - Only the key difference is that TCP needs to open several connections to do the same as QUIC.
-# 3.4 Transport Layer
-# The Transport Layer forms the foundation of the proposed architecture. It replaces the traditional BitTorrent transport protocols (TCP, UDP, and uTP) with QUIC as the single unified transport.
-# The main motivations for adopting QUIC are:
-#
-# Elimination of Head-of-Line (HoL) blocking: Unlike TCP, QUIC operates over UDP and supports independent streams within a single connection. This allows piece downloads to proceed without being blocked by delayed control messages or lost packets.
-# Reduced connection overhead: QUIC enables 0-RTT connection resumption, which is particularly beneficial in dynamic P2P environments with high churn.
-# Built-in encryption and multiplexing: QUIC provides TLS 1.3 by default and native support for multiple bidirectional streams, allowing the protocol to carry DHT queries, PEX messages, handshakes, choking signals, and piece transfers efficiently over one connection per peer.
-# Better performance in lossy networks: QUIC’s modern congestion control and loss recovery mechanisms are more suitable for the volatile nature of P2P swarms compared to uTP.
-#
-# In the proposed design, a single long-lived QUIC connection is maintained per peer for each torrent. This connection is structured with:
-#
-# One dedicated control stream for protocol signaling (DHT operations, PEX, BitTorrent Extended Protocol handshakes, and choking algorithm messages).
-# Multiple independent data streams for concurrent piece requests and transfers.
-#
-# This stream-based design enables true parallelism and better pipelining while maintaining a clean separation between control and data traffic.
-# The Transport Layer is designed to work transparently with the upper layers: all QUIC traffic is forwarded to the Anonymity Layer (I2P) via a SAM bridge, and critical cryptographic operations can be offloaded to the Trust Layer (TEE) when available.
+The connection lifespan is scoped to the client rather than to a single torrent session. Once a peer is discovered, whether through DHT lookups, PEX gossip, or tracker announcement, a QUIC connection is established and remains open as long as either peer shuts down or the client session is actively terminated. Consequently, if two peers already have established a healthy QUIC connection when a new torrent is added, that same connection is used. Therefore, all torrent sessions share the same underlying connection,  avoiding redundant connection establishment and prioritising control stream reuse over a new connection overhead. This approach is suited for long running clients that participate in several swarms simultaneously, reducing the cost of negotiating new connections across shared activity.
+
+# [diagram(quic stream model)]
+
+# [review]
+Furthermore, leveraging QUIC's native multiplexing, two type of streams operate concurrently over each connection. Specifically, for protocol  control signalling, each peer maintains a dedicated outbound unidirectional stream towards its connected counterpart. Together, these two unidirectional streams form a logical bidirectional connection control channel, over which DHT RPC messages, PEX gossip, and BEP control messages such as handshake and bitfield are exchanged between both parts. This design aims  to keep each peer in full control of its own outbound signalling, avoiding congestion on a shared stream. In contrast, for piece transfer, each concurrent piece request is assigned an independent bidirectional stream, allowing the requester to send the piece request and receive the corresponding blocks within the same stream context. A sliding window of approximately five to ten concurrent piece streams is maintained to respect BitTorrent advised piece throughput. Crucially, a stalled or slow piece stream doesn't affect any other ongoing transfer, as each stream is fully independent from the others, a property TCP cannot achieve without relying on multiple connections.
+
+# [link(sota)]
+For instance, consider a similar implementation over TCP. Achieving the same concurrency with a dedicated control channel along with multiple independent piece streams, it would require opening for each stream a new TCP connection with the same peer. Thus, incurring its own three-way handshake and TLS negotiation, which translates to at least one RTT overhead per connection. Nonetheless, TCP's delivery model is fundamentally sequential within a single connection, therefore a lost or delayed packet stalls all subsequent data regardless of which piece it belongs to. Also, avoiding the Head-of-Line blocking problem discussed in Chapter 2. On the other hand, uTP while reducing bandwidth contention, it inherits the same sequential constraint. That said, QUIC eliminates both issues within a single connection, with independent streams that are unaffected by packet loss on sibling streams, and handshake cost is amortised across all concurrent activity. Also, if  the connection is dropped mid session, and than reestablished once again, QUIC manages this with 0-RTT.
+
+# [link(implementation)]
+All things considered, the transport layer is implemented using the quinn crate, which is rust based async-native QUIC implementation built on top of tokio, the async runtime used throughout the Proof-of-Concept. This library was chosen for quinn's full RFC 9000 compliance, ease of usage, and natural integration with the tokio ecosystem, aligning with the project's security requirements and goals. Further details regarding quinn integration, connection management, stream life cycle and configuration are discussed in Chapter 4.

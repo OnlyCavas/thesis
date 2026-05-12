@@ -1,0 +1,53 @@
+* Implementation
+:PROPERTIES:
+:CUSTOM_ID: poc_implementation
+:END:
+
+# Speak about .torrent implementation [v1 and v2 support only, how did I do it]
+
+# How did I control QUIC connections [one control stream, about 10 bi streams]
+
+# How Kademlia works
+# 1. Explain how does stock Kademlia works [cite the Kademlia paper, I think it's important]
+# 2. For each step, how did I implement Kademlia
+# 3. How did I solve the fire and forget QUIC connection problem [implemented my own RPC QUIC's for Kademlia]
+# 4. How I mitigate Sybil and Collusion Attacks [Proof-of-Work + Signed Bootstrap Tokens]
+# 5. How I mitigate DDoS attacks [TTL on store + Rate Limiting identifying by both IP and Peer Identification]
+
+# How does PEX works, and explain my implementation
+
+# How BEP works
+# 1. Explain BEP protocol sequence [Handshake <-> Handshake] -> [Bitfield <-> Bitfield] -> Interested/Not Interested -> Choked/Unchoked -> Piece Request <- Piece -> Have.
+# 2. How did I implement the BEP state machine
+# 3. How it's handled the peers asking for peers or whatnot
+
+# How three protocols are bounded together on a single QUIC connection [speak about the "recv center"]
+
+# Speak about why and how I implement and IPC server/client
+# 1. How it works
+
+# Give demonstrations of the torrent session state machine working [Idle -> Seeding -> Cancel] // [Idle -> Downloading -> Cancel] // [Idle -> Downloading -> Seeding -> Cancel]. Idk screenshots?
+
+# Prepare and integrate I2P.
+
+# Speak about how to implemented and the choices that I was going for
+# 1. Indicate Chapter 4, that why I decided to go for a SAM client bridge
+# 2. How it was implemented
+#   0. How does my SAM mini client works for the purpose that is needed for.
+#   1. How did I solve I2P IPv6 address to QUIC's IPv4 [dest_map]
+#   2. How QUIC intercepts the local UDP socket bounded with DATAGRAM SAM SESSION
+
+# Give screenshots of it working.
+
+# Prepare and set up of TEE integration.
+
+# 1. Module overview (a diagram of the crate structure → how layers map to modules)
+#   2. .torrent parsing (v1 + v2, brief prose)
+#   3. QUIC connection management (network/) — single connection per peer, stream categories
+#   4. Kademlia DHT — theory briefly, then your impl choices (PoW + signed tokens, RPC-over-QUIC)
+#   5. PEX (brief)
+#   6. BEP state machine (sequence diagram + FSM diagram, minimal code)
+#   7. Recv center / multiplexing (this is the architectural glue — explain it well)
+#   8. IPC (brief)
+#   9. Session state machine (FSM diagram)
+#   10. I2P SAM mini-client (i2p/) — dest_map, socket binding, IPv6→IPv4

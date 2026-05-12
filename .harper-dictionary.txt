@@ -19,6 +19,8 @@ CVMs
 Chaum
 Chaumian
 ClearNet
+DATAGRAM2
+DATAGRAM3
 DHT
 DHTs
 DPFK
@@ -89,6 +91,7 @@ RouterInfos
 RustMonitor
 RustMonitor's
 SAM
+SAMv3
 SCID
 SCIDs
 SEV

@@ -39,24 +39,24 @@ The overarching goal of this architecture is to address the main security and pr
 
 + *Confidentiality*
 
-  Within a peer swarm session, it's traffic and metadata must not be exposed or recoverable by a passive observer or any other swarm participant. In order to tackle this issue, it's proposed for all QUIC's traffic be routed through I2P, replacing direct P2P connections with garlic-routed tunnels. Thus, relying on I2P to secure peer's anonymity and confidentiality.
+  Within a peer swarm session, its traffic and metadata must not be exposed or recoverable by a passive observer or any other swarm participant. In order to tackle this issue, it is proposed for all QUIC's traffic be routed through I2P, replacing direct P2P connections with garlic-routed tunnels. Thus, relying on I2P to secure peer's anonymity and confidentiality.
 
 + *Integrity*
 
-  In addition to ensure confidentiality, a peer should be able to verify if any participant is running a trusted, unmodified client implementation. For instance, this can be guaranteed by relying on {{{gls(tee)}}} remote attestation, and secure code execution, piece verification which will be explained in further detail in the subsequent sections.
+  In addition to ensure confidentiality, a peer should be able to verify if any participant is running a trusted, unmodified client implementation. For instance, this can be guaranteed by relying on {{{gls(tee)}}} remote attestation, and secure code execution, and piece verification, which will be further detailed in further detail in the subsequent sections.
 
 + *Availability and Authentication*
 
   Each participant must possess a cryptographically verifiable identity that is strongly bounded to a hardware or software-rooted attestation quote from its TEE. By tying the peer's session identity to a valid remote attestation quote, the system prevents impersonation attacks and along with the proof of work raises the cost of Sybil attacks during a swarm admission and along the session.
 
-Ultimately, the integration of these three technologies creates a powerful synergies across the CIA triad. For example, I2P ensures *Confidentiality* by anonymizing the underlying QUIC's communication. On the other hand, TEE layers delivers integrity  and authentication through remote attestation and trusted execution. This culmination restores verifiable trust within an anonymous swarm. Finally, availability is preserved through a modular and flexible design. More specifically, supporting graceful degradation, where peers can decide whether disable I2P and fall back to direct P2P QUIC connections, or disable the TEE layer and eventually rely on standard cryptographic authentication. Overall, ensuring clients remain fully functional even when not fully compatible with the required swarm layers. While each added layer, introduces some performance overhead, keeping a modular approach maintaining usability across heterogeneous systems.
+Ultimately, the integration of these three technologies creates a powerful synergy across the CIA triad. For example, I2P ensures *Confidentiality* by anonymizing the underlying QUIC's communication. On the other hand, the TEE layer delivers integrity  and authentication through remote attestation and trusted execution. This culmination restores verifiable trust within an anonymous swarm. Finally, availability is preserved through a modular and flexible design. More specifically, supporting graceful degradation, where peers can decide whether to disable I2P and fall back to direct P2P QUIC connections, or disable the TEE layer and eventually rely on standard cryptographic authentication. Overall, ensuring clients remain fully functional even when not fully compatible with the required swarm layers. While each added layer, introduces some performance overhead, keeping a modular approach maintaining usability across heterogeneous systems.
 
 ** High-Level Architecture
 :PROPERTIES:
 :CUSTOM_ID: poc_high_level_architecture
 :END:
 
-The proposed Proof-of-concept is structured into three composable layers that compose the BitTorrent application. Each layer address one of the main design goals while ensuring each layer works both together and as a unified stack, such as:
+The proposed Proof-of-concept is structured into three composable layers that constitute the BitTorrent application. Each layer addresses one of the main design goals while ensuring each layer operates independently and as a unified stack, such as:
 
 {{{figure(diagrams/architecture/global_arch.pdf, High level architecture of the proposed system)}}}
 
@@ -72,6 +72,6 @@ The proposed Proof-of-concept is structured into three composable layers that co
 
   # [findme] Explain better when it's implemented
 
-  This layer is responsible for ensuring that only authentic and honest peers are admitted into the swarm, thus mitigating Sybil and collusion attacks. By default, the strategy for mitigate this issue relies on calculating a Proof-of-Work and signed tokens by trackers and bootstrapping nodes upon swarm addiction. On the other hand, by integrating trusted hardware, along with the already establish measures, at swarm admission both peers could perform remote attestation, in order to ensure both are authentic and running an unmodified and trustworthy client implementation. Although, TEE isn't very common among personal devices, this layer must be optional falling back to the standard cryptographically mechanism at software level.
+  This layer is responsible for ensuring that only authentic and honest peers are admitted into the swarm, thus mitigating Sybil and collusion attacks. By default, the strategy for mitigate this issue relies on calculating a Proof-of-Work and signed tokens by trackers and bootstrapping nodes upon swarm admission. On the other hand, by integrating trusted hardware, along with the already establish measures, at swarm admission both peers could perform remote attestation, in order to ensure both are authentic and running an unmodified and trustworthy client implementation. Although, TEE isn't very common among personal devices, this layer must be optional falling back to the standard cryptographically mechanism at software level.
 
-This architecture integrates three complementary layers to achieve the established design goals. The following sections provide a detailed breakdown of each layer integration, including the motivation behind the chosen technologies and how it were integrated.
+This architecture integrates three complementary layers to achieve the established design goals. The following sections provide a detailed breakdown of each layer integration, including the motivation behind the chosen technologies and how they were integrated.
