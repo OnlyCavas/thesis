@@ -1,0 +1,15 @@
+** Torrent Specification
+:PROPERTIES:
+:CUSTOM_ID: impl_torrent_specification
+:END:
+
+# link[sota-torrent_metadata]
+# cite serde_bencode, if necessary
+
+As depicted in [[#torrent_specification][Section 2.1.1]], the {{{mark(.torrent)}}} format encodes torrent metadata using Bencode. That said, the implementation supports both *V1* and *V2* specifications, covering three operations: *Creation*, generating a {{{mark(.torrent)}}} metadata file from a single file or a directory; *Inspection*, parsing and presenting the torrent's metadata fields (using underneath the {{{mark(serde\_bencode)}}} deserialization framework); and *Validation*, verifies both structural and piece hash integrity against the metadata rules.
+
+# Figure [display [creation, inspect and verify]]
+
+Beyond the standard specification fields, both announce list, web seeds and DHT node fields support three declaration formats: standard IPv4 for ClearNet peers, *.b32.i2p* human readable I2P addresses, and full base 64 I2P destination for direct private connections. Thus, the user relies on the {{{mark(.torrent)}}} to have the details to bootstrap a swarm over either ClearNet or I2P without any direct modification.
+
+# Figure of the difference between a "ClearNet" and "I2P" .torrent

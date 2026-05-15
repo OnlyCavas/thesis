@@ -6,13 +6,14 @@ Alotugh
 Andrix
 Anonymizer
 Azureus
-BEP
 BT
+Bencode
 Benconding
 BitComent
 BitThief
 BitTornado
 BitTyrant
+Bqti
 CAPTCHAs
 CRTM
 CVMs
@@ -21,7 +22,6 @@ Chaumian
 ClearNet
 DATAGRAM2
 DATAGRAM3
-DHT
 DHTs
 DPFK
 DRTM
@@ -147,8 +147,10 @@ attester's
 auditable
 bencoded
 bencoding
+bep
 bootloader
 darknet
+dht
 dns
 dpdk
 eepsites
@@ -163,6 +165,7 @@ k3
 kpis
 leecher
 leechers
+lexicographically
 libtorrent
 ln
 middleboxes

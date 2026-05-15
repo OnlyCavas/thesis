@@ -1,0 +1,37 @@
+** Kademlia Integration (BEP Extension)
+:PROPERTIES:
+:CUSTOM_ID: impl_kademlia_bep_extension
+:END:
+
+# explain Kademlia [cite the paper and explain]]
+# while explain true Kademlia show more and less what I've done]
+
+# Figure [show working picture] -> show logs of connection peers and Kademlia activity
+
+*** Sybil and Collusion Attacks
+:PROPERTIES:
+:CUSTOM_ID: impl_kademlia_sybil_collusion
+:END:
+
+# Figure [show working picture]
+
+# indicate and resume what are these types of attacks, mentioning which section really explains it
+# explain what could be done
+# explain what I've done and how it solves each issue
+#   1. Proof of Work -> Sybil attacks and Eclipse attacks
+#   2. Tokens -> signed bootstrap tokens collusion attacks
+#   3. Certificates [how this is solve]
+#     [Without TEE] -> how trackers and bootstrap manage to keep the network secure
+#     [TEE] -> rely on remote attestation and third party attestation for CA ROOT
+
+*** DDoS Attacks
+:PROPERTIES:
+:CUSTOM_ID: impl_kademlia_ddos_attacks
+:END:
+
+# Figure [show working picture]
+
+# indicate and resume what are these types of attacks, mentioning which section really explains it
+# explain how I manage to mitigate it
+#   1.1. Rate limiter by IP
+#   1.2. Storage TTL

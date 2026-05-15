@@ -1,0 +1,9 @@
+** PEX Integration (BEP Extension)
+:PROPERTIES:
+:CUSTOM_ID: impl_kademlia_bep_extension
+:END:
+
+# explain what is PEX bep Extension
+# how I implemented it for my case
+
+# Figure [show diagram]

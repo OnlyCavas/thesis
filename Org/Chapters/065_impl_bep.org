@@ -1,0 +1,55 @@
+** BitTorrent Protocol
+:PROPERTIES:
+:CUSTOM_ID: impl_bep
+:END:
+
+# explain and show how it works
+# demonstrate: add, remove, list, watch, seed
+
+*** Protocol
+:PROPERTIES:
+:CUSTOM_ID: impl_bep_protocol
+:END:
+
+# explain how the protocol works under the hood
+# show diagram of the full explanation
+# show how I implemented it.
+#   1.1. Pipeline state machine [choked, interested, not interested, unchoke]
+#   1.2. Fill request [with bitfield, understand what to request next]
+#   1.3. Random and Sequence request for pieces
+#   1.4. How could get even better [improved, and remove free-riding [endgame mode, rarest first]]
+
+*** I/O operations
+:PROPERTIES:
+:CUSTOM_ID: impl_bep_io_operations
+:END:
+
+# explain how a file is read
+#   1. How does not impact a file be 10t large and still will load
+#   1. How does it read per block
+#   1. How does it write per block
+#   1. How it handles protocol binary dispatches
+
+*** Session Management
+:PROPERTIES:
+:CUSTOM_ID: impl_bep_session_management
+:END:
+
+# explain how this bit torrent client state machine works
+# present state diagram:
+#   [Idle -> Downloading -> Idle ]
+#   [Idle -> Downloading -> Cancel ]
+#   [Idle -> Seeding -> Idle ]
+#   [Idle -> Seeding -> Cancel ]
+#   [Idle -> Downloading -> Seeding ]
+
+** IPC server/Client
+:PROPERTIES:
+:CUSTOM_ID: impl_ipc
+:END:
+
+# explain how does it work IPC server and client
+# give credit to niri for teaching
+# how does it work and how I take advantage to it
+# speak about TUI UI updates
+# mention that this could be used for the demonstration

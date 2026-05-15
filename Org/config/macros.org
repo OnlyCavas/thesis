@@ -14,3 +14,6 @@
 #+MACRO: citep @@latex:\citep{$1}@@
 #+MACRO: citet @@latex:\citet{$1}@@
 #+MACRO: citewp @@latex:\cite[$1]{$2}@@
+
+#+MACRO: mark @@latex:\texttt{$1}@@
+#+MACRO: latex @@latex:$1@@

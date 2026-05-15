@@ -3,3 +3,7 @@ def hello():
     print("Hello, World!")
     return 42
 #+END_SRC
+
+#+begin_example
+  [ 4 bytes: big-endian length ][ 1 byte: protocol ID ][ payload ]
+#+end_example
