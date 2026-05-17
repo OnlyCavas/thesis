@@ -31,7 +31,7 @@ All incoming stream handlers across every active peer connection, run concurrent
 
 # [think (rpc simple impl.)]
 
-** Packet Topology
+*** Packet Topology
 :PROPERTIES:
 :CUSTOM_ID: impl_quic_packet_topology
 :END:
@@ -54,7 +54,7 @@ The first one byte ID discriminates the protocol carried in the payload, followi
 
 A keep-alive is a special case, defined by a four byte zero frame carries no ID byte or payload, and serves only to maintain the connection alive. In case of a packet malformation that packet is ignored and later discarded. Then, the payload is serialized using Bencode which is the natural encoding for DHT, which BEP 5 establishes, and was extended uniformly to PEX and BEP message for consistency. The change was motivated to keep a simpler codec, which handles three protocols after the ID byte is read. Although, a trade-off is justified by the absence of any QUIC-native BitTorrent implementation to interoperate with to this date. Additionally, bidirectional streams, extend the default packet adding a reply handle to be able to respond back to the requesting stream without additional routing.
 
-** Connection Management
+*** Connection Management
 :PROPERTIES:
 :CUSTOM_ID: impl_quic_management
 :END:

@@ -32,6 +32,7 @@ ECALLs
 ECDH
 EK
 EPID
+Ed25519
 FEC
 Flashcrowd
 Flashcrowds
@@ -74,6 +75,7 @@ NATs
 NUMA
 NetDB
 PCR
+PKI
 PLT
 PMD
 PTW
