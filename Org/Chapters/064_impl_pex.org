@@ -3,7 +3,20 @@
 :CUSTOM_ID: impl_kademlia_bep_extension
 :END:
 
-# explain what is PEX bep Extension
-# how I implemented it for my case
+As specified in [[#peer_exchange][Section 2.1.10]], Peer Exchange allows connected peers to share knowledge of other swarm participants without querying the DHT, acting as a low-overhead gossip layer that complements discovery, and enables peer discovery to move faster. That said, in {{{mark(bqti)}}} PEX operates over the same unidirectional control stream shared with both DHT and BEP handshake traffic, consistent with the design model established on [[#impl_quic_config][Section 4.3]].
 
-# Figure [show diagram]
+Once at least one torrent session is active, every {{{mark(60 seconds)}}} the local node broadcasts a PEX message to each known peer of a given connected swarm. Upon the first connection, the full snapshot of up to {{{mark(50)}}} known peers is sent immediately, seeding the counterpart without waiting for the next gossip cycle, in an attempt to sync the most peers it can from early on. From that point, rather than seeding the full known peer list on every cycle, the current implementation tracks per-peer state, precisely what was last sent to each peer while computing an incremental delta value. For instance, the message only carries peers added since the last exchange and the peers that have since dropped, trying to keep message size proportional to churn rather than swarm size, making them as small as possible, without compromising function. Each delta is scoped at {{{mark(50)}}} entries across both added and dropped combined, this prevents message bloat under high-churn conditions. To keep the supply for new peers, whenever a PEX message arrives, the sender is registered as a known peer, and forward it to Kademlia as an announce, also to maintain consistency dropped peers are evicted immediately from tracking. During a torrent session cycle, it's establish a feedback loop between both PEX and the DHT, where  peers discovered through gossip end up reinforcing the distributed index without requiring an explicit lookup. Also, is worth mentioning that all torrent session share the same context of known peers, making the process search for broader peers.
+
+In order to prevent peer flooding, each swarm tracker is bounded at {{{mark(200)}}} peers, thus preventing unbounded memory growth under large swarms. Beyond that, PEX is fully disabled for private torrent, making it compliant with the protocol specification.
+
+# Integrate the sentence with the example
+
+#+begin_example
+Pex Message example
+#+end_example
+
+| Field        | Description                                      |
+|--------------+--------------------------------------------------|
+| {{{mark(info\_hash)}}} | Identifies the torrent this exchange belongs to  |
+| {{{mark(added)}}}      | Peers newly known since the last exchange        |
+| {{{mark(dropped)}}}    | Peers no longer available since the last exchange |
