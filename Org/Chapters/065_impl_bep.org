@@ -67,8 +67,14 @@ Building on this, a session is created once and held active for the entire clien
 :CUSTOM_ID: impl_ipc
 :END:
 
-# explain how does it work IPC server and client
-# give credit to niri for teaching
-# how does it work and how I take advantage to it
-# speak about TUI UI updates
-# mention that this could be used for the demonstration
+From the very beginning, the design philosophy of this proof-of-concept has been to emulate a real BitTorrent client as faithfully as possible. Because of this, *seeding* and *downloading* operations are delegated to a background daemon, allowing them to run independently of any user interface. That said, the client ships by default a dedicated CLI interface that interacts with the running daemon to start, monitor, and manage torrents.
+
+Both communicate through a Unix domain socket bound at {{{mark(\//run\//user\//bqti\//\{instance\}.sock)}}}, and only accessible to the owning user via {{{mark(0o600)}}} permissions. Is worth noting that for avoiding protocol types duplication across binaries as well as defining a common API for future client implementations besides the default CLI, all definitions, types are isolated in a dedicated {{{mark(bqti-ipc)}}} crate. Which is consumed by both the daemon and CLI as a common dependency. For simple and fast exchange of messages through the virtual wire, it relies on JSON format making easier to then parse messages.
+
+Once the CLI connects with the running daemon, sends a single serialized request, reads the response, displays it and disconnects. The CLI command availability covers the expected lifecycle operations, like adding a *download* or *seed*, pausing, resuming, removing a specific torrent by identifier, listing active torrent sessions, querying live status, and requesting a graceful shutdown. The exception to this default behaviour is {{{mark(EventStream)}}} command, which upgrades the connection into a persistent event stream rather than closing after a single response. When a new client connects, the server begins by replaying a full snapshot of all active torrents and their state before forwarding live events, thus preventing it from missing state that accumulated during its runtime.
+
+From that point forward, the client starts by receiving a continuous feed of typed events formatted in JSON: {{{mark(TorrentAdded)}}}, {{{mark(SessionStateChanged)}}}, {{{mark(DownloadCompleted)}}}, and many more to keep the client interface always updated with the current backend state. During the event stream, the CLI renders a meaningful simple TUI that presents to the user about the current state of each active torrent session. For instance, for a *downloading torrent* reports the current and total pieces alongside its download rate, while during a *seeding torrent* it reports upload rate and connected peer count.
+
+In case a client falls behind the broadcast buffer, it will eventually receive an error and can reconnect cleanly. All things considered, the event stream pattern was inspired by the {{{mark(niri's)}}} compositor's IPC architecture, which essentially follows the same snapshot stream approach for managing window manager state to external clients.
+
+Overall, despite relying on a hardcoded socked destination, it still allows several concurrent daemon instances per user by varying the {{{mark(BQTI\_INSTANCE)}}} environment variable, which changes the underlining socket path. Which proves its usefulness on isolated testing environments and running parallel instances.
