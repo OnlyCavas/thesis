@@ -11,37 +11,56 @@
 :CUSTOM_ID: impl_bep_protocol
 :END:
 
-# explain how the protocol works under the hood
-# show diagram of the full explanation
-# show how I implemented it.
-#   1.1. Pipeline state machine [choked, interested, not interested, unchoke]
-#   1.2. Fill request [with bitfield, understand what to request next]
-#   1.3. Random and Sequence request for pieces
-#   1.4. How could get even better [improved, and remove free-riding [endgame mode, rarest first]]
+As explained on section [[#][Sota section]], BitTorrent wire protocol governs how peers negotiate availability and exchange piece data.
+
+# sequence diagram of BEP Exchange
+
+The connection process begins when an interested peer sends a handshake message containing both the torrent's {{{mark(info\_hash)}}} and {{{mark(peer identification)}}} (typically obtained via DHT), which the receiving counterpart validates both values before proceeding. If they are valid, both sides exchange the complete the handshake by acknowledges each other, establishing a channel for further protocol exchange. That said, each peer broadcast their bitfield, which is a compacted bitmap that indicates which pieces it currently holds, for an agreed {{{mark(info\_hash)}}}, allowing both sides to determine whether the counterpart has anything of interest.
+
+From that point forward, piece exchange becomes a simple four-state pipeline, exchange the following states ({{{mark(interested)}}}, {{{mark(not\_interested)}}}, {{{mark(unchoked)}}}, {{{mark(choked)}}}). A peer signals {{{mark(Interested)}}} when a remote holds a piece that it needs. The remote may respond back with {{{mark(Unchoke)}}} granting upload permission, or {{{mark(Choke)}}} to withhold data. Once {{{mark(unchoked)}}}, the request peer (the one who expressed interest) establishes a request pipeline, issuing up to *128 concurrent block request*. Depending on the piece size defined by the torrent metadata file, being the default {{{mark(piece\_size)}}} of 512 kilobytes, this typically translates to requesting approximately *4 to 5 concurrent pieces* at a time. Each request is selected sequentially from the difference between the remote's bitfield and the local peer's own bitfield, (e.g. pieces that the remote has that the local still needs). As each block arrives, it is validated and processed, and the pipeline is immediately refilled with the new requests in order to keep the bidirectional stream fully saturated. If a peer is choked all pending requests are cleared and the pipeline drains until the remote unchokes again.
+
+As described earlier, the current *bep router implementation* relies on a long-lived unidirectional *shared control stream* for handling the following messages: {{{mark(handshake)}}}, {{{mark(bitfield)}}}, {{{mark(unchoked)}}}, {{{mark(choked)}}}, {{{mark(interested)}}} and {{{mark(un\_interested)}}}. However, for higher throughput it dispatches several *bidirectional concurrent data streams* as it needs to maximize the throughput, while respecting BitTorrent protocol specifications, thus maintaining no more than 5 concurrent piece being streamed over to another swarm participant.
+
+It is worth pointing out that the current implementation requests pieces sequentially rather than using more advanced strategies, specified on [[#][sota_bt_stratagies]], such as {{{mark(rarest-first)}}}, {{{mark(endgame mode)}}}, or {{{mark(optimistic unchoking)}}}. The current design prioritizes simplicity and a stronger focus on the security aspects of the BitTorrent protocol over a full feature implementation of a BT client. Nevertheless, it still remains a fully functional BitTorrent proof-of-concept client, supporting multi-peer connections, concurrent multi-downloads, and seeding, while incorporating several mitigations against common attacks targeting real-world clients.
+
+*** Piece Substitution Mitigation
+:PROPERTIES:
+:CUSTOM_ID: impl_bep_piece_subs
+:END:
+
+While piece data is travelling through the wire a malicious peer can poison a download by serving pieces whose content doesn't match the torrent metadata or sending different pieces for the requested index. Thus, corrupting the file or stalling the download progress. A possible mitigation could be for every piece sent by a seeder would have to be signed before transmission and then verified by the receiver, thus ensuring that the piece data hasn't been tampered with. Although, signing the data alone would not suffice, for example an attacker could serve valid data with a different index. By including the piece index in the digest binds the signature to both the piece content and position. For this reason, a seeder computes an SHA256 digest over the concatenation of the piece index and its corresponding data, e.g. {{{mark(sha256( index | piece\_data ))}}}. Then, signs the result with its *Ed25519* private key, and appends its 64 byte signature to the final piece data payload and sends it over the wire.
+
+Once received by the downloader, it extracts the signature by querying the payload for the last 64 bytes and verifies the signature against the seeder's public key before accepting the piece. Since the signing key is the same that anchors the node's DHT identity, a fraudulent piece can be tracked to the corresponding seeder, which in the future could be leveraged to detect and downgrade its reputation level. After verifying the signature, the same hash is computed from the downloader side with known information {{{mark(sha256( local index | remote piece\_data ))}}}. If both hash match the piece is accepted and verified against the torrent metadata file, which will compute the hash of that data and compare it with the metadata's piece hash table. This ties piece integrity back to the identity model already established in [[#][Section X.X]].
 
 *** I/O operations
 :PROPERTIES:
 :CUSTOM_ID: impl_bep_io_operations
 :END:
 
-# explain how a file is read
-#   1. How does not impact a file be 10t large and still will load
-#   1. How does it read per block
-#   1. How does it write per block
-#   1. How it handles protocol binary dispatches
+After each piece is successfully verified against its corresponding hashing functions from the torrent metadata (hash function may depend on the torrent file version), it is marked as complete and set to be written on disk. A naive implementation for persisting data would be buffering the bytes as piece data arrives in memory and write the complete file to disk only once, after all pieces have been downloaded. Consequently, this approach would lead to a higher demand of memory and potentially crash, despite being acceptable for smaller files. To mitigate this, the client adopts different strategies depending on its current state.
+
+At *downloading state* before the session initiates any connection with a possible peer, it begins pre-allocating disk space and pre-creating the directories and files necessary consulting the torrent metadata, while caching its corresponding file pointer. As pieces start to arrive, and successfully accepted by the security measures they are forwarded to the writer which will write them at their file position according to their offset and length, until the last piece arrives. Once all files are successfully written the file handler is dropped and the session internal state shifts to *seeding*. By doing this the downloader may download a large quantity of data and the client will handle them accordingly, storing only the file pointer for further interaction. Pre-allocating the correct file structure creates less overhead while downloading focusing only on writing small portions of each file each time.
+
+#( citeme: nix )
+
+Also it is worth emphasising that all session data is stored under a dedicated internal directory, organized by torrent identity (e.g. {{{mark(info\_hash)}}}). For each active downloading session, the client pre-creates a directory at {{{mark(\$HOME\//.local\//share\//bqti\//downloads\//<info\_hash>\//)}}} containing the downloaded data, alongside the original {{{mark(.torrent)}}} metadata file and most importantly a {{{mark(.bqtiresume)}}} file responsible for tracking the current bitfield state. By establishing this structure, the client can perform the respective download within its protected environment, keeping itself contained per torrent. Thus, storing, managing session cache data, and making cleanup straightforward without risk of collision between concurrent downloads and user-managed directories. It is also worth mentioning that when the download finishes, the client notifies the user and creates a soft link named *download* pointing to the download internal location in order for the user to access the data. This, feature was inspired by *nix* that does a similar approach by letting users get the compiled result within nix internal structure.
+
+In a similar fashion, at the *seeding state* the implementation follows the same strategy for performance reasons. Rather than repeatedly opening individual or the full set of files for every incoming piece request from remote peers, which would translate on a high overhead and slow performance. The client opens all files once at the session start and maintains their file pointers in memory for the entire session lifespan, allowing fast, low-overhead data serving. However, this approach has a major flaw, if a user renames, moves or modifies a shared file externally during the session, the cached file pointers become invalid, potentially resulting in read failures or corrupted data being served to other peers.
+
+To solve this without introducing additional overhead, the client creates hard links pointing to the original files before reading any data from disk. As hard links are just directory entries pointing to the same inode, presenting very low memory cost, no copy overhead, and no performance drawback. These links are stored in the same dedicated internal directory (for example, on Linux: {{{mark(\$HOME\//.local\//share\//bqti\//uploads\//info\_hash\//)}}}). As a result, even if the user renames, moves, or modifies the original file, the client continues to access the data safely through the hard links, without being affected by external changes. Similarly, the seeding directory mirrors the same structure, storing the hard links to the original files, a {{{mark(.bqtiresume)}}} file tracking the verified piece state to avoid re-verification on restart, and the original {{{mark(.torrent)}}} metadata file.
 
 *** Session Management
 :PROPERTIES:
 :CUSTOM_ID: impl_bep_session_management
 :END:
 
-# explain how this bit torrent client state machine works
-# present state diagram:
-#   [Idle -> Downloading -> Idle ]
-#   [Idle -> Downloading -> Cancel ]
-#   [Idle -> Seeding -> Idle ]
-#   [Idle -> Seeding -> Cancel ]
-#   [Idle -> Downloading -> Seeding ]
+# show state transitions diagram
+
+As explained on the previous section, a torrent session occupies one of four states during its lifespan, without persisting internal data across transitions: {{{mark(Idle)}}}, {{{mark(Downloading)}}}, {{{mark(Seeding)}}}, or {{{mark(Cancel)}}}. Upon creation, a session always begins in the *idle state*, then transitions to the appropriate state based on the requested session purpose. Different from all the other states, the *idle state* acts as a neutral transition state, which is the only capable of preserving the last known state and its data. This choice was motivated by the need of implementing a pausing system, allowing the session transition to a stale state without losing the progress done on the previous one. From *idle state*, a session can transition to *downloading state*, where the node will start sending {{{mark(Interested)}}} request to the already known swarm participants, or directly to *seeding state*, where it verifies its inner data and starts serving.
+
+Once on *download state* the session will try to start and complete the download naturally transition to *seeding state* once it finish without returning to its stale state, *idle state*. Either active state (*download*, *seeding*) can be paused back to *idle state*, while presenting progress through the persisted bitfield, or be cancelled irreversibly, transitioning to its final state *cancel state*. Cancel state is a terminal state with no recovery path, optionally purging downloaded data.
+
+Building on this, a session is created once and held active for the entire client lifespan until explicitly cancelled. Each session is responsible for managing its own state and independently driving peer discovery. Upon start the session begins reading the bootstrap nodes embedded in the {{{mark(.torrent)}}} metadata and attempts to join the swarm through the DHT. From that point forward, peer discovery runs continuously on independent intervals: *querying the DHT for known peers*, *falling back to PEX gossip* for public torrents, and *announcing* the torrent to the DHT when in *seeding state*. In case DHT query returns no peers, the peer discovery mechanism enters a rebootstrap loop until it finds new peers, ensuring recovery from transient network partitions without requiring user intervention. On top of that, to expedite discovery and promote a quicker joining process to new added torrents, all sessions share an outer known peer knowledge. As a result, if one session discovers new peers for a specific {{{mark(.torrent)}}}, as a consequence all sessions acknowledge them and try to establish bep connection, by exchanging bitfields. As there only is a single QUIC connection per peer, isn't necessary to establish a new connection, only setting up a bep channel.
 
 ** IPC server/Client
 :PROPERTIES:

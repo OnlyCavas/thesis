@@ -184,6 +184,7 @@ proxychains
 qBittorrent
 qTorrent
 quicly
+rebootstrap
 retransmitted
 s
 sota
