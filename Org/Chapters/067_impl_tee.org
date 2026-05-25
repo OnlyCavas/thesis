@@ -1,5 +1,6 @@
-** TEE (KeyStone)
+** Trusted Execution Environment Integration
+
 :PROPERTIES:
-:CUSTOM_ID: impl_tee_keystone
+:CUSTOM_ID: impl_tee_integration
 :END:
 
