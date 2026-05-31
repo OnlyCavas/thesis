@@ -1,0 +1,103 @@
+** Scenario 1: Functional Validation
+:PROPERTIES:
+:CUSTOM_ID: eval_sn1
+:END:
+
+This scenario establishes the experimental baseline by verifying the functional correctness of the custom {{{mark(bqti)}}} BitTorrent client under non-adversarial conditions. The main objective is to evaluate whether a software-only client *leech-soft* executing on *Machine 2* and a virtualized hardware-isolated client *leech-tee* executing sensitive code operations within a Keystone enclave on *Machine 1* can successfully discover peers, perform mutual authentication, and complete a full file set transfer without data corruption.
+
+*** Swarm Bootstrapping and Peer discovery
+:PROPERTIES:
+:CUSTOM_ID: eval_sn1
+:END:
+
+Prior to any transfer, each joining node must solve a *difficulty = 24* proof-of-work puzzle. At this difficulty level, a node must find a nonce that satisfies $2^{24}$ leading zeros bits, which translates exactly to 16,777,216 SHA256 iterations. Considering only software operations on *Machine 1*, to establish a realistic baseline for X, we measure the execution time across three independent nodes.
+
+| Trial Node | Execution Time (ms) |
+|--------+---------|
+| node 1 | 1280 ms |
+| node 2 | 370 ms  |
+| node 3 | 901 ms  |
+| Sample Mean (x)   | ~850 ms |
+
+The sample mean for admission cost is {{{mark(850 ms)}}} per identity, also taking into consideration the variance between {{{mark(370 ms)}}} and {{{mark(1280 ms)}}}, which reflects the probabilistic nature of the nonce search. Considering an attacker best scenario, generating 1000 fake identities would require approximately {{{mark(6 minutes)}}} of CPU time, rising to {{{mark(1 hour and 2 minutes)}}} for a 10.000 fake identities. Extrapolating from this baseline across higher difficulty levels:
+
+| difficulty level  | bit shift | 1000 identities | 10 000 identities |
+|-------------------+-----------+---------------+-------------------|
+| 24 (Measured) | $2^{0}$ = 1   | 370 seconds (~6.2 min) | 1 hour and 2 minutes |
+| 28 (Inferred) | $2^{4}$ = 16  | 5 920 seconds (~1.6 hours) | 16 hours and 26.4 minutes |
+| 32 (Inferred) | $2^{8}$ = 256 | 94 720 seconds (~26.3 hours) | 11 days |
+
+Considering the results across the difficulty levels, *difficulty = 28* represents the optimal middle ground between usability and security in software only environment. As a result, a legitimate admission costs approximately {{{mark(5.9 seconds)}}} on a lucky scenario per node. Hence, acceptable for a one-time join operations and valid for a 30 minutes lifespan, which is the standard token validity issued by a bootstrap node. While, an attacker's best case for *10,000 fake identities* would certainly exceed {{{mark(16 hours)}}} of sustained CPU time, thus making a large-scale Sybil or derived attacks economically impractical without specialised hardware.
+
+Also, is worth noting that the measured times reflect software execution on Machine 1 (x86). While TEE-based proof-of-work within a Keystone RISC-V emulated environment will be significantly slower due the emulation overhead, making difficulty=24 already a heavier cost for TEE peers. However, in case of TEE peers the admission computational cost becomes secondary, because the attestation report already supplies the hardware-rooted identity guarantee that no computational cost could replicate. Despite, not be mandatory is still required making it an extra security layer over the default client.
+
+*** Secure File Transfer
+:PROPERTIES:
+:CUSTOM_ID: eval_sn1_secure_file_transfer
+:END:
+
+With swarm admission verified, this phase evaluates the end-to-end functional correctness of the data transfer pipeline across a heterogeneous swarm composed of both native software (*leech-soft*) and TEE (*leech-tee*) remote peers. To replicate a production-grade deployment scenario, an {{{mark(arch\_linux.iso)}}} image alongside its official cryptographic manifest {{{mark(sha256sum.txt)}}} serve as evaluation payload.
+
+Thus, configuring a testing environment to allow rigorously evaluate the client behaviour during an active file data transfer, and guaranteeing that the downloaded data actually matches with the given {{{mark(.torrent)}}} manifest and its reconstruction completes successfully without any data corruption.
+
+As previously stated in [[impl_kademlia_network_join][Section X.X]], any peer can act as a bootstrap node defining alone or with more nodes a swarm, being the swarm's trust anchor. Its configuration currently is done manually, generating a PGP key pair and signing its {{{mark(bqti)}}} CA root certificate with it. Once it generates the PGP signature, it will be automatically recognized as a bootstrapping node, then a swarm maintainer must load their PGP public key into the client and distribute it across all participating nodes prior to swarm initialisation.
+
+{{{figure(testbed/scone/001-bootstrap-ini.pdf, Bootstrap node loading PGP signed CA root certificate)}}}
+
+Once the bootstrap is active and running, the swarm maintainer is responsible for configuring the seeder by specifying the bootstrap node's IPv4 address as the swarm entry point. Also, it is worth mentioning that the client supports multiple bootstrap nodes, though for the test case only one is configured. That said, the seeder generates the {{{mark(.torrent)}}} metadata file from the target payload.
+
+#+BEGIN_EXPORT latex
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[b]{0.95\columnwidth}
+    \centering
+    \includegraphics[width=\textwidth]{testbed/scone/002-seeder-verify.pdf}
+    \caption{Seeder computing SHA1 piece hashes and verifying torrent manifest integrity.}
+  \end{subfigure}
+
+  \vspace{0.5em}
+
+  \begin{subfigure}[b]{0.95\columnwidth}
+    \centering
+    \includegraphics[width=\textwidth]{testbed/scone/003-seeder-expose.pdf}
+    \caption{Torrent manifest generation complete with magnet link exposed for peer discovery.}
+  \end{subfigure}
+  \caption{Seeder torrent manifest creation and announcement sequence.}
+  \label{fig:swarm-init}
+\end{figure}
+#+END_EXPORT
+
+Once built, the seeder detects the bootstrap node from that same manifest and initiates the admission process, by computing the proof-of-work and submitting its verification. In parallel, the manifest {{{mark(.torrent)}}} is shared among the other nodes for them to add to their download queue and begin the same admission process. Upon acceptance, the bootstrap issues a signed token to the callers, which will use the loaded PGP certificates to ensure that in fact that is a trustworthy bootstrap.
+
+{{{figure(testbed/scone/004-seeder-announce.pdf, Seeder completing bootstrap admission and announcing torrent to the DHT)}}}
+
+Meanwhile, the leecher will add the same {{{mark(.torrent)}}} manifest given by the seeder, and the BT state machine will automatically detect from the manifest file, a new possible bootstrap node and initiate the admission process. Once admitted, it will query the DHT in search of all possible nearest seeders with the torrent's info hash as the searching key. For each one found, it sends interest and awaits to be unchoked, once unchoked starts to fill its pipeline with request pieces with a maximum of 128 concurrent block pieces, as detailed in earlier sections.
+
+#+BEGIN_EXPORT latex
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[b]{0.95\columnwidth}
+    \centering
+    \includegraphics[width=\textwidth]{testbed/scone/005-leech-add.pdf}
+    \caption{Leech-soft adding the torrent to the download queue, info hash confirmed.}
+  \end{subfigure}
+
+  \vspace{0.5em}
+
+  \begin{subfigure}[b]{0.95\columnwidth}
+    \centering
+    \includegraphics[width=\textwidth]{testbed/scone/006-leech-download.pdf}
+    \caption{Leech-soft admitted to swarm, QUIC connection established, pieces downloading concurrently.}
+  \end{subfigure}
+  \caption{Leecher torrent manifest insertion and admission sequence.}
+  \label{fig:swarm-init}
+\end{figure}
+#+END_EXPORT
+
+Once the download is completed by verifying the last piece, the internal state machine will create on the user's current directory a symlink towards its internal downloads directory named *download*, similar to nix approach. Then, it transitions to seeder state reloading the inner files and creating the respective hard-links to them.
+
+{{{figure(testbed/scone/007-leech-transition.pdf, Download completing at 2949/2949 pieces, symlink created and state transitioning to seeding)}}}
+
+Finally, using the downloaded {{{mark(sha256sum.txt)}}} to verify the {{{mark(arch\_linux.iso)}}} confirming that the download completed successfully without any data corruption.
+
+{{{figure(testbed/scone/008-show-download.pdf, SHA256 verification confirming download integrity (archlinux-2026.05.01-x86\_64.iso: OK))}}}

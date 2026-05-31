@@ -1,0 +1,17 @@
+** Scenario 2: Adversarial Mitigation and Attack Detection
+:PROPERTIES:
+:CUSTOM_ID: eval_sn2
+:END:
+
+This scenario evaluates the effectiveness of the implemented security mitigations against three concrete attack vectors, as an example. Each attack is executed by a dedicated malicious peer compiled with the corresponding adversarial feature flag, leveraging the rust compiling system. The main objective is to demonstrate the security layers are modular and operate independently at their protocol boundaries, without modifying the honest client code. Hence, demonstrating where the attacks are caught and handled by the DHT layer and BEP layer, preventing threat actors to interact with the other extensions.
+
+| component  | details |
+|--------+----------+------------------|
+| {{{mark(Host OS)}}} (Machine 1) | Fedora Linux 43 ({{{latex(7.0.8-100.fc43.x86\_64)}}}) |
+| {{{mark(CPU / RAM)}}} (Machine 1) | 12th Gen Intel(R) Core(TM) i7-12700H / 16 GB (VT-x) |
+| {{{mark(Host OS)}}} (Machine 2) | Artix Linux ({{{latex(.12.x-artix-rolling)}}}) |
+| {{{mark(CPU / RAM)}}} (Machine 2) | AMD Ryzen 7 3700X / 32 GB (AMD-V, no TEE) |
+| {{{mark(Rust Toolchain)}}} | rustc 1.96.0-nightly (b41f22de2 2026-03-08)       |
+| {{{mark(Keystone VM)}}} (Machine 1)  | RISC-V emulation via QEMU       |
+| {{{mark(I2P daemon)}}}   | i2pd instance via Podman       |
+| {{{mark(Network)}}} | Local LAN between two physical machines |
