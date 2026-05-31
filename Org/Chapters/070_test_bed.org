@@ -3,3 +3,4 @@
 :CUSTOM_ID: test_bed
 :END:
 
+All scenarios are executed on a single host machine using a combination of local processes and virtual machines communicating over the loopback interface. This setup is sufficient to demonstrate the correctness of the protocol stack, peer discovery, authentication mechanisms, and TEE integration without requiring a physical distributed network. For scenarios involving I2P, a dedicated i2pd instance is deployed via Docker, proxying QUIC traffic through the SAM bridge locally. Each node runs as an independent {{{mark(bqti)}}} daemon instance, isolated by distinct socket paths via the {{{mark(BQTI\_INSTANCE)}}} environment variable.
