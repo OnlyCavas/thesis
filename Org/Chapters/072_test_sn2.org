@@ -3,15 +3,79 @@
 :CUSTOM_ID: eval_sn2
 :END:
 
-This scenario evaluates the effectiveness of the implemented security mitigations against three concrete attack vectors, as an example. Each attack is executed by a dedicated malicious peer compiled with the corresponding adversarial feature flag, leveraging the rust compiling system. The main objective is to demonstrate the security layers are modular and operate independently at their protocol boundaries, without modifying the honest client code. Hence, demonstrating where the attacks are caught and handled by the DHT layer and BEP layer, preventing threat actors to interact with the other extensions.
+This scenario evaluates the effectiveness of the implemented security mitigations against three concrete attack vectors, as an example. Each attack is executed by a dedicated malicious peer compiled with the corresponding adversarial feature flag, leveraging the rust compiling system. The main objective is to demonstrate the security layers are modular and operate independently at their protocol boundaries, without modifying the honest client code. Hence, demonstrating where the attacks are caught and handled by the DHT layer and BEP layer, preventing adversarial nodes to interact with the other extensions.
 
-| component  | details |
+| Attack vectors  | Feature flags | Defense layers | Mitigation actions |
 |--------+----------+------------------|
-| {{{mark(Host OS)}}} (Machine 1) | Fedora Linux 43 ({{{latex(7.0.8-100.fc43.x86\_64)}}}) |
-| {{{mark(CPU / RAM)}}} (Machine 1) | 12th Gen Intel(R) Core(TM) i7-12700H / 16 GB (VT-x) |
-| {{{mark(Host OS)}}} (Machine 2) | Artix Linux ({{{latex(.12.x-artix-rolling)}}}) |
-| {{{mark(CPU / RAM)}}} (Machine 2) | AMD Ryzen 7 3700X / 32 GB (AMD-V, no TEE) |
-| {{{mark(Rust Toolchain)}}} | rustc 1.96.0-nightly (b41f22de2 2026-03-08)       |
-| {{{mark(Keystone VM)}}} (Machine 1)  | RISC-V emulation via QEMU       |
-| {{{mark(I2P daemon)}}}   | i2pd instance via Podman       |
-| {{{mark(Network)}}} | Local LAN between two physical machines |
+| Token Forgery Attack  | {{{mark(ml\_forge\_token)}}} | DHT admission  | Connection closed |
+| Replay Attack  | {{{mark(ml\_replay\_token)}}} | DHT admission  | Connection closed |
+| Piece Substitution Attack  | {{{mark(ml\_piece\_sub)}}} | BEP piece verification  | Piece dropped |
+
+*** Token Forgery Attack
+:PROPERTIES:
+:CUSTOM_ID: eval_sn2_token_forgery
+:END:
+
+During the previous test case, the malicious remote peer already compiled with the following feature flag {{{mark(ml\_forge\_token)}}} was waiting for the manifest file, to be able to establish a connection with the target swarm. Notably, without at least doing the admission proof once and submitting it honestly gaining its way into the swarm, the adversarial peer doesn't know the bootstrap public key. Depending on the bootstrap identity mode, the public key is transient on software-only devices, changing on every restart. While TEE-capable bootstraps retain the same key since the sealing key is hardware-bound.
+
+{{{figure(testbed/stwo/009-mal-add-torrent.pdf, Malicious peer compiled with ml\_forge\_token adding the target torrent to its download queue)}}}
+
+Once its admitted into the swarm network at least once, queries the network using the information gathered from the torrent's manifest, and challenges the seeder with a self-signed fabricated token. During the initial handshake, the seeder queries the received token for the {{{mark(swarm\_id)}}}, which is the SHA256 hash of the swarm's public known PGP certificate, that must be loaded by the seeder before swarm admission. In either case, the connection is terminated, preventing the malicious peer from further interaction, if none of the loaded certificate hashes match the token's {{{(mark(swarm\_id)}}} or if the signature verification fails with the correct swarm's PGP public key.
+
+#+BEGIN_EXPORT latex
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[b]{0.95\columnwidth}
+    \centering
+    \includegraphics[width=\textwidth]{testbed/stwo/010-seeder-detected.pdf}
+    \caption{Seeder detecting and rejecting forged token, \texttt{attack="token\_forgery"} logged, QUIC connection terminated immediately.}
+  \end{subfigure}
+
+  \vspace{0.5em}
+
+  \begin{subfigure}[b]{0.95\columnwidth}
+    \centering
+    \includegraphics[width=\textwidth]{testbed/stwo/011-mal-rejected.pdf}
+    \caption{Malicious peer solving PoW honestly, then activating token forgery, forged token stored, DHT connections closed by honest peers upon detection.}
+  \end{subfigure}
+
+  \caption{Detection on the seeder side and failed DHT operations on the malicious peer side.}
+
+  \label{fig:swarm-init}
+\end{figure}
+#+END_EXPORT
+
+That said, during the rest of the test case the malicious peer enters a loop trying to reconnect and challenge the bootstrap once again, but failing consecutively to authenticate with the seeder being rejected from the routing table each time.
+
+*** Replay Token Attack
+:PROPERTIES:
+:CUSTOM_ID: eval_sn2_replay_token
+:END:
+
+Analogously, the previous adversarial instance is terminated and recompiled with the {{{mark(ml\_replay\_token)}}} flag. As a result, it simulates a peer intercepting another peer's token and replaying it back to an available seeder. Instead of actually capturing a valid token, a replay malicious peer during the initial P2P handshake concatenates a random challenge, ignoring completely the one given by the challenger. As a result, sending the bootstrap valid token along with the random challenge and the signature of their concatenation, back to the seeder (challenger).
+
+{{{figure(testbed/stwo/012-seeder-interceptiong-replay.pdf, Seeder detecting replay attack, ownership proof failed, attack="token\_replay" logged, connection terminated)}}}
+
+Upon receiving the handshake submission, the seeder recomputes the expected signature by concatenating the token hash with the challenge it had established. Since the malicious peer randomly picked a nonce instead of the real challenge, the signature verification fails. Furthermore, even considering a real world scenario where an adversary intercepts a valid handshake submission, the replay could still fail. Since the nonce is single-use and the signature is bound to the DHT identity of the original peer private key, the attacker cannot produce a valid signature over the correct challenge without that key.
+
+{{{figure(testbed/stwo/013-replay_failed.pdf, Malicious peer submitting forged nonce, skipping handshake, thus being removed from routing table after consecutive rejections)}}}
+
+Currently, both bootstrap admission and P2P authentication challenges have a window of 30 seconds and are bound to the DHT identity and their IPv4, short enough to attest peers and protect against these types of attacks. Therefore, successfully rejecting their further interaction among swarm participants and forcing any attacker to solve a fresh proof-of-work for legitimate admission.
+
+*** Piece Substitution Attack
+:PROPERTIES:
+:CUSTOM_ID: eval_sn2_piece_subs_attack
+:END:
+
+This section assumes that the adversarial remote peer is already legitimately bootstrapped and authenticated with a leecher peer, that is requesting a pipeline of sequential pieces to be downloaded. That said, the previous adversarial instance is terminated and recompiled with {{{mark(ml\_piece\_sub)}}} modifying the default seeding behaviour. Instead of correctly seeding the piece data along with its matching piece index, ({{{mark(sha256( index | piece data ))}}}) tries to deceive the leecher by randomizing the piece index. Thus, simulating a piece substitution attack to destabilise the piece pipeline and corrupting the data, making the leecher struggle to obtain all the pieces.
+
+On top of that, the leeching node is compiled with TEE capabilities and run within a Keystone RISC-V virtual machine. Therefore, proving that both software-only and TEE-capable nodes can coexist within the same swarm, with different attestation levels that will be shown as the test cases evolve.
+
+{{{figure(testbed/stwo/014-bootstrap-attestation.pdf, TEE leecher remote attestation verified, manifest resolved to expect measurement *0x4855bd98*, hardware attestation *report accepted*)}}}
+@@latex:\label{fig:attestation}@@
+
+Both peers begin by being admitted within the swarm, proving themselves to the bootstrap node. Different from the malicious node, the leecher is attributed a higher trust level, as is seen on Figure @@latex:\ref{fig:attestation}@@. Upon admission the leecher queries the DHT for available seeding nodes, later starting the download pipeline. For each received piece data the leecher verifies its hash concatenation {{{mark(sha256( index | piece data ))}}} with the locally cached piece index. Failing the match, the leecher automatically rejects the piece, discarding it and requesting a replacement.
+
+{{{figure(testbed/stwo/015-sig-failed.pdf, TEE leecher detecting piece substitution attack, consecutive piece signature verification failures)}}}
+
+Across all three attack vectors, the security mitigations operated as designed. Admission attacks were intercepted at the DHT layer prevention a adversarial peer from further interaction with the rest of the implemented protocol extensions. Also, preventing attacks at piece level corruption without stalling the download or requiring manual intervention. The applied layered design ensures that compromising one layer does not cascade into the others, keeping the modularity claim as established in [[#poc_design_goals][Section X.X]].
