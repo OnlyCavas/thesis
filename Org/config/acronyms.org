@@ -1,4 +1,11 @@
 #+INCLUDE: "macros.org"
 
 {{{setac(bt, BT, Bit Torrent)}}}
+{{{setac(rf, RF, Rarest First)}}}
+{{{setac(tft, TFT, Tit-for-Tat)}}}
+{{{setac(dht, DHT, Distributed Hash Table)}}}
+{{{setac(pex, PEX, Peer Exchange)}}}
+{{{setac(pt, PT, Private Trackers)}}}
+{{{setac(sre, SRE, Sharing Rario Enforcement)}}}
+{{{setac(pow, PoW, Proof of Work)}}}
 {{{setac(tee, TEE, Trusted Execution Environment)}}}

@@ -31,7 +31,15 @@
   urldate = {2026-03-03}
 }
 
-@inproceedings{bt_pex_002,
+@misc{bt_002,
+  author  = {Loewenstern, Andrew and Petru, Arvid},
+  title   = {UDP Tracker Protocol for BitTorrent (BEP 15)},
+  year    = {2008},
+  url     = {https://www.bittorrent.org/beps/bep_0015.html},
+  urldate = {2026-02-04}
+}
+
+@inproceedings{bt_pex_003,
   title={Understanding Peer Exchange in BitTorrent Systems},
   ISSN={2161-3567},
   url={https://ieeexplore.ieee.org/document/5569967/},
@@ -42,6 +50,100 @@
   year={2010},
   month=aug,
   pages={1–8}
+}
+
+@inproceedings{kademlia_2002,
+  author = {Maymounkov, Petar and Mazi\`{e}res, David},
+  title = {Kademlia: A Peer-to-Peer Information System Based on the XOR Metric},
+  year = {2002},
+  isbn = {3540441794},
+  publisher = {Springer-Verlag},
+  address = {Berlin, Heidelberg},
+  abstract = {We describe a peer-to-peer distributed hash table with provable consistency and performance in a fault-prone environment. Our system routes queries and locates nodes using a novel XOR-based metric topology that simplifies the algorithm and facilitates our proof. The topology has the property that every message exchanged conveys or reinforces useful contact information. The system exploits this information to send parallel, asynchronous query messages that tolerate node failures without imposing timeout delays on users.},
+  booktitle = {Revised Papers from the First International Workshop on Peer-to-Peer Systems},
+  pages = {53–65},
+  numpages = {13},
+  series = {IPTPS '01}
+}
+
+@article{bt_004,
+  title={Securing BitTorrent using a new reputation-based trust management system},
+  volume={6},
+  ISSN={1936-6450},
+  url={https://doi.org/10.1007/s12083-012-0141-y},
+  DOI={10.1007/s12083-012-0141-y},
+  abstractNote={Nowadays, BitTorrent as a means of sharing files has become highly popular among internet users. However, due to the open nature of BitTorrent protocol and lack of any security mechanism, number of attacks against BitTorrent has significantly increased. Sybil, Collusion, Lying-Piece, Fake-Block, and Chatty-Peer are attack types which have been considered in this paper to secure BitTorrent against them. These attacks can decrease the download performance of BitTorrent clients considerably. In this paper a new reputation based trust management system to cover aforementioned attack types is presented. The proposed approach calculates a local score at peers and a global score at the tracker for each peer. First, peers are sorted according to their cumulative score at the tracker and then top 10 % of these peers are used to determine other peers global score. These local and global scores are used to find attackers. In addition, a novel formula has been utilized to calculate peers local score. Using the global score concept makes our mechanism robust and swift to detect collusion attack which has not been considered in most of similar previous works. In order to evaluate the effectiveness of the proposed system, several simulation and real experiments in the Emulab testbed were performed. The outcomes indicate that our method is highly effective in detection of rogue peers and Free-Riders; moreover, performance of honest peers has significantly improved.},
+  number={1},
+  journal={Peer-to-Peer Networking and Applications},
+  author={Shafiee Sarjaz, Behrooz and Abbaspour, Maghsoud},
+  year={2013},
+  month=mar,
+  pages={86–100},
+  language={en}
+}
+
+@inproceedings{bt_006_4,
+  author    = {Chen, X. and Chu, X.-W. and Liu, J.},
+  title     = {Unveiling Popularity of BitTorrent Darknets},
+  booktitle = {IEEE Global Communications Conference (GLOBECOM)},
+  year      = {2010},
+  month     = dec,
+  address   = {Miami, FL, USA},
+  url       = {https://www.comp.hkbu.edu.hk/~chxw/p2p_2010.pdf}
+}
+
+@article{bt_005,
+  title = {Characterization of BitTorrent swarms and their distribution in the Internet},
+  journal = {Computer Networks},
+  volume = {55},
+  number = {5},
+  pages = {1197-1215},
+  year = {2011},
+  issn = {1389-1286},
+  doi = {https://doi.org/10.1016/j.comnet.2010.11.011},
+  url = {https://www.sciencedirect.com/science/article/pii/S1389128610003622},
+  author = {Tobias Hoßfeld and Frank Lehrieder and David Hock and Simon Oechsner and Zoran Despotovic and Wolfgang Kellerer and Maximilian Michel},
+  keywords = {BitTorrent, Measurements, Application layer traffic optimization},
+  abstract = {The optimization of overlay traffic resulting from applications such as BitTorrent is a challenge addressed by several recent research initiatives. However, the assessment of such optimization techniques and their performance in the real Internet remains difficult. Despite a considerable set of works measuring real-life BitTorrent swarms, several characteristics of those swarms relevant for the optimization of overlay traffic have not yet been investigated. In this work, we address this lack of realistic swarm statistics by presenting our measurement results. In particular, we provide a statistical characterization of the swarm sizes, the distribution of peers over autonomous systems (AS’s), the fraction of peers in the largest AS, and the size of the shared files. To this end, we consider different types of shared content and identify particular characteristics of regional swarms. The selection of the presented data is inspired by ongoing discussions in the IETF working group on application layer traffic optimization (ALTO). Our study is intended to provide input for the design and the assessment of ALTO solutions for BitTorrent, but the applicability of the results is not limited to that purpose.}
+}
+
+@inproceedings{bt_006,
+  title={Improving Sustainability of Private P2P Communities},
+  ISSN={1095-2055},
+  url={https://ieeexplore.ieee.org/abstract/document/6005944},
+  DOI={10.1109/ICCCN.2011.6005944},
+  abstractNote={Private P2P communities, as known as “BitTorrent Darknets” or “Private Trackers (PTs)”, have received much attention in the research community recently. The downloading performance in PTs with high Seeder-to-Leecher Ratio (SLR) is much better than in public P2P communities because PTs deploy auxiliary Share Ratio Enhancement (SRE) mechanism. Nevertheless, though high SLR can benefit leechers, it will result in “Poor Downloading Motivation” problem to members who want to increase their share ratio in order to safely survive. This problem may discourage PT members’ activity. To improve sustainability of PTs, we adopt Predator-Prey model in ecology to analysis high SLR phenomenon, study the optimal stable SLR range to PTs and solve the above problem. Experiments verify our model and provide insight to study PTs.},
+  booktitle={2011 Proceedings of 20th International Conference on Computer Communications and Networks (ICCCN)},
+  author={Chen, Xiaowei and Chu, Xiaowen and Li, Zongpeng},
+  year={2011},
+  month=july,
+  pages={1–6}
+}
+
+@inproceedings{bt_007,
+  title={Identifying, analyzing, and modeling flashcrowds in BitTorrent},
+  ISSN={2161-3567},
+  url={https://ieeexplore.ieee.org/abstract/document/6038742},
+  DOI={10.1109/P2P.2011.6038742},
+  abstractNote={Flashcrowds - sudden surges of user arrivals - do occur in BitTorrent, and they can lead to severe service deprivation. However, very little is known about their occurrence patterns and their characteristics in real-world deployments, and many basic questions about BitTorrent flashcrowds, such as How often do they occur? and How long do they last?, remain unanswered. In this paper, we address these questions by studying three datasets that cover millions of swarms from two of the largest BitTorrent trackers. We first propose a model for BitTorrent flashcrowds and a procedure for identifying, analyzing, and modeling BitTorrent flashcrowds. Then we evaluate quantitatively the impact of flashcrowds on BitTorrent users, and we develop an algorithm that identifies BitTorrent flashcrowds. Finally, we study statistically the properties of BitTorrent flashcrowds identified from our datasets, such as their arrival time, duration, and magnitude, and we investigate the relationship between flashcrowds and swarm growth, and the arrival rate of flashcrowds in BitTorrent trackers. In particular, we find that BitTorrent flashcrowds only occur in very small fractions (0.3-2%) of the swarms but that they can affect over ten million users.},
+  booktitle={2011 IEEE International Conference on Peer-to-Peer Computing},
+  author={Zhang, Boxun and Iosup, Alexandru and Pouwelse, Johan and Epema, Dick},
+  year={2011},
+  month=aug,
+  pages={240–249}
+}
+
+@inproceedings{bt_008,
+  title={A Measurement Study of Attacks on BitTorrent Seeds},
+  ISSN={1938-1883},
+  url={https://ieeexplore.ieee.org/abstract/document/5963011},
+  DOI={10.1109/icc.2011.5963011},
+  abstractNote={We study a natural and potentially devastating attack against BitTorrent, namely, attacking the initial seed in a torrent’s early stages. The goal of this attack is to diminish the seed’s ability to upload blocks. If the attacker can discover and react quickly enough to the new torrent, it can possibly “nip the torrent in its bud,” preventing all of the leechers from obtaining the entire file. We consider two natural seed attacks: the bandwidth attack and the connection attack. We take a three-prong approach to analyze these attacks. First, we actually launch and measure the attacks using popular BitTorrent seeds (Azureus, uTorrent, and BitTornado). To this end, because we do not want to interfere with torrents in the wild, we have created our own private torrents within PlanetLab. Second, to gain insight into our empirical results, we carefully analyze the connection management and seeding algorithms in open-source BitTorrent seeds. Third, we construct a simple fluid model which provides additional insights into the empirical results. We have discovered that the three BitTorrent seeds investigated are quite resilient to such an attack. The observations and conclusions in this paper can help P2P developers design highly-resilient P2P systems.},
+  booktitle={2011 IEEE International Conference on Communications (ICC)},
+  author={Dhungel, Prithula and Hei, Xiaojun and Wu, Di and Ross, Keith W.},
+  year={2011},
+  month=june,
+  pages={1–5}
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}

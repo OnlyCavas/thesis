@@ -3,7 +3,7 @@
 :CUSTOM_ID: torrent_specification
 :END:
 
-Before any peer can join the *swarm* (the group of peers sharing a specific file or set of files), it needs to know on how to interact with the *BitTorrent* network and locate the desired content. To achieve this, it relies on a *Metadata File*, that is also known as *.torrent*. The *.torrent* file is encoded using *Bencoding*, a simple, binary-safe serialization format designed specifically for Bit Torrent. It basely supports four data types:
+Before any peer can join the *swarm* (the group of peers sharing a specific file or set of files), it needs to know how to interact with the *BitTorrent* network and locate the desired content. To achieve this, it relies on a *metadata file* also known as *.torrent*. The *.torrent* file is encoded using *bencoding*, a simple, binary-safe serialisation format designed specifically for BitTorrent. It supports four data types:
 
   + byte *strings*, which are length-prefixed base ten, separated by a colon and the value. Like: 4:spam:corresponds
 
@@ -13,8 +13,7 @@ Before any peer can join the *swarm* (the group of peers sharing a specific file
 
   + *dictionary*, these are encoded by an initial *'d'* followed by the list of alternating keys and their respective values. Like: d3:cow3:moo4:spam4:eggse
 
-
-The entire metadata file is a single *bencoded dictionary* containing the essential information about the swarm, which includes:
+The entire manifest file is a single *bencoded dictionary* containing the essential information about the swarm, which includes:
 
 *Metadata* about the shared file(s):
 
@@ -22,111 +21,74 @@ The entire metadata file is a single *bencoded dictionary* containing the essent
 
   + *Info*:
 
-    + *name*: UTF-8 encoded string, that normally stores the name of the file(s) or directory. But is only visual
+    + *name*: UTF-8 encoded string, that normally stores the name of the file(s) or directory. But it is only visual
 
-    + *piece length*: it's a map to the number of bytes in each piece. Normally, files are split into fixed-size chunks in order to be downloaded in stream, this section holds the fixed-size for each piece, with the exception of the last that may be truncated. Its value is almost always, 2 ^ 18 = 256 K.
+    + *piece length*: a map to the number of bytes per piece. Normally, files are split into fixed-size chunks for download in a stream. This section holds the fixed size for each piece, except for the last, which may be truncated. Its value is almost always $2^{18}$ = 256 KB.
 
-    + *pieces*: it's a map that keeps record of the chunk SHA-1 hash, that corresponds to the index. This facilitates both pieces of identifying and fetching the pieces inside the swarm, and to verify the integrity of the file(s).
+    + *pieces*: it's a map that records the chunk's SHA-1 hash, which corresponds to the index. This facilitates both identifying and retrieving the pieces within the swarm and verifying the integrity of the file(s).
 
-    + *length*: this key is only used, when the download is one file. Also, it maps the length of the file, in bytes.
+    + *length*: this key is used only when the download is a single file. Also, it maps the file's length in bytes
 
-    + *files*: in case of be more than one file, this key is used.
+    + *files*: in case there is more than one file, this key is used.
 
-    + *path*: it represents a list of UTF-8 encoded strings that corresponds to subdirectories names, which the last is the actual filename. Which means that a *zero length* list represents an error.
+    + *path*: it represents a list of UTF-8-encoded strings that correspond to subdirectory names, with the last one being the actual filename, a *zero-length* list represents an error.
 
-
-Taking a deeper insight inside of Bit Torrent's *peer protocol*, we can observe that it operates over *TCP* or *uTP*. Also, peer connections are *symmetrical*. Which means, that *messages* sent in both directions look the same. The peer protocol checks the look up table stored inside of the metadata file, *.torrent*, and selects the pieces by their index, starting at zero. When one finish downloading a piece and checks that the hash matches, it than announces it to its peers.
+Taking a deeper insight into BitTorrent's *peer protocol*, we can observe that it operates over *TCP* or *uTP*. Also, peer connections are *symmetrical*, meaning that *messages* sent in both directions look the same. The peer protocol checks the lookup table in the metadata file *.torrent* and selects pieces by their index, starting at zero. When one finishes downloading a piece and checks that the hash matches, it then announces it to its peers.
 
 *** uTP (UDP Tracker Protocol)
 :PROPERTIES:
 :CUSTOM_ID: utp_tracker
 :END:
 
-BitTorrent clients typically communicate with trackers using HTTP over TCP, following a specified *Peer Discovery Mechanism*available on the *metadata file* (.torrent). However, this approach isn't ideal and brings significant protocol overhead.
+BitTorrent clients typically communicate with trackers using HTTP over TCP, following the specified *Peer Discovery Mechanism* available in the *metadata file* (.torrent). However, this approach isn't ideal and brings significant protocol overhead.
 
-# (citeme: utp 010)
+At the Ethernet layer, each packet carries about 14 bytes of overhead; at the IP layer, about 20 bytes; at the TCP layer, about 20 bytes; and then an additional overhead at the Application Layer (HTTP). For example, a typical request and response, such as a tracker query to return a list of peers, {{{citep(bt_002)}}} requires about 10 packets and roughly 1206 bytes in total.
 
-At the Ethernet layer, each packet carries about 14 bytes of overhead, at IP layer about 20 bytes, at the TCP layer about 20 bytes and then an additional overhead at the Application Layer (HTTP). For example, a typically request and response, like a tracker queries to return a list of peers, accordingly [cite] requiring about 10 packets and roughly 1206 bytes in total.
+Switching over to a UDP-based protocol will substantially decrease overhead. As a UDP tracker protocol, it uses only 4 packets and approximately 618 bytes for a similar operation, thereby reducing overall traffic volume by about 50%. For individual clients, this saves roughly 1 KB per hour, which is almost nothing. However, as *trackers* serve millions of peers, they manage a load reduction of about 50%, highly improving performance per peer.
 
-By switching over to a UDP-based protocol will substantially decrease overhead. As a UDP tracker protocol, uses only 4 packets and approximately 618 bytes for a similar operation, thus achieving a reduction of about 50% in overall traffic volume. For an individual clients, this ends up saving roughly 1 KB per hour which is almost nothing. However, as *trackers* serve millions of peers, then manage a load reduction of about 50%, highly improving performance per peer.
-
-Moreover, a *UDP based* protocol doesn't need connection establishment, tear down, and complex parsing of HTTP headers. This approach simplifies tracker implementation, requiring less code, reduces CPU and memory demands, and improves overall performance and scalability. On the other hand, UDP is an unreliable, connectionless protocol that lacks a builtin retransmission's of packages and congestion control features, that are present in TCP. Because of this, the application layer must implement these features itself, and audit reliability and fairness oversharing bandwidth.
+Moreover, a *UDP-based* protocol doesn't require connection establishment, teardown, or complex parsing of HTTP headers. This approach simplifies tracker implementation, requiring less code, reducing CPU and memory demands, and improving overall performance and scalability. On the other hand, UDP is an unreliable, connectionless protocol that lacks built-in retransmission of packets and congestion control features, which are present in TCP. Because of this, the application layer must implement these features itself and audit the reliability and fairness of bandwidth sharing.
 
 *** Connection State
 :PROPERTIES:
 :CUSTOM_ID: connection_state
 :END:
 
-# (citeme - 001_torrent)
-Moreover, each connection contains two bits of state in either end:
+Each connection contains two bits of state at either end {{{cite(bt_001)}}}:
 
-  # maybe interconnect to chocking algorithm
-  + *Choked*: Which is a notification, that effectively indicates that no further data will be sent until the unchoking process happens. Knowing this, Data transfer takes place whenever one side is interested and the other side is not chocking.
+  + *Choked*: Notifies the remote peer of the end of the data stream until further unchoking occurs. Data transfer occurs only when one side is interested, and the other is not choking.
 
-  + *Interested*: Interest state must be keep up to date at all times. Whenever a downloader doesn't have something they currently would ask a peer for in unchoked, they must express lack of interest, despite being choked. Despite being tricky t implement, makes it possible for *downloaders* to know which peers will start downloading immediately after being unchoked.
+  + *Interested*: Tracks whether a peer actually wants pieces from its connected neighbour. A leecher must maintain a lack of interest whenever it doesn't have anything to request from a remote peer, even when in a choked state. Therefore, allowing remotes to quickly detect which neighbours will begin leeching immediately after unchoking.
 
-  Once a connection is started by a peer, it starts out choked and not interested. Then, when data is being transferred, *downloaders* should keep several piece request queued up at once in order to get good *TCP performance*, this process is called *pipelining*. On the other side, requests which can't be written out to the TCP buffer immediately should be queued up in memory rather than kept in an application-level network buffer. So they can all be thrown out when a choke happens.
-
-*** Pipelining and Performance
-:PROPERTIES:
-:CUSTOM_ID: pipelining_performance
-:END:
-
-# maybe not put his, it feels not that important, or could be an image or code
-  The ongoing peer wire protocol consists of a handshake followed by a never-ending stream of length-prefixed messages. The handshake starts with character nineteen (decimal) followed by the string 'Bit Torrent protocol'. The leading character is a length prefix, put there in the hope that other new protocols may do the same and thus be trivial distinguishable from each other.
-
-  All later integers sent in the protocol are encoded as four bytes big-endian.
-
-  After the fixed headers come eight reserved bytes, which are all zero in all current implementations
-
-  Next comes the 20 byte SHA1 hash of the bencoded form of the info value from the metainfo file. (This is the same value which is announced as info_hash to the tracker, only here it's raw instead of quoted here). If both sides don't send the same value, they sever the connection. The one possible exception is if a downloader wants to do multiple downloads over a single port, they may wait for incoming connections to give a download hash first, and respond with the same one if it's in their list.
-
-  After the download hash comes the 20-byte peer id which is reported in tracker requests and contained in peer lists in tracker responses. If the receiving side's peer id doesn't match the one the initiating side expects, it severs the connection.
-
-  That's it for handshaking, next comes an alternating stream of length prefixes and messages. Messages of length zero are keepalives, and ignored. Keepalives are generally sent once every two minutes, but note that timeouts can be done much more quickly when data is expected.
-# maybe not put his, it feels not that important, or could be an image or code
-
-
+Once a peer initiates a connection, it defaults its inner state to choked and uninterested. Then, after connecting to a remote peer and receiving an unchoke, it loads the pipeline with missing pieces, thereby optimising the underlying transport-layer performance. On the other hand, requests that can't be written to the TCP buffer immediately should be queued in memory rather than kept in an application-level network buffer. So they can all be thrown out when a choke happens.
 
 *** Rarest First
+:PROPERTIES:
+:CUSTOM_ID: bt_rarest_first_sota
+:END:
 
-# (citeme: 000 this is the first paper i ever read, the one who start it all!)
+BitTorrent motivates peers to keep contributing to the network and maintain overall reciprocity within the swarm through several key mechanisms, one of which is the {{{gls(rf)}}} piece selection strategy {{{citep(bt_001)}}}.
 
-BitTorrent motivates peers to keep contributing to the network and maintain overall reciprocity within the swarm through several key mechanisms, one of which being the *Rarest First* (RF) piece selection strategy.
+In the BitTorrent protocol, when selecting pieces for the next request, peers often prioritise the *rarest piece* among their connected neighbours, typically the piece held by the fewest peers in their local cluster within the swarm. Moreover, the "local rarest first" approach has several benefits. Ensuring that peers can acquire unique or uncommon pieces, allowing them to upload them later back to the network and propagate these rare pieces further, thus improving overall reciprocity chances.
 
-The BitTorrent's protocol, when selecting pieces to the next request, peers often prioritize the *rarest piece* among their connected neighbours, typically the pieces held by the fewest peers in their local cluster within the swarm. Moreover, the "local rarest first" approach have several benefits. As ensuring that peers are able to acquire unique or uncommon pieces, allowing for them to later upload them back to the network, propagating further this rarest pieces, thus improving overall reciprocity chances.
+By spreading rare pieces more efficiently, it reduces the likelihood that a single piece becomes unavailable, thereby mitigating the risk that a seeder departs from the swarm. Also, common pieces are deferred until later to prevent redundant downloads from the seeder and to allow it to propagate more chunks to more leechers efficiently.
 
-By spreading rare pieces more efficiently, it reduces the likelihood that individual piece become unavailable, thus trying to mitigate whether a seeder departs from the swarm. Also, common pieces are deferred until later, trying to prevent redundant downloads from the seeder and allowing it to propagate more chunks and to more leechers efficiently.
+In swarms with increased constraints, imbalance due to a low quantity of seeders and a high amount of leechers, the rarest-first algorithm significantly outperforms naive sequential or random peer selection. When many leechers concurrently request the same piece from the seeder, redundant transfers occur, wasting resources. Instead, the rarest-first algorithm tries to motivate peers to fetch different pieces from other peers, thus further distributing the load among low-consumption seeders.
 
-In swarms with increase constrains, imbalance by low quantity of seeders and high amount of leechers, rarest first algorithm significantly outperforms naive sequential or random peer selection. In case of many leechers concurrently request the same piece from the seeder, redundant transfers take place wasting resources. Instead, the rarest first algorithm tries to motivate peers to fetch different pieces from other peers, thus distributing further the load between low consumed seeders.
+This approach is paramount when the original seeder goes offline, leaving the torrent in an uncertain state where a swarm may lack the pieces needed to complete a file download, rendering it irrecoverable. Therefore, *Rarest First* mitigates this by aggressively replicating the scarcest pieces first, thereby minimising the risk of piece loss and substantially enhancing swarm scalability.
 
-This is paramount when the original seeder goes offline, condemning the torrent to an uncertain state, where a swarm may not be able to have all the pieces necessary to complete a file download, marking that torrent as irrecoverable. Therefore, *Rarest First* mitigates this by aggressively replicating the scarcest pieces first, thereby minimizing the chance of piece loss and enhancing swarm scalability and substantially.
-
-In order to solve this issue, a client initially selects random pieces until at least has completed one full piece, in some implementations 4 pieces are chosen randomly. Once a peer has something to offer, it switch's back to the standard rarest piece implementation. Therefore, solving the issue when a peer has no pieces yet, which blocks him to upload to the network, therefore can't benefit from reciprocity. Hence, this algorithm promotes piece diversity over the swarm, reduces dependency on seeders, and distributes to further peers scarcest pieces, greatly improving swarm robustness and scalability.
-
+To solve this issue, a client initially selects random pieces until at least one full piece is completed. In some implementations, 4 pieces are chosen randomly. Once a peer has something to offer, it switches back to the standard rarest piece implementation. Therefore, solving the issue when a peer has no pieces yet, which blocks him from uploading to the network, prevents him from benefiting from reciprocity. Hence, this algorithm promotes piece diversity within the swarm, reduces dependence on seeders, and distributes the scarcest pieces to additional peers, greatly improving swarm robustness and scalability.
 
 *** End Game Mode
+:PROPERTIES:
+:CUSTOM_ID: bt_end_game_sota
+:END:
 
-On BitTorrent downloading process, towards the very end a common problem arises, where the last few missing sub-pieces may be requested by slower peers. As a result, it can create a significant delay on the download process, which may block the transfer all together, not only harming his performance, but the overall network. Because it will take more time to become a seeder, creating a cyclical pattern that eventually will spread within the swarm.
+In the BitTorrent download process, towards the very end, a common problem arises: the last few missing sub-pieces are commonly requested by slower peers. As a result, it can cause significant delays in the download process, potentially blocking the ongoing data transfer, affecting performance, and degrading the overall network. The longer it takes to become a seeder, the more this cyclical pattern spreads across the swarm, slowing down all operations.
 
-In order to prevent this issue, some BitTorrent clients active the *End Game Mode*, when all remaining sub-pieces are already being requested. This mode, prevents bottleneck by aggressively send duplicate requests for every remaining sub-piece to all known peers that might have it. Hence, creating flooding of requests to ensure the client can obtain the final pieces from whoever delivers them first. However, this solution wastes an excessive amount of bandwidth and may clog other peers.
+Some BitTorrent clients prevent this issue by activating the *End Game Mode* when all remaining sub-pieces are already being requested. This mode prevents bottlenecks by aggressively sending duplicate requests for every remaining sub-piece to all known peers that might have it. Hence, creating a flood of requests to ensure the client can obtain the final pieces from whoever delivers them first. However, this solution consumes excessive bandwidth and may clog other peers.
 
-Taking this into account, as soon as a sub-piece arrives from any peer, a client immediately cancels all duplicate requests for the same sub-piece from other peers. Actually the protocol relies on the BitTorrent's "cancel" message, to honour this approach.
+Taking this into account, as soon as a sub-piece arrives from any peer, a client immediately cancels all duplicate requests for the same sub-piece from other peers. Actually, the protocol relies on BitTorrent's "cancel" message to honour this approach.
 
-# (citeme: 000)
+Almost all modern clients already implement this behaviour by default, where the sources {{{citep(bt_001)}}} suggest *mainline BitTorrent*, *libtorrent*, *Transmission*, *qBittorrent*. Moreover, they present empirical measurements that effectively demonstrate that it significantly reduces latency with minimal noticeable overhead.
 
-Almost all modern clients already implement this behaviour by default, where the sources [cite] suggest *mainline BitTorrent*, *libtorrent*, *Transmission*, *qBittorrent*. Moreover, they present empirical measurements that effectively show that it significantly reduces latency without much noticeable overhead.
-
-
-*** Choking Algorithm (Tit-for-Tat Incentive Mechanism)
-
-
-(Citation: The foundational choking algorithm was introduced by Bram Cohen in "Incentives Build Robustness in BitTorrent" [Cohen, 2003], which remains the seminal paper on BitTorrent's incentive design. Subsequent empirical validations, such as Legout et al. [2006, 2007], confirm that rarest-first combined with the choking algorithm is sufficient for efficient piece diversity, reciprocity, and robustness against free-riders.)
-BitTorrent operates without any centralized resource allocation or global coordinator. Each peer independently seeks to maximize its own download rate in a decentralized manner. To achieve this while encouraging cooperation and discouraging free-riding (peers that only download without uploading), BitTorrent employs a variant of the tit-for-tat strategy from repeated game theory.
-Peers cooperate by unchoking (allowing uploads to) selected neighbors and withhold cooperation by choking (temporarily refusing to upload to) others. Choking is a soft, temporary refusal: the choked peer can still receive data if unchoked elsewhere, download metadata, or send control messages (e.g., HAVE, INTERESTED), and the TCP connection remains open—no renegotiation is required when unchoking occurs later.
-Although the choking logic is not part of the core BitTorrent wire protocol (BEP-0003), it is essential for achieving good performance in real swarms. A well-designed choking algorithm can fully utilize available upload capacity, provide consistent download rates to participating peers, and offer strong resistance to pure free-riders.
-Technical Details of the Choking Algorithm
-Each BitTorrent peer (in leecher state) maintains a fixed number of unchoked upload slots—4 by default (configurable in most clients). This cap ensures TCP congestion control can reliably saturate the peer's upload bandwidth without excessive contention or overhead.
-The key decision is which peers to unchoke. Selections are based strictly on the current download rate received from each interested neighbor (i.e., peers that have expressed INTERESTED and are downloading from the local peer).
-Measuring these rates accurately is non-trivial due to short-term fluctuations (e.g., peers joining/leaving, temporary congestion). Early implementations used long-term transfer totals, but performance suffered because bandwidth availability changes rapidly. The standard approach (used in mainline BitTorrent and most modern clients like libtorrent-based ones) employs a rolling 20-second average of the download rate to smooth noise while remaining responsive.
-To prevent wasteful oscillation ("fibrillation"—rapid choking/unchoking that prevents TCP from ramping up), peers re-evaluate and apply choking decisions only every 10 seconds. This interval is long enough for new TCP connections to reach full speed after unchoking.
+BitTorrent employs a choking algorithm based on a variant of the {{{gls(tft)}}} from repeated game theory {{{citep(bt_001)}}}. Peers maintain a fixed number of unchoke slots, prioritising neighbours that contribute the most upload bandwidth in return.

@@ -1,156 +1,145 @@
-# (citeme: 006_darknets)
-
-*** Trackers and Community Types: Public vs. Private (Darknets)
+*** Community Categories: Public and Private (Darknets)
 :PROPERTIES:
-:CUSTOM_ID: trackers_types_communities
+:CUSTOM_ID: public_vs_private_darknets
 :END:
 
-*Trackers* also play a key role in interconnecting peers by providing updated lists of active participants within a swarm, these will be explain in further detail ahead. BitTorrent communities fall into two main categories: *public networks*, and *private networks*.
+Despite their centralised nature, *Trackers* remain the primary peer-discovery mechanism, providing newcomers with access to active swarm participants. Based on their availability, BitTorrent communities fall into two main categories: *public* and *private* swarms.
 
-*Public networks* are accessible to everyone, relying primarily on the standard algorithm Tit-for-Tat (TFT) to motivate reciprocity. However, their openness makes them fundamentally vulnerable to free riding, where users download without actively contribute back, by uploading in return.
+By definition, *Public Networks* are accessible to anyone, and rely primarily on the standard Tit-for-Tat (TFT) algorithm to motivate reciprocity and keep the swarm healthy. However, their lack of restrictions makes them fundamentally vulnerable to free riding and malicious content distribution, and they are more susceptible to common P2P attacks, such as Sybil and DoS-based attacks, that target the swarm's availability and content trust.
 
-# (citeme: 004_free riding)
+On the other hand, {{{gls(pt)}}}, often called BitTorrent Darknets, restrict access to registered users, typically requiring an invitation from an enrolled member, which is difficult to obtain. To mitigate *free riding* {{{cite(bt_004)}}}, *PTs* enforce *{{{gls(sre)}}}* on members to establish an upload-to-download ratio above a stipulated threshold, typically ranging from 0.4 to 1.0, depending on the swarm criteria. Falling below the predefined values triggers download restrictions or targets the account for removal. Thanks to these restrictions, *PTs* can prohibit dishonest behaviour, motivating participants to always contribute back to the network, after completing a download. On top of that, many networks complement this by implementing an auxiliary scoring system that grants higher download speeds, the ability to purchase invitation codes, and other features to promote honest contribution and help maintain the swarm's health {{{cite(bt_006)}}}.
 
-On the other hand, *Private Trackers* (PTs), often called BitTorrent Darknets, restrict access to registered users, typically requiring an inside invitation, which is difficult to obtain. In order to combat *free riding* [cite], *PTs* enforce *Sharing Ration Enforcement* (SRE), where members must gain upload to download ration above a stipulated threshold, normally in the range of 0.9 or 0.4-1.0, depending on the networks. Falling below the predefined values, triggers download restrictions or account removal. Because of this mechanisms, many *PTs* prohibit the active behaviour of stopping seeding immediately after download. They achieve this by offering an auxiliary system to motivate members to maintain reciprocity, by implementing a scoring system to increase download performance ratio, allow purchasing invitation codes, and more.
+Private trackers harden the swarm through participant tracking and account-level accountability, discouraging active free-riding and malicious behaviour, despite de-anonymising their members. This maintains swarm security and reciprocity,  benefits honest peers, maintains a solid *Seeder to Leecher Ratio* (SLR), and allows everyone to share computational resources as the protocol philosophy initially intended. Additionally, it is worth noting that many private networks support additional peer-discovery mechanisms, such as *DHT* and *PEX*, which further improve performance.
 
-These hardened protections along with account traceability, despite partially de-anonymizing users, it largely discourage active free riding, which translates in faster downloads, better connectivity and a much higher *Seeder to Leecher Ratio* (SLR). Also, some implement additional *Peer Discovery Mechanisms* like *DHT* or *PEX* that further improve overall performance.
+Requiring peers to contribute back to the network increases the number of seeders, positively impacting download performance, but decreases the per-member sharing ratio. This decrease leads to prolonged seeding cycles, resulting in higher SLR, creating even more seeders, and slowly reducing motivation to download shared resources, a problem that the authors term *Poor Downloading Motivation*. Thus, creating a tension between contributing and leeching, undermining long-term reciprocity {{{citep(bt_006_4)}}} and sustainability.
 
-# (citeme: 004)
-
-However, because of the great amount of seeders within *PTs*, good members can hardly increase their share ratios. This leads to prolonged seeding cycles, translating on higher SLR, creating more seeders and reducing motivation to download new resources, leading to the problem that the authors [cite] call *Poor Downloading Motivation*. Despite strong incentives set in place, this can undermine long term reciprocity [cite:006:4] and sustainability.
-
-It is of most importance in any BitTorrent network to maintain an appropriate SLR range to avoid any of the problems stated before. While keeping a well designed mechanism to motivate peers to contribute back to the network and achieve reasonable SLR range. Thus, trying to further scale the network and keep increasing the number of users healthily. Furthermore, the researchers of the following paper [cite], present the adoption of a *Predator-Prey Model* that tries to solve the *Poor Downloading Motivation* present within *PTs*. Thus, trying to maintain fair SRE to maintain an healthy balance of seeders and leechers within the network.
-
-# Explain a bit the Predator Model they, present
-
-# (citeme: 006_darknets)
+It is of utmost importance in any BitTorrent network to maintain an appropriate SLR range to avoid the problems stated earlier. At the same time, it requires keeping a well-designed mechanism to motivate peers to contribute back to the network and achieve a reasonable SLR range. This allows the network to further scale while keeping the number of users healthy. Furthermore, the researchers {{{citep(bt_004)}}} report adopting a *Predator-Prey Model* to address the *Poor Downloading Motivation* observed among *PTs*, aiming to preserve fair SRE to maintain a healthy balance of seeders and leechers within the network.
 
 **** The Predator-Prey Model
 :PROPERTIES:
 :CUSTOM_ID: predatory_model
 :END:
 
-The *Predator-Prey Model*, it's adapted from ecology, servers as a mathematical framework to improve and analyze the long term sustainability of *PTs*. This paper the authors, they map the dynamics of both *seeders* and *leechers* to the classic Lotka-Volterra equations with logistic growth for the *prey*. In order to account for realistic resource limits, that it's not perceived on the original model exponential growth.
+
+The *Predator-Prey Model*, adapted from ecology, serves as a mathematical framework for analysing and improving the long-term sustainability of *PTs* {{{cite(bt_006)}}}. The authors map the dynamics of both *seeders* and *leechers* to the classic Lotka-Volterra equations with logistic growth for the *prey*. To account for realistic resource limits, the original model is modified to prevent unbounded exponential growth.
 
 + *Prey (Seeders)*:
 
-  These are peers that provide the upload capacity, back the network with already verified chunks, and may survive independently, while activity contributing to the network.
+  These are peers that provide upload capacity, back the network with already-verified chunks, and may survive independently while contributing to the network.
 
 + *Predator (Leechers/Downloaders)*:
 
-  These are the peers that consume the upload capacity, obtaining eventually the complete file from the network. They, ideally end up uploading back already verified pieces back to the swarm, following the BitTorrent's reciprocity. Hoover, ultimately depend on seeder's resources to complete downloads.
+  These are the peers that consume upload capacity, eventually obtaining the complete file from the network. They ideally upload already verified pieces back to the swarm, following BitTorrent's reciprocity. However, it ultimately depends on the seeder's resources to complete downloads.
 
 This model works by incorporating three key BitTorrent mechanisms inspired by the Lotka-Volterra framework:
 
 + *Dependency*:
 
-  The growth rate of *predators* is proportional to the amount of *prey*, this translates to a higher number of seeders leading to an improved download performance, attracting, or sustaining a larger number of concurrent downloaders. Conversely, the decline over the upload rate fueled by prey is directly proportional to the scarcity of predators. Meaning, the intense consumption of available uploaded resource eventually results in higher bandwidth saturation, which can demotivate seeders and lead them to cease uploading entirely when sharing ratios become significantly imbalanced.
+  The growth rate of *predators* is proportional to the amount of *prey*; this results in more seeders, improved download performance, and the attraction or retention of a larger number of concurrent downloaders. Conversely, the decline in prey-driven upload rate is directly proportional to the scarcity of predators. In other words, the intense consumption of available uploaded resources eventually leads to higher bandwidth saturation, demotivating seeders and causing them to cease uploading entirely when sharing ratios become significantly imbalanced.
 
 + *Transition*:
 
-  Taking into consideration the BitTorrent's reciprocity, *predators* (leechers) eventually will convert back into *prey* (seeders) once they finish the download and start by uploading back to the swarm. This conversion crucial to maintain overall swarms health, but can be delayed or decreased in *PTs* due to the g high SLR explained earlier.
+  Given BitTorrent's reciprocity, *predators* (leechers) will eventually convert back into *prey* (seeders) once they finish the download and start uploading back to the swarm. This conversion is crucial to maintaining the overall swarm's health, but can be delayed or reduced in *PTs* due to the high SLR explained earlier.
 
 + *Consumption*:
 
-  This is defined as the *leechers consumption* of the finite resources of the network, provided by *seeders*. Conversely, indicates that the higher consumption by leechers, can overwhelm the capacity of seeder contribution to the network, leading to slower download rates, choking peers and decrease motivation for contribution.
+  The *leecher consumption ratio* of the network's finite resources supported by the active seeders indicates the leeching load over the network's maximum capacity. A high consumption rate overwhelms the seeder's contribution capacity, leading to slower download speeds, higher choking rates, and reduced motivation to contribute back.
 
-Its further explained that this model defines two *critical factors* that defined how scalable this system may be:
+It's further explained that this model defines two *critical factors* that define how scalable this system may be:
 
 + *Leecher Ability*:
 
-  It's the downloading efficiency, translated to the number of seeders a single leecher needs to consume to maximise their download bandwidth.
+  This represents the download efficiency, expressed as the number of seeders a single leecher needs to consume to maximise their download bandwidth.
 
-+ *Seeders Ability*
++ *Seeder Ability*
 
-  It's the uploading capacity, translated to the maximum number of peers (leechers) a single seeder can upload to concurrently while achieving its maximum bandwidth usage.
+  This is the upload capacity, expressed as the maximum number of peers (leechers) a single seeder can upload to concurrently while achieving its maximum bandwidth.
 
-  # (citeme: 006 predators models)
+By actively simulating these dynamics, the authors {{{cite(bt_006)}}} aim to identify optimal stable SLR ranges, helping diagnose why *PTs* can become unsustainable while addressing *free riding* and designing better overall contribution mechanisms.
 
-By actively simulating these dynamics, the authors [cite], this model tries to identify optimal stable SLR ranges. Thus, helping to diagnose why *PTs*, while solving *free riding* and designing overall better contribution mechanisms, can eventually become unsustainable.
-
-
-# (citeme - 004_attacks...)
 *** Free-Riding and Incentive Mechanisms
 :PROPERTIES:
 :CUSTOM_ID: free_riding_mechanisms
 :END:
 
-Free riding is the act of taking advantage of BitTorrent's file-sharing downloading content system without actually contributing nothing or very few resources back to the network overall capacity. Moreover, current research and real world observations, show that the protocol's original mechanisms no longer ensure the guarantee of universal cooperation among peers.
+Free riding is the act of consuming shared resources in a BitTorrent swarm without contributing back to the network. Despite BitTorrent's built-in reciprocity mechanism, it is still insufficient to prevent this practice at scale. It is well known that many peers never actually meet the upload ratio relative to what they downloaded.
 
-As explained earlier, BitTorrent heavenly relies on the *reciprocity principle*: which is downloaders (leechers) are expected to upload already verified pieces to others, either while downloading or after its completion, in order to sustain the swarm. This mutual contribution not only keeps pieces circulating, but maintains the high availability for other peers, and it actually justifies the existence of a decentralised P2P file-sharing network. Without enough uploading, the overall system loses efficiency: which will cause download rates to drop, rarest pieces not be available and increasing the chance of not torrents die.
+As explained earlier, BitTorrent relies on the *reciprocity principle*: downloaders (leechers) are expected to upload verified pieces to others, either while downloading or after completion, to sustain the swarm and keep propagating torrents. This mutual contribution not only keeps pieces circulating but also maintains the high availability for leechers, justifying the existence of a decentralised P2P file-sharing network. Without sufficient uploading, the overall system becomes inefficient, lowering download rates, increasing the rarest pieces, and increasing the likelihood of torrent corruption due to a lack of available pieces.
 
-The already baked in incentive tool is the *Tit-For-Tat* (TFT) mechanism (along with choking/unchoking). Developed by Bram Cohen, the creator of the Bit Torrent protocol, where peers would prefer to upload data to those who upload back to them, while "choking" to non-contributors. Optimistic unchoking would happen periodically allowing free uploads to new or random peers, thus helping newcomers to bootstrap and discovering potentially better alternatives.
+BitTorrent's native incentive mechanism is Tit-For-Tat (TFT), developed by Bram Cohen alongside the choking algorithm {{{cite(bt_001)}}}. This algorithm enables peers to choke neighbours that do not contribute back, and unchoke honest peers, directly incentivising reciprocal contribution. Optimistic unchoking acts as a middle ground, occurring periodically and unchoking random peers, potentially improving the after-bootstrap interconnection by increasing their chances of finding upload sources.
 
-Despite this approach in place, this paper authors highlight there are several ways to exploit modern swarms:
+Despite the built-in mitigations, the authors highlight several exploits within modern swarms {{{citep(bt_004)}}}:
 
-+ *Strategic Manipulation:* The authors mention that in recent studies, show that users are not longer encouraged to follow the best practices, as there are clients that actively don't get back to the network.
++ *Strategic Manipulation:*
 
-+ *Auction vs. Fairness:* According to them, other research suggests that BitTorrent doesn't apply fairness on there tit-for-tat system, implying that "acts like an auction to decide which peers to serve".
+  The authors note that recent studies indicate that users are no longer encouraged to keep contributing after a download completes, citing examples of dishonest clients that actively avoid contributing.
 
-+ *Optimistic unchoke Exploitation*: Where free-riders leverage this protocol mechanism that was supposed to help newcomers, they use it to download files without ever reciprocating.
++ *Auction vs Fairness:*
 
-# On top of that, they highlight some clients that exploit this BitTorrent vulnerabilities, *BitThief* and *BitTyrant*.
-Moreover, clients like *BitThief* and *BitTyrant* represent a major challenge for BitTorrent protocol, because they can prove that the incentive structures designed to ensure that cooperation can be exploited.
+  The authors point out the unfairness of the Tit-For-Tat incentive mechanism, specifically that it acts as an auction to determine which peers will be unchoked.
 
-# [check: verify this information, and get the citation]
++ *Optimistic Unchoking Exploitation*:
+
+  The author reports that free riders exploit this mechanism to quickly start leeching and avoid reciprocating by exploiting optimistic unchoking slots destined for newcomers.
+
+For instance, *BitThief* and *BitTyrant* pose a major threat to reciprocity in BitTorrent, allowing participants an easy way to avoid contributing.
 
 + *BitThief:*
 
-  This rogue client never contributes with any real data. It achieves high download rates by connecting wit has many peers at it can, trying to maximize its own download rate.
-
-# [check: verify this information, and get the citation]
+  A rogue client that never contributes any real data. It achieves high download rates by connecting with as many peers as possible, trying to maximise its own download rate.
 
 + *BitTyrant:*
 
-    Another rogue client that tries to dynamically adapts the upload rate following the neighbours peers to calculate the exactly minimum necessary contribution to maximize its download rate.
+  Another rogue client that dynamically adapts the upload rate based on its neighbours to calculate the exact minimum contribution required to maximise its download rate.
 
-These clients cause a great impact on the *swarm* performance, as the number of free riders increases, so it decreases the overall system capacity for the rest of the peers, that play by the rules. Thus, harming the good peers that both take and contribute back to the network.
-
+These clients degrade the swarm's *performance*, leveraging free riding and exploiting honest peers, thereby impacting the system capacity and disrupting honest participants.
 
 *** Torrent Poisoning and Anti-Piracy Measures
 :PROPERTIES:
 :CUSTOM_ID: torrent_poisoning
 :END:
 
-Torrent Poisoning, is a deliberate attempt to degrade the performance and reliability of swarms sharing copyrighted resources. The paper explains it as an act of intentionally sharing corrupted data or deploying multiple attempts to try to impede inter peer downloads. Multimedia industries and other organizations use these methods to prevent sharing copyrighted content on P2P rogue networks, which the goals consists into overload as much as possible, trying to decrease the overall download rate of the swarm.
+Torrent poisoning is a deliberate attempt to degrade the performance and reliability of swarms sharing copyrighted resources. The paper {{{citep(bt_004)}}} explains it as an act of intentionally sharing corrupted data or deploying multiple attempts to try to impede inter-peer downloads. Multimedia industries and other organisations use these methods to prevent the sharing of copyrighted content on P2P rogue networks, overwhelming participants and reducing download speeds, damaging the swarm's health, and exploiting the reciprocity model.
 
-They achieve this, in several ways, like:
+They achieve this in several ways, such as:
 
-+ *Deployment of dishonest clients*: Active deployment or usage of dishonest clients that pollute the network and swarms, thus trying to decrease as much as possible the download rate.
++ *Deployment of dishonest clients*:
 
-+ *Mass-Scale Attacks*: Threat actors, try to gain control over the swarm, by deploying several rogue peers. Thus, performing *Sybil* attack, to overwhelm simultaneously honest peers from sharing protected resources.
+  Active deployment or usage of dishonest clients that pollute the network and swarms, attempting to decrease as much as possible the download rate.
 
-According to the authors of the paper [cite], the number of anti-piracy attacker is high enough, could provoke general swarm failure. Which presents a significant threat to the BitTorrent ecosystem, because some clients like the mention on the paper (like *Vuze* or *Transmission*). Which lack the security mechanisms to enable them to distinguish from an honest and dishonest peer, making them vulnerable to receive corrupted data over and over, damaging the overall network in the process.
++ *Mass-Scale Attacks*:
 
+  Threat actors attempt to gain control over the swarm by deploying multiple rogue peers and executing a *Sybil* related attack to simultaneously overwhelm honest peers and prevent them from sharing protected resources.
+
+According to the authors [cite], mass-scale attacks aimed at preventing copyright infringement from circulating over BitTorrent swarms can provoke swarm failure. These attacks present a significant threat to the BitTorrent ecosystem. The authors complement by giving examples of clients (e.g., *Vuze* or *Transmission*) that lack the security measures to distinguish between honest and dishonest peers, becoming vulnerable and propagating corrupted data among participants.
 
 *** Flash Crowds in BitTorrent Swarms
 :PROPERTIES:
 :CUSTOM_ID: flash_crowds_on_swarms
 :END:
 
-A Flashcrowd refers to a sudden, massive wave of newcomers joining a network or service. In BitTorrent, this phenomenon manifests as a fast increase in peer arrivals on the swarm, dramatically expanding the swarm size, with a great number of concurrent clients seeking to download a specific resource within the network. Flashcrowds pose a significant challenge to BitTorrent swarms. The sudden flux of leechers overwhelms the available upload capacity of the current seeders, leading to a severe performance loss, increasing backlogs, and reducing overall responsiveness.
+A flash crowd is a sudden, massive wave of newcomers joining a network or service. In BitTorrent, this phenomenon manifests as a rapid increase in peer arrivals to the swarm, dramatically expanding its size as a large number of concurrent clients seek to download a specific resource within the network. Flash crowds pose a significant challenge to BitTorrent swarms. The sudden influx of leechers overwhelms the upload capacity of the current seeders, leading to severe performance degradation, increased backlogs, and reduced overall responsiveness.
 
-# (citeme: 007_flash crowds)
-According to the researchers [cite], this sudden surges can impact directly on the download performance. More precisely, peers may experience up to 7 times slow down in download rates during peak surge periods, as leechers try to fight for limited pieces uploaded by the remaining seeders. This will translate in *delayed contributions*, which means leechers can't properly download and will take much longer to eventually become seeders, and contribute back to the network. Thus, starving the swarm and further expedite the performance deterioration.
+According to the researchers {{{citep(bt_007)}}}, these sudden surges can directly impact the download performance. More precisely, peers may experience a 7x slowdown in download rates during peak surge periods, as leechers compete for the limited pieces uploaded by the remaining seeders. Therefore, delaying contributions and preventing leechers from properly downloading, thereby delaying their transition into seeders, and finally contributing back to the network. This results in swarm starvation and accelerates performance deterioration.
 
-Exacerbating this issue, BitTorrent core policies like *Tit-for-Tat* (TFT) and *Rarest First* (RF), further increases the difficultly to keep downloading and uploading, while on a Flashcrowd.
+Exacerbating this issue, BitTorrent core policies such as *Tit-for-Tat* (TFT) and *Rarest First* (RF) further complicate keeping up with downloading and uploading during a flash crowd event.
 
-Researchers [cite] analyzed millions of swarm to quantify *Flashcrowds* frequency, duration, and identification. They claimed that, *Flashcrowds* can occur in only a small fraction of swarms (0.3-2%), but due to high increase popularity in some torrents, they can affect over ten millions users worldwide. They propose a dedicated BitTorrent Flashcrowd model and an additional identification algorithm that aims to classify, and detect. Their model proposes the following 4 core components to classify and identify *Flashcrowds*:
+Researchers [cite] analysed millions of swarms to quantify the frequency, duration, and characteristics of *flash crowds*. They claimed that *Flashcrowds* occur in only a small fraction of swarms (0.3-2%), but because some torrents experience rapid popularity spikes, they can affect over 10 million users worldwide. They propose a dedicated BitTorrent Flashcrowd model and an additional identification algorithm that aims to classify and detect them. Their model proposes the following 4 core components to classify and identify *Flashcrowds*:
 
 + *Arrival Time*:
 
-  It's the time passed between the creation of a swarm and the start of the Flashcrowd. They indicate that about of 70% of major Flashcrowds start right after swarm creation, which may be because of the widespread of automated RSS feeds.
+  It's the time passed between the creation of a swarm and the start of the Flashcrowd. They indicate that about 70% of major Flashcrowds start right after swarm creation, which may be due to the widespread use of automated RSS feeds.
 
 + *Duration*:
 
-  Another important component, its time between user participation oscillation. They add that major Flashcrowds are indeed short period, with an average duration of 12 hours.
+  Another important component is the time between user participation oscillations. They add that major Flashcrowds are indeed short-period, with an average duration of 12 hours.
 
 + *Plateau Period*:
 
-  It's characterised by the stable swarm size or limited churn right after a sudden end of a surge. The researchers, indicate that swarms tend to shrinking right after the event decreases.
+  It's characterised by a stable swarm size or limited churn immediately after a sudden end to a surge. The researchers indicate that swarms tend to shrink right after the event decreases.
 
 + *Magnitude*:
 
-  Finally, the magnitude that is the calculated amount of the impact of the surge, which is based on both *growth rate* and the swarm size increase relative to its initial size.
+  Finally, the magnitude is the calculated impact of the surge, based on both the *growth rate* and the swarm size increase relative to its initial size.
 
-The authors, further explore how to detect early warming signals by correlating swarm growth patterns with sudden Flashcrowds, enabling to understand when the client must adapt its core policies implementations to prevent harming further the network stability. Also, they use this establish parameters to classify Flashcrowds into *Major Flashcrowds*, which correspond to the largest *magnitude* values and *Minor Flashcrowds* that correspond to smaller spikes. This work is important to highlight how can a swarm gradual growth, impact, and exploit vulnerabilities in core BitTorrent's mechanisms. Additionally, modern BitTorrent mitigate this issue by giving the option of decentralizing discovery, with *DHT* and *PEX*, distributing increasing load between multiple nodes.
+The authors also explore how to detect early signals by correlating swarm growth patterns with sudden flash crowds, enabling them to understand when the client must adapt its core policy implementations to prevent further damage to the network stability. Also, they use these established parameters to classify flash crowds into *Major Flash crowds*, which correspond to the largest *magnitude* values, and *Minor Flash crowds* that correspond to smaller spikes. This work highlights how a swarm can gradually grow, impact, and exploit vulnerabilities in core BitTorrent mechanisms. Additionally, modern BitTorrent mitigates this issue by offering the option to decentralise discovery with *DHT* and *PEX*, distributing the load across multiple nodes.

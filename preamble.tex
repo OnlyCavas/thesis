@@ -27,8 +27,16 @@
 % Use the natbib reference package - read up on this to edit the reference
 % style; if you want text (e.g. Smith et al., 2012) for the in-text references
 % (instead of numbers), remove 'numbers'
-\usepackage[square, numbers, comma, sort&compress]{natbib}
-\bibliographystyle{IEEEtranN}  % I actually quite like this one
+% \usepackage[square, numbers, comma, sort&compress]{natbib}
+% \bibliographystyle{IEEEtranN}  % I actually quite like this one
+
+%
+% Change citation style
+%
+
+\usepackage[round, authoryear, comma]{natbib}
+\bibliographystyle{apalike}
+
 % \bibliographystyle{apsrev4-1-etal} % With emphasized titles. ORIGINAL
 % Prevent that the first citation is in the ToC
 \usepackage{notoccite}

@@ -3,21 +3,18 @@
 :CUSTOM_ID: bt_start
 :END:
 
-P2P networks can be the solution to improve the user space privacy, and a way to users fight back against lack those whom try to de-anonymize their fingerprint online. And, this technology has been proven over and over, being used in telecommunications, like *Matrix* and it this case in file-sharing like *Bit Torrent*, providing ways for them to share media resources, without being tracked or take down.
+Since its introduction in 2001, BitTorrent has grown into one of the most widely deployed peer-to-peer protocols, responsible for a significant fraction of the global internet traffic. Its decentralised nature removes the need for a single origin server, distributing both content and transfer load across all participating peers, improving scalability and availability. As a result, it presents itself as a robust content-sharing solution that relies on a sparse community of peers rather than a single centralised entity.
 
-In this section, I will highlight how *Bit Torrent* actually works, how it can be used, which are vulnerabilities that can jeopardize both the network and de-anonymize contributors.
+Decentralised networks offer resilience and scalability, making them a foundational technology across domains ranging from file-sharing distribution to telecommunications. As open-source systems such as Matrix adopt similar decentralised principles, they may be keen to offer a more user-controlled software option rather than the standard, proprietary options.
 
-# (citeme: 001)
+In this section, the BitTorrent protocol architecture is examined, along with its operational mechanics, and common attack vectors that compromise both network integrity and contributor anonymity.
 
-*Bit Torrent* is one of the most used technologies on the context of *P2P (Peer-to-Peer) content distribution networks*. According to Bit Torrent Protocol specification {{{cite(bt_001)}}}, it presents an advantage over plain HTTP were multiple downloads can happen concurrently for the same file, safeguarding against one HTTP Server handling multiple requests. In simple terms, it works by downloaders upload to each other the "chunks" or "pieces" that they possess to the network, making it possible to spread parts of its file across many peers, distributing the load of the HTTP operation.
-
-This network all peers are contributors that can be identified by following *entities*:
+{{{gls(bt)}}} is one of the most widely used technologies for P2P (Peer-to-Peer) content distribution networks. According to the BitTorrent Protocol specification {{{citep(bt_001)}}}, it presents an advantage over plain HTTP, where multiple downloads can happen concurrently for the same file, safeguarding against one HTTP server handling multiple requests. In simple terms, peers upload the pieces they already possess to one another, spreading the file across the swarm and distributing the transfer load among them. That said, within an active swarm exist two categories of peers, sustaining the seeder-leecher model, such as:
 
 + *Downloaders (Leechers)*:
 
-  These are *peers* with incomplete copies of a given file (less than 100%). Normally, they try concurrently download missing *chunks*, while positively uploading another *chunks* that were already verified to the swarm. The terminology "*leecher*" in some context it carries some negative connotations, which mainly refers to peers that only download without adequately uploading in return, which violates the reciprocity principle that BitTorrent it's built on. This actually harms the network, as its breaks the balance between *seeders* and *downloaders*.
+  These nodes have incomplete copies of the file, focusing on downloading the missing pieces to complete it, while serving concurrently already verified pieces to other participants within the swarm. The terminology /leecher/ carries negative connotations, referring to peers who download without adequately uploading in return, violating the reciprocity principles on which BitTorrent is based. This behaviour harms the entire swarm by breaking the balance that sustains the seeder-leecher model, potentially rendering torrents incomplete or unavailable to new peers.
 
 + *Seeders (Uploaders)*:
 
-  These are *peers* that have 100% of the file, and normally only upload to others. Normally, are dedicated "server" peers that have the complete copies of the shared resources. This means it always must exists at least one *seeder* in order for a torrent to remain viable. Without this assurance, there isn't any guarantee that a newcomer to the network can effectively fetch all *pieces* of a *torrent*. *Seeders* are critical for a swarm health and longevity.
-
+  These nodes hold a complete copy of the file and are solely responsible for keeping the torrent alive. At least one seeder must always be present, distributing as many pieces as possible. Without it, newcomers cannot complete a full download, as missing pieces will remain unavailable. Therefore, within a swarm, a torrent without a seeder is considered unavailable or dead, making seeders critical to maintaining the swarm's health and longevity.
