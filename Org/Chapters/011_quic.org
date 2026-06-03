@@ -3,4 +3,4 @@
 :CUSTOM_ID: quic_intro
 :END:
 
-Indeed, BitTorrent thrives on raw, collective bandwidth by peers exchanging multiple chunks in concurrence, while choking freeloaders and prompting reciprocity. Since it's creating the protocol relied in TCP HTTP/1.1 for congestion aware downloads, but with slow starts, congestion control causes high churns P2P bursts. Despite having congestion control, one packet lost stalls the entire stream, etc.
+BitTorrent thrives on raw, collective bandwidth as peers exchange multiple chunks in parallel, while choking freeloaders and prompting reciprocity. However, it inherits problems from its underlying transport protocol (TCP/HTTP/1.1) regarding congestion awareness. TCP's slow start mechanism and congestion control features underperform on short-lived, bursty connections typical of P2P transfers. Additionally, if a single packet is lost, the entire stream stalls due to head-of-line blocking, reducing overall throughput. The following sections examine whether QUIC would be better suited for P2P transfers, address the head-of-line blocking issue, and provide multiplexed streams within a single P2P connection.

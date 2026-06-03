@@ -146,4 +146,218 @@
   pages={1–5}
 }
 
+@inproceedings{quic_001,
+  title={How quick is QUIC?},
+  ISSN={1938-1883},
+  url={https://ieeexplore.ieee.org/document/7510788/},
+  DOI={10.1109/ICC.2016.7510788},
+  abstractNote={HTTP has been the protocol for transferring web traffic over the Internet since the 90s. However, over the past 20 years websites have evolved so much that today this protocol does not provide optimal delivery over the Internet and became a bottleneck in decreasing page load times. Google is pioneering in finding better solutions for downloading web pages and they implemented two new protocols: SPDY in 2009 and QUIC in 2013. Since the wide range deployment of SPDY clients and servers it has been revealed that in some scenarios SPDY can negatively affect the page transfer time mainly due to the fact that the protocol is working over TCP. To tackle these obstacles QUIC uses its own congestion control and based on UDP in the transport layer. Since QUIC is a very recent protocol, this paper could help further understand its operation and performance in a wide range of network scenarios. We present a comprehensive study about the performance of QUIC, SPDY and HTTP particularly about how they affect page load time. We found that none of these protocols is clearly better than the other two and the actual network conditions determine which protocol performs the best.},
+  booktitle={2016 IEEE International Conference on Communications (ICC)},
+  author={Megyesi, Péter and Krämer, Zsolt and Molnár, Sándor},
+  year={2016},
+  month=may,
+  pages={1–6}
+}
+
+@misc{quic_001_17,
+  author       = {Roskind, Jim},
+  title        = {QUIC: Quick UDP Internet Connections},
+  howpublished = {IETF-88 TSV Area Presentation},
+  year         = {2013},
+  month        = nov,
+  url          = {https://www.ietf.org/proceedings/88/slides/slides-88-tsvarea-10.pdf},
+  urldate      = {2026-02-14}
+}
+
+@misc{quic_001_google,
+  author  = {Belshe, Mike and Peon, Roberto},
+  title   = {SPDY: An Experimental Protocol for a Faster Web},
+  year    = {2009},
+  url     = {https://www.chromium.org/spdy/spdy-whitepaper/},
+  urldate = {2026-02-14}
+}
+
+@techreport{quic_001_microsoft,
+  author      = {Padhye, Jitendra and Nielsen, Henrik Frystyk},
+  title       = {A Comparison of SPDY and HTTP Performance},
+  institution = {Microsoft Research},
+  year        = {2012},
+  month       = jul,
+  url         = {https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/A20comparison20of20SPDY20and20HTTP20performance.pdf},
+  urldate     = {2026-02-14}
+}
+
+@book{
+  quic_001_cable_labs,
+  type={Internet Draft},
+  title={Analysis of SPDY and TCP Initcwnd},
+  url={https://datatracker.ietf.org/doc/draft-white-httpbis-spdy-analysis/00/},
+  abstractNote={Making the Internet faster is the goal of many product and service companies. Many strategies exist, from data caching to packet switching, performance improvements in Internet browser clients and server software, without forgetting the transport network scaling from the fiber core to the access edges. This report investigates two proposed protocol enhancements aimed at making the web browsing user experience better by optimizing the transport of web objects and thereby reducing the page load time. The two enhancements are SPDY, a replacement of the HyperText Transfer Protocol (HTTP) requiring client and server changes, and a TCP tune-up, an increase in the TCP initial congestion window accomplished by a setting change on the web servers. Both show promise, but there are some caveats, particularly with SPDY. SPDY is a candidate for standardization as HTTP/2.0. In addition to a discussion of the two enhancements, this report provides the results of laboratory testing on SPDY version 2 and the proposed increase in the TCP initial congestion window in a variety of simulated conditions, comparing the page load time when using the proposed enhancement to the page load time for the default case of HTTPS and current initial congestion window settings. The proposed enhancements generate mixed results: web page load times were reduced in some scenarios but increased significantly in others. The performance improvement (or degradation) varied depending on the number of servers, configuration of the initial TCP congestion window, and especially any network packet loss. The following results were obtained across all scenarios comparing SPDY and congestion window enhancements to standard HTTPS. o Average reduction in page load time was 29% o Best improvement was over 78% reduction in page load time o Worst cases showed a negative impact, resulting in a 3.3x increase in page load time These results lead us to the following conclusions: o The SPDY protocol is currently a moving target, and thus it would be challenging to realize a return on investment for general- purpose usage in web servers. o Protocol improvements, standardization in the IETF and wider adoption by the client/server software may warrant a second look at SPDY. o Some applications in controlled environments may gain by leveraging SPDY. SPDY might be a valuable tool where the a single entity provides the servers, the client software, and the web content. o If SPDY were adopted very widely it may have some secondary benefits for network operators through improved infrastructure scalability due to a significant reduction in concurrent TCP sessions, as well as a reduction in Packets Per Second. o The proposed increase in the TCP initial congestion window is straightforward, requires no client modifications, and on its own provides consistent (albeit modest) performance gains. This report is available in a somewhat more detailed form in [SPDY-ANALYSIS].},
+  number={draft-white-httpbis-spdy-analysis-00},
+  institution={Internet Engineering Task Force},
+  author={White, Greg and Rice, Dan},
+  year={2012},
+  month=july
+}
+
+@inproceedings{quic_004,
+  title={A Survey on the Security Issues of QUIC},
+  ISSN={2768-0029},
+  url={https://ieeexplore.ieee.org/abstract/document/9955622},
+  DOI={10.1109/CSNet56116.2022.9955622},
+  abstractNote={A newly established multiplexed network protocol - QUIC, which is based on User Datagram Protocol (UDP), has emerged in recent years and gained a large share of Internet traffic quickly. Initially proposed by Google, the goal of QUIC is to achieve a higher Internet communication performance and eventually replace the Transmission Control Protocol (TCP) + Transport Layer Security (TLS) + HTTP/2 architecture. In particular, the 3rd version of the Hypertext Transfer Protocol - HTTP/3.0 is built on top of QUIC. A good number of research papers have been published recently to evaluate the performance and security of the QUIC protocol. In this paper, we conduct a comprehensive survey on the QUIC security issues and analyze its future research directions regarding security prospective. We investigate several topics including the QUIC protocol structure, QUIC security model, security issues related to QUIC protocol, and future research directions on QUIC Security. To the best of our knowledge, it is the one of first surveys that focus on the security of the QUIC protocol.},
+  booktitle={2022 6th Cyber Security in Networking Conference (CSNet)},
+  author={Joarder, Y A and Fung, Carol},
+  year={2022},
+  month=oct,
+  pages={1–8}
+}
+
+@inproceedings{quic_002,
+  title={QUIC: Better for what and for whom?},
+  ISSN={1938-1883},
+  url={https://ieeexplore.ieee.org/abstract/document/7997281},
+  DOI={10.1109/ICC.2017.7997281},
+  abstractNote={Many applications nowadays use HTTP. HTTP/2, standardised in February 2015, is an improvment of HTTP/1.1. However it is still running on top of TCP/TLS and can thus suffer from performance issues, such as the number of RTTs for the handshake phase and the Head of Line blocking. Google proposed the QUIC (Quick UDP Internet Connection) protocol, an user level protocol, running on top of UDP, to solve those issues. Google argues that the response time (Page Load Time) is shorter and thus the end-user experience better. First papers evaluated the intrinsic performances of QUIC, but none compared QUIC with the network, the website structure and the involved actors in mind. In this paper, we present the results of our evaluation, performed on a local testbed as well as on Internet, and our analysis to identify in which conditions QUIC is of interest, which actors can benefit from having QUIC deployed in the network and what impacts QUIC can lead to.},
+  booktitle={2017 IEEE International Conference on Communications (ICC)},
+  author={Cook, Sarah and Mathieu, Bertrand and Truong, Patrick and Hamchaoui, Isabelle},
+  year={2017},
+  month=may,
+  pages={1–6}
+}
+
+@inproceedings{quic_003,
+  author = {Tyunyayev, Nikita and Piraux, Maxime and Bonaventure, Olivier and Barbette, Tom},
+  title = {A high-speed QUIC implementation},
+  year = {2022},
+  isbn = {9781450399371},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3565477.3569154},
+  doi = {10.1145/3565477.3569154},
+  abstract = {Several implementations of the QUIC protocol exist. Unfortunately, they generally lack behind TCP ones in terms of performance as TCP stacks have been undergoing years of optimizations. In this work, we propose picoquic-dpdk, a modified version of picoquic that bypasses the Linux kernel networking stack using the DPDK library, improving the throughput by a 3x factor. We compare our implementation against several QUIC stacks and TCP+TLS and demonstrate that it outperforms all tested QUIC stacks and matches TCP+TLS even with common TCP optimizations.},
+  booktitle = {Proceedings of the 3rd International CoNEXT Student Workshop},
+  pages = {20–22},
+  numpages = {3},
+  keywords = {100GbE, DPDK, QUIC, picoquic},
+  location = {Rome, Italy},
+  series = {CoNEXT-SW '22}
+}
+
+@article{quic_002_5,
+  author = {Ha, Sangtae and Rhee, Injong and Xu, Lisong},
+  title = {CUBIC: a new TCP-friendly high-speed TCP variant},
+  year = {2008},
+  issue_date = {July 2008},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  volume = {42},
+  number = {5},
+  issn = {0163-5980},
+  url = {https://doi.org/10.1145/1400097.1400105},
+  doi = {10.1145/1400097.1400105},
+  abstract = {CUBIC is a congestion control protocol for TCP (transmission control protocol) and the current default TCP algorithm in Linux. The protocol modifies the linear window growth function of existing TCP standards to be a cubic function in order to improve the scalability of TCP over fast and long distance networks. It also achieves more equitable bandwidth allocations among flows with different RTTs (round trip times) by making the window growth to be independent of RTT -- thus those flows grow their congestion window at the same rate. During steady state, CUBIC increases the window size aggressively when the window is far from the saturation point, and the slowly when it is close to the saturation point. This feature allows CUBIC to be very scalable when the bandwidth and delay product of the network is large, and at the same time, be highly stable and also fair to standard TCP flows. The implementation of CUBIC in Linux has gone through several upgrades. This paper documents its design, implementation, performance and evolution as the default TCP algorithm of Linux.},
+  journal = {SIGOPS Oper. Syst. Rev.},
+  month = jul,
+  pages = {64–74},
+  numpages = {11}
+}
+
+@misc{quic_004_41,
+  title={Amplification and DRDoS Attack Defense -- A Survey and New Perspectives},
+  url={https://arxiv.org/abs/1505.07892v3},
+  abstractNote={The severity of amplification attacks has grown in recent years. Since 2013 there have been at least two attacks which involved over 300Gbps of attack traffic. This paper offers an analysis of these and many other amplification attacks. We compare a wide selection of different proposals for detecting and preventing amplification attacks, as well as proposals for tracing the attackers. Since source IP spoofing plays an important part in almost all of the attacks mentioned, a survey on the state of the art in spoofing defenses is also presented. This work acts as an introduction into amplification attacks and source IP address spoofing. By combining previous works into a single comprehensive bibliography, and with our concise discussion, we hope to prevent redundant work and encourage others to find practical solutions for defending against future amplification attacks.},
+  journal={arXiv.org},
+  author={Ryba, Fabrice J. and Orlinski, Matthew and Wählisch, Matthias and Rossow, Christian and Schmidt, Thomas C.},
+  year={2015},
+  month=may,
+  language={en}
+}
+
+@inproceedings{quic_004_16,
+  author    = {Gagliardi, Eva and Levillain, Olivier},
+  title     = {Analysis of QUIC Session Establishment and Its Implementations},
+  booktitle = {Information Security Theory and Practice},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {12024},
+  publisher = {Springer Nature},
+  address   = {Switzerland},
+  year      = {2020},
+  pages     = {169--184}
+}
+
+@inproceedings{quic_004_39,
+  author    = {Rossow, Christian},
+  title     = {Amplification Hell: Revisiting Network Protocols for DDoS Abuse},
+  booktitle = {Proceedings of the Network and Distributed System Security Symposium (NDSS)},
+  publisher = {Internet Society},
+  year      = {2014},
+  pages     = {15}
+}
+
+@book{quic_google,
+  type={Request for Comments},
+  title={QUIC: A UDP-Based Multiplexed and Secure Transport},
+  url={https://datatracker.ietf.org/doc/rfc9000/},
+  abstractNote={This document defines the core of the QUIC transport protocol. QUIC provides applications with flow-controlled streams for structured communication, low-latency connection establishment, and network path migration. QUIC includes security measures that ensure confidentiality, integrity, and availability in a range of deployment circumstances. Accompanying documents describe the integration of TLS for key negotiation, loss detection, and an exemplary congestion control algorithm.},
+  number={RFC 9000},
+  institution={Internet Engineering Task Force},
+  author={Iyengar, Jana and Thomson, Martin},
+  year={2021},
+  month=may
+}
+
+@inproceedings{quic_005,
+  title={A Survey on the Security Issues of QUIC},
+  ISSN={2768-0029},
+  url={https://ieeexplore.ieee.org/abstract/document/9955622},
+  DOI={10.1109/CSNet56116.2022.9955622},
+  abstractNote={A newly established multiplexed network protocol - QUIC, which is based on User Datagram Protocol (UDP), has emerged in recent years and gained a large share of Internet traffic quickly. Initially proposed by Google, the goal of QUIC is to achieve a higher Internet communication performance and eventually replace the Transmission Control Protocol (TCP) + Transport Layer Security (TLS) + HTTP/2 architecture. In particular, the 3rd version of the Hypertext Transfer Protocol - HTTP/3.0 is built on top of QUIC. A good number of research papers have been published recently to evaluate the performance and security of the QUIC protocol. In this paper, we conduct a comprehensive survey on the QUIC security issues and analyze its future research directions regarding security prospective. We investigate several topics including the QUIC protocol structure, QUIC security model, security issues related to QUIC protocol, and future research directions on QUIC Security. To the best of our knowledge, it is the one of first surveys that focus on the security of the QUIC protocol.},
+  booktitle={2022 6th Cyber Security in Networking Conference (CSNet)},
+  author={Joarder, Y A and Fung, Carol},
+  year={2022},
+  month=oct,
+  pages={1–8}
+}
+
+@inproceedings{quic_005_2,
+  author={G, Pratiksha Narasimha Nayak and Dey, Nimisha and N, Neha and Hariprasad, Malavika and S, Sandhya and Moharir, Minal and Akram, Muteeb},
+  booktitle={2022 6th International Conference on Trends in Electronics and Informatics (ICOEI)},
+  title={A Detail Survey on QUIC and its Impact on Network Data Transmission},
+  year={2022},
+  volume={},
+  number={},
+  pages={378-385},
+  keywords={Protocols;Video on demand;Multimedia Web sites;TCPIP;Market research;Internet;Security;QUIC;Transport protocol;Transmission Control Protocol;UDP;TLS;Vulnerabilities;Advantages},
+  doi={10.1109/ICOEI53556.2022.9777199}
+}
+
+@inproceedings{quic_006,
+  title={QUIC and TCP: A Performance Evaluation},
+  ISSN={1530-1346},
+  url={https://ieeexplore.ieee.org/abstract/document/8538687},
+  DOI={10.1109/ISCC.2018.8538687},
+  abstractNote={Current Internet transport protocols are being revisited in an attempt to respond to traffic growth in size, diversity and the emergence of new applications. Designed to reduce Web TCP latency and connection establishment time, QUIC uses UDP and defines its own congestion control. To verify some of QUIC’s performance claims, we carried out an extensive set of controlled experiments reflecting Internet traffic conditions by configuring various parameters, such as the round trip time (RTT), the packet loss ratio, web pages, and caching. Surprisingly, our experimental results show that QUIC presented worst page load time (PLT) results than TCP. We next present some of our interpretations of these results.},
+  booktitle={2018 IEEE Symposium on Computers and Communications (ISCC)},
+  author={Nepomuceno, Késsia and Oliveira, Igor Nogueira de and Aschoff, Rafael Roque and Bezerra, Daniel and Ito, Maria Silvia and Melo, Wesley and Sadok, Djamel and Szabó, Géza},
+  year={2018},
+  month=june,
+  pages={00045–00051}
+}
+
+ @inproceedings{quic_007,
+   address={Los Angeles CA USA},
+   title={The QUIC Transport Protocol: Design and Internet-Scale Deployment},
+   ISBN={9781450346535},
+   url={https://dl.acm.org/doi/10.1145/3098822.3098842},
+   DOI={10.1145/3098822.3098842},
+   booktitle={Proceedings of the Conference of the ACM Special Interest Group on Data Communication},
+   publisher={ACM},
+   author={Langley, Adam and Riddoch, Alistair and Wilk, Alyssa and Vicente, Antonio and Krasic, Charles and Zhang, Dan and Yang, Fan and Kouranov, Fedor and Swett, Ian and Iyengar, Janardhan and Bailey, Jeff and Dorfman, Jeremy and Roskind, Jim and Kulik, Joanna and Westin, Patrik and Tenneti, Raman and Shade, Robbie and Hamilton, Ryan and Vasiliev, Victor and Chang, Wan-Teh and Shi, Zhongyi},
+   year={2017},
+   month=aug,
+   pages={183–196},
+   language={en}
+ }
+
 @Comment{jabref-meta: databaseType:bibtex;}

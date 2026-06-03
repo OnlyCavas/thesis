@@ -8,4 +8,10 @@
 {{{setac(pt, PT, Private Trackers)}}}
 {{{setac(sre, SRE, Sharing Rario Enforcement)}}}
 {{{setac(pow, PoW, Proof of Work)}}}
+{{{setac(plt, PLT, Page Load Times)}}}
+{{{setac(quic, QUIC, Quick UDP Internet Connections)}}}
+{{{setac(hol, HoL, Head of Line)}}}
+{{{setac(dpdk, DPDK, Data Plane Development Kit)}}}
+{{{setac(pmd, PMD, Pool Mode Drivers)}}}
+{{{setac(scid, SCID, Source Connection ID)}}}
 {{{setac(tee, TEE, Trusted Execution Environment)}}}
