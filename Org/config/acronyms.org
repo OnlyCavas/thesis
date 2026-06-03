@@ -14,4 +14,35 @@
 {{{setac(dpdk, DPDK, Data Plane Development Kit)}}}
 {{{setac(pmd, PMD, Pool Mode Drivers)}}}
 {{{setac(scid, SCID, Source Connection ID)}}}
+{{{setac(tpm, TPM, Trusted Platform Modules)}}}
+{{{setac(hsm, HSM, Hardware Security Modules)}}}
+{{{setac(se, SE, Secure Elements)}}}
 {{{setac(tee, TEE, Trusted Execution Environment)}}}
+{{{setac(soc, SoC, System on Chip)}}}
+{{{setac(skpp, SKPP, Separation Kernel Protection Profile)}}}
+{{{setac(see, SEE, Secure Execution Environment)}}}
+{{{setac(drtm, DRTM, Dynamic Root of Trust Measurement)}}}
+{{{setac(rot, RoT, Hardware Root of Trust)}}}
+{{{setac(tcb, TCB, Trusted Computing Base)}}}
+{{{setac(pki, PKI, Public Key Infrastructure)}}}
+{{{setac(mee, MEE, Memory Encryption Engine)}}}
+{{{setac(dma, DMA, Direct Memory Access)}}}
+{{{setac(sev, SEV, Secure Encryption Virtualisation)}}}
+{{{setac(tdx, TDX, Trust Domain Extensions)}}}
+{{{setac(sme, SME, Secure Memory Encryption)}}}
+{{{setac(tos, TOS, Trusted Operating System)}}}
+{{{setac(ta, TA, Trusted Applications)}}}
+{{{setac(dam, DAM, Direct Access Memory)}}}
+{{{setac(tf, TF, Trusted Firmware)}}}
+{{{setac(sm, SM, Security Monitor)}}}
+{{{setac(ptw, PTW, Page Table Walker)}}}
+{{{setac(mmu, MMU, Memory Management Unit)}}}
+{{{setac(sl, SL, Sanctuary Library)}}}
+{{{setac(svm, SVM, Secure Virtual Machine)}}}
+{{{setac(vtx, VT-x, Virtualisation Technology)}}}
+{{{setac(ems, EMS, Enclave Measurement Signature)}}}
+{{{setac(ias, IAS, Intel Attestation Service)}}}
+{{{setac(avr, AVR, Attestation Verification Report)}}}
+{{{setac(sigrl, SigRL, Signature Revocation List)}}}
+{{{setac(epid, EPID, Enhanced Privacy ID)}}}
+{{{setac(utxo, UTXO, Unspent Transactions Output)}}}

@@ -3,52 +3,49 @@
 :CUSTOM_ID: security_attacks
 :END:
 
-Trusted Execution Environments are often promoted as an almost perfect solution for secure execution on devices, but as explained previously they can be subject to a great number of attacks. These vulnerabilities threaten directly the *remote attestation*, *isolated execution* capabilities, exfiltrate secret keys.
+# (citeme: 002, 7)
 
-# (citeme: 001, trust zone threat model, attacks)
+Trusted Execution Environments are often promoted as an almost-perfect solution for secure execution on devices, but as discussed, they remain subject to a range of attacks. These vulnerabilities directly threaten the *remote attestation* and *isolated execution* capabilities and exfiltrate secret keys.
+
 # (citeme: 003, [42, 45])
 
-Giving an example, on *Arm TrustZone* for Qualcomm's QSEE implementation, which are dominant on Snapdragon Android Devices, have been target of frequent attacks. The paper further explained in detail some of the exploits that some of the attackers use. For instance, by overwriting part of the secure region of memory by introducing special values [cite, 51]. As a result, unlocks the bootloader, thus unlocking the whole device.
+For instance, the *Arm TrustZone* implementation in Qualcomm's QSEE, which is dominant on Snapdragon Android Devices, has been the target of frequent attacks. The authors {{{citep(tee_001)}}} detail several exploits, including overwriting part of the secure memory region by introducing special values {{{citep(tee_001_51)}}}. As a result, unlocks the bootloader, thus unlocking the whole device.
 
 # (citeme: 008, [20, 43, 27, 50])
 
-Moreover, *Intel SGX* highly susceptible to internal leakage from *side channel attacks*. This can be done by analysing CPU caches, in some cases the operating system can access inside the enclave's memory [cite]. Also, it can infer further enclave secrets by observing memory pages between enclave requests [cite, 58]. Furthermore, there are several documents that prove that *SGX* indeed that be exploited by transient attacks, such as: *spectre* and *meltdown* in order to exfiltrate *attestation keys* and other *enclave secrets* from this CPUs.
+Moreover, *Intel SGX* is highly susceptible to internal leakage from *side-channel attacks* that exploit CPU caches. In some cases, the operating system can access memory within the enclave {{{citep(tee_008)}}} and infer enclave secrets by observing memory pages between enclave requests {{{citep(tee_008_58)}}}. Furthermore, research demonstrate that *SGX* can indeed be exploited by transient attacks, such as *Spectre* and *Meltdown*, to exfiltrate *attestation keys* and other *enclave secrets* from these CPUs.
 
 # (citeme: 007, AMD SME, HyperEnclave)
 # (citeme: 007, HyperEnclave, 25, 72, 74)
 
-Other physical attacks like *cold boot attacks* or *bus snooping*, or sniffing on physical level on entities of data signals that carry data across physical components, these can be: trace on *PCB*, cables, bus lines between components. Knowing this, both *AMD SME* and *HyperEnclave* could be used to protect the enclave from physical attacks. In case of *AMD SME*, with memory encryption, data it's encrypted between memory buses, and only decrypted within the CPU. While *HyperEnclave* can mitigate some *side channel attacks*, compared to *Intel SGX*. Considering that, *RustMonitor* a software component present on the framework processes the guest page tables and page fault events, without the Operating System interferes, it can't be performed page table based attacks [cite]. Although, in its current state isn't design to protect against *transient attacks*.
+Other physical attacks include *cold boot attacks*, *bus snooping*, and the sniffing of physical-level data signals that carry data across components, such as *PCBs*, cables, and bus lines. Both *AMD SME* and *HyperEnclave* could be used to protect the enclave from physical attacks. In the case of *AMD SME* with memory encryption, data is encrypted between the memory buses and decrypted only within the CPU (see [[#secure_encrypted_virtualization][Section 2.3.2]]). *HyperEnclave* also mitigates some side-channel attacks that affect *Intel SGX*. Since *RustMonitor* is a software component within the framework, it processes guest page tables and page-fault events without the Operating System interfering (see [[#hyper_enclave][Section 2.3.6]]), and thus cannot perform page-table-based attacks {{{citep(tee_007)}}}. Although in its current state it is not designed to protect against *transient attacks*.
 
 **** Side Channels Attacks
 :PROPERTIES:
 :CUSTOM_ID: side_channels
 :END:
 
-# (citeme: https://www.sciencedirect.com/topics/computer-science/side-channel, side channel)
+# [findme] need to find a citation for this!
 
-A *side channel attack* [cite] aims to extract sensitive information from a victim process without directly modify or observe the execution state, without them be aware of a potential leakage. These attacks can be operated in either direction (victim attacker or attacker to victim) and categorized in *physical* or *digital* attacks, on leveraging hardware and software parameters, respectively.
+A *side-channel attack* aims to extract sensitive information from a victim process without directly modifying or observing its execution state, without the victim being aware of a potential leakage. These attacks can be carried out in either direction (victim-to-attacker or attacker-to-victim) and categorised as *physical* or *digital* attacks, leveraging hardware and software parameters, respectively.
 
-Furthermore, in the context of TEE, physical side channels exploit hardware level properties, such as: power consumption, electromagnetic emissions, voltage fluctuations, activity provoke faulty behaviour created on memory or computation. On the other hand, *digital* side channels are performed on *software* level components by observing cache patterns, execution timings, branch prediction observe shared resources. Because of the isolation boundaries provided by *TEE* they are particularly vulnerable to cache based attacks, like timing differences from shared L1/L2/L3 cache.
+Furthermore, in the context of TEE, physical side channels exploit hardware-level properties, such as power consumption, electromagnetic emissions, voltage fluctuations, and activities that provoke faulty behaviour in memory or computation. On the other hand, *digital* side channels are performed at the *software* level by observing cache patterns, execution timings, and branch prediction, and by observing shared resources. Due to the isolation boundaries provided by *TEE*, they are particularly vulnerable to cache-based attacks, such as timing differences in shared L1/L2/L3 caches.
 
 **** Transient Attacks
 :PROPERTIES:
 :CUSTOM_ID: transient_attacks
 :END:
 
-# (citeme: 002, 7)
-
-# (citeme: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8835233, Spectre attacks)
-Beyond *side channel* attacks the most prominent attacks are *transient executing attacks*, that leverage the speculatively execute and out of order execution of modern software to find loopholes, to leak information or access unauthorized information.
+Beyond *side-channel* attacks, the most prominent attacks are *transient-execution attacks*, which leverage the speculative execution and out-of-order execution of modern software to find loopholes and leak or access unauthorised information.
 
 + *Spectre Attacks*
 
-  Moreover, *TEE* are also vulnerable to *spectre attacks* [cite], which tries to trick the processor into executing speculatively instructions sequences that shouldn't be executed in first place. As a result, the nominal CPU state is eventually reverted by combining these instructions sequences can be used to leak information within the victim's memory address space.
+  *TEE* is vulnerable to *Spectre Attacks* {{{citep(spectre_attacks)}}}, attempting to trick the processor into executing speculative instruction sequences, before reverting the nominal CPU state, leaking information from the victim's memory address space.
+
+# spectre paper citation 47
 
 + *Meltdown Attacks*
 
-# (citeme: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8835233, 47, meltdown)
+  Unlike *spectre attacks*, *meltdown attacks* {{{citep(spectre_attacks)}}} target out-of-order execution to leak kernel memory, rather than exploiting branch prediction. They exploit some *Intel* and *ARM* processors that allow speculative execution, bypassing memory protection. For instance, an attacker could leverage Meltdown attacks to access kernel memory from user space.
 
-  Different from *spectre attacks*, *meltdown attacks* [cite] tries to identity out of order execution instructions that leak kernel memory, unlike *spectre attacks* that instead use branch prediction. Also, it exploits some *Intel* and *Arm processors* that allow speculatively execute instructions in order to bypass memory protection. One can leverage meltdown attacks to access kernel memory from user space.
-
-  This attacks can bypass memory encryption or page-table protect, which potentially can leak *attestation keys*, *enclave protected secrets*, protocol state.
-
+These attacks can bypass memory encryption or page-table protection, potentially leaking *attestation keys*, *enclave-protected secrets*, and protocol state.

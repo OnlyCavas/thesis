@@ -3,50 +3,44 @@
 :CUSTOM_ID: remote_attestation
 :END:
 
-# (citeme: 004 - remote attestation)
+*Remote attestation* enables one party, the *verifier*, to cryptographically verify the hardware platform and software configuration of a remote party, the *attester*. The main objective is for the *verifier* to gather sufficient information about the attester, typically provided by the attester, and to integrate measurements and cryptographic proofs. Enabling the verifier to establish a trusted connection with a peer or service. In mutual attestation, both peers can attest to themselves to ensure trust in both, thereby guaranteeing integrity and authenticity in their trusted execution environments.
 
-*Remote attestation* enables one party, the *verifier* to cryptographically verify which precise hardware platform and software configuration of a remote party, the attester. The main objective is for the *verifier* to gather enough information about the attester, which is typically signed by him, integrating measurements and cryptographically proofs. Enabling the verifier to establishing a trusted connection with a peer or service. In mutual attestation, both peers can attest themselves, in order to ensure trust in both, thus guaranteeing integrity and authenticity on their trusted execution environment.
-
-Researchers [cite] propose implementing HSM like features using an *ARM CPU emulator* by leveraging the builtin *Arm TrustZone TEE*. Their attestation protocol emulates the TPM functionality as a Trusted Application (TA) that runs within the protected TrustZone Secure world, then exposing it like a TPM like interface for remote attestation and integrity verification. On their implementation is composed by the following key components that compose their *attestation process*:
+Researchers {{{citep(tee_004)}}} propose implementing HSM-like features using an *ARM CPU emulator* by leveraging the built-in *ARM TrustZone TEE*. Their attestation protocol emulates TPM functionality as a {{{gls(ta)}}} that runs within the protected TrustZone Secure World, then exposes it via a TPM-like interface for remote attestation and integrity verification. Their implementation is composed of the following key components composing their *attestation process*:
 
 + *Measurement and Extension*
 
-    Its done by calculating all user space executables in the kernel hash, using SHA-1 hashing function, then the value as input to the *TPM*. By using the *TPM_extend* function, thus storing its result on a *PCR*.
+  All user-space executables are hashed inside the kernel using SHA-1. The resulting value is passed to the TPM via the {{{mark(TPM\_extend)}}} function, which stores it in a *PCR*.
 
 + *Signed Quote and Verification*
 
-    The verifier sends an attestation request which includes a nonce for a replay attack protection. The attester's TA responds with a proper signed message that contains the selected PCR values, the nonce, and a measurement log. After that, the challenger verifies the integrity by replaying the log against a reference hashes for authorized software/firmware, than recalculating the expected PCR, thus validating the signature chain against the trusted key pair.
+  The verifier sends an attestation request that includes a nonce to protect against replay attacks. The attester's TA returns a properly signed message containing the selected PCR values, the nonce, and a measurement log. The challenger verifies the integrity by replaying the log against a reference hash for authorised software and firmware, then recalculating the expected PCR, validating the signature chain against the trusted key pair.
 
-On their experiment, the challenger peer sends a request with a nonce to the attestation platform, in this case their Arm Emulator. Than, the attester though the Trusted Application (TA) handles the secure storage of the RSA key pair, and PCR maintenance, sends a response that includes the signed PCR values, along with the nonce and the full measurement log. Finally, the challenger consults the reference hash values to conclude the verification.
+In their experiment, the challenger peer sends a request with a nonce to the attestation platform, in this case, their Arm Emulator. Then, the attester, through the {{{gls(ta)}}}, handles the secure storage of the RSA key pair and PCR maintenance, and sends a response that includes the signed PCR values, the nonce, and the full measurement log. Finally, the challenger consults the reference hash values to conclude the verification.
 
-# (citeme: sgx remote attestation, 003)
-
-Furthermore, other study [cite] explain how *Intel SGX* remote attestation works, giving other examples how to *Remote attestation* helps in different scenarios. They explain that it follows a modified Sigma protocol variant that incorporates *Enhanced Privacy ID* (EPID) for anonymous group signatures. While using Diffie-Hellman to establish secure, attested channel.
+The researchers {{{citep(tee_003)}}} provide a formal analysis of Intel SGX remote attestation, detailing how it establishes cryptographic trust between an enclave and a remote verifier. Intel SGX follows a modified Sigma protocol variant that incorporates {{{gls(epid)}}} for anonymous group signatures, relying on Diffie-Hellman to establish a secure, attested channel.
 
 + *Initial Attestation*:
 
-  The protocol starts a *verifier* sending a challenge over to the SGX enclave (*prover*), in order to initiate the process, including a nonce to prevent replay attacks.
+  The verifier sends a challenge to the SGX enclave (prover) to initiate the attestation process, including a nonce to prevent replay attacks.
 
 + *Ephemeral DH Key Generation by Prover*:
 
-  Afterwards, the *enclave* generates an ephemeral Diffie-Hellman key pair, or using the *Elliptic Curve Diffie-Hellman* (ECDH) in modern implementations, and than sending its public key back to the verifier. This process help to establish the shared secret.
+  The *enclave* replies to the verifier with its public key after generating an ephemeral *Elliptic Curve Diffie-Hellman* (ECDH) key pair to establish a shared secret.
 
 + *Verifier Prepares for EPID Verification*:
 
-  Than, the verifier contacts the *Intel Attestation service* (IAS), in order to retrieve a recent *Signature Revocation List* (SigRL). The SigRL contains revoked EPID signatures and doesn't need to be acquired on every attestation, which can be cached aside, although it must be recent enough in order to be verified. This step ensures that the *prover's* platform hasn't been revoked by Intel.
+  Meanwhile, the verifier retrieves a recent {{{gls(sigrl)}}} from the Intel Attestation Service (IAS) that contains the recently revoked EPID signatures, used to determine whether the prover's platform has been revoked.
 
 + *Verifier's Response*:
 
-  Meanwhile, the *verifier* generates it's ephemeral DH key pair. With, his generated private key signs the public key with his long term key and sends back to the *prover's* enclave. In terms of development, normally the verifiers key is hardcoded, allowing the enclave to authenticate with the verifier, thus ensuring that only verified parties can request attestation.
+  The verifier generates its own ephemeral DH key pair and signs the public key with its long-term key before sending it to the prover's enclave. Signing the public key allows the enclave to authenticate the verifier and ensures that only authorised parties can request attestation. In practice, the verifier's public key is typically hardcoded into the enclave.
 
 + *Quote Generation in Enclave*:
 
-  Next, the enclave calculates a new shared secret from the exchanged public keys. Than, it produces a quote with the embedded: hash of both exchanged keys, bonding to this e specific enclave, the derived shared secret, enclave measurements and a challenge. Afterwards, the quote is signed using the platform's EPID private key, binding cryptographically the ephemeral public key to the attested enclave, thus identifying unambiguously by this quote.
+  Next, the enclave computes a new shared secret from the exchanged public keys, then produces a quote that embeds the hashes of both keys, binding the quote to the derived shared secret, the enclave's measurements, the challenge, and the enclave itself. Then, the platform signs the quote using its EPID private key, cryptographically binding the ephemeral public key to the attested enclave and unambiguously identifying it.
 
 + *Quote Verification*:
 
-  Finally, the enclave sends the quote back to the *verifier*. Which than, forwards it to the *Intel Attestation service* (IAS, which will validate it against: the *EPID signature*, the *SigRL* and platform attributes, returning a signed *Attestation Verification Report*, which is signed with Intel public key.
+  After the verifier receives the enclave's quote, it submits it to the {{{gls(ias)}}}. The IAS validates the EPID signature against SigRL and the enclave's platform attributes, then returns a signed {{{gls(avr)}}} to the verifier, signed with Intel's private key.
 
-# (citeme: all remote explanations)
-
-The researchers [cite] shows an implements of a *remote attestation* process, implementing *TPM* functionality in software using TrustZone, thus enabling secure bootstrapping, and remote attestation. In BitTorrent contexts, this could allow swarms to prevent modified clients to join the network, and detect possible compromised chunks via IMA extend measurements. Moreover, by implementing an attestation protocol between peers, can mitigate *Sybil Attacks* and *Collusion Attacks*.
+The researchers {{{citep(tee_004)}}} propose implementing a *remote attestation* process that leverages *TPM* functionality in software via TrustZone, enabling secure bootstrapping and remote attestation. In BitTorrent, this could allow swarms to prevent modified clients from joining the network and detect possible compromised pieces via IMA extended measurements. Moreover, by implementing an attestation protocol between peers, mitigating *Sybil Attacks* and *Collusion Attacks*.

@@ -345,19 +345,145 @@
   pages={00045–00051}
 }
 
- @inproceedings{quic_007,
-   address={Los Angeles CA USA},
-   title={The QUIC Transport Protocol: Design and Internet-Scale Deployment},
-   ISBN={9781450346535},
-   url={https://dl.acm.org/doi/10.1145/3098822.3098842},
-   DOI={10.1145/3098822.3098842},
-   booktitle={Proceedings of the Conference of the ACM Special Interest Group on Data Communication},
-   publisher={ACM},
-   author={Langley, Adam and Riddoch, Alistair and Wilk, Alyssa and Vicente, Antonio and Krasic, Charles and Zhang, Dan and Yang, Fan and Kouranov, Fedor and Swett, Ian and Iyengar, Janardhan and Bailey, Jeff and Dorfman, Jeremy and Roskind, Jim and Kulik, Joanna and Westin, Patrik and Tenneti, Raman and Shade, Robbie and Hamilton, Ryan and Vasiliev, Victor and Chang, Wan-Teh and Shi, Zhongyi},
-   year={2017},
-   month=aug,
-   pages={183–196},
-   language={en}
- }
+@inproceedings{quic_007,
+  address={Los Angeles CA USA},
+  title={The QUIC Transport Protocol: Design and Internet-Scale Deployment},
+  ISBN={9781450346535},
+  url={https://dl.acm.org/doi/10.1145/3098822.3098842},
+  DOI={10.1145/3098822.3098842},
+  booktitle={Proceedings of the Conference of the ACM Special Interest Group on Data Communication},
+  publisher={ACM},
+  author={Langley, Adam and Riddoch, Alistair and Wilk, Alyssa and Vicente, Antonio and Krasic, Charles and Zhang, Dan and Yang, Fan and Kouranov, Fedor and Swett, Ian and Iyengar, Janardhan and Bailey, Jeff and Dorfman, Jeremy and Roskind, Jim and Kulik, Joanna and Westin, Patrik and Tenneti, Raman and Shade, Robbie and Hamilton, Ryan and Vasiliev, Victor and Chang, Wan-Teh and Shi, Zhongyi},
+  year={2017},
+  month=aug,
+  pages={183–196},
+  language={en}
+}
+
+@inproceedings{tee_001,
+  title={Trusted Execution Environment: What It is, and What It is Not},
+  volume={1},
+  url={https://ieeexplore.ieee.org/abstract/document/7345265},
+  DOI={10.1109/Trustcom.2015.357},
+  abstractNote={Nowadays, there is a trend to design complex, yet secure systems. In this context, the Trusted Execution Environment (TEE) was designed to enrich the previously defined trusted platforms. TEE is commonly known as an isolated processing environment in which applications can be securely executed irrespective of the rest of the system. However, TEE still lacks a precise definition as well as representative building blocks that systematize its design. Existing definitions of TEE are largely inconsistent and unspecific, which leads to confusion in the use of the term and its differentiation from related concepts, such as secure execution environment (SEE). In this paper, we propose a precise definition of TEE and analyze its core properties. Furthermore, we discuss important concepts related to TEE, such as trust and formal verification. We give a short survey on the existing academic and industrial ARM TrustZone-based TEE, and compare them using our proposed definition. Finally, we discuss some known attacks on deployed TEE as well as its wide use to guarantee security in diverse applications.},
+  booktitle={2015 IEEE Trustcom/BigDataSE/ISPA},
+  author={Sabt, Mohamed and Achemlal, Mohammed and Bouabdallah, Abdelmadjid},
+  year={2015},
+  month=aug,
+  pages={57–64}
+}
+
+@article{tee_002,
+  title={Trusted Execution Environments: Properties, Applications, and Challenges},
+  volume={18},
+  ISSN={1558-4046},
+  url={https://ieeexplore.ieee.org/abstract/document/9041685},
+  DOI={10.1109/MSEC.2019.2947124},
+  abstractNote={Software attacks on modern computer systems have been a persisting challenge for several decades, leading to a continuous arms race between attacks and defenses. As a first line of defense, operating system kernels enforce process isolation to limit potential attacks to only the code containing the vulnerabilities. However, vulnerabilities in the kernel itself (for example, various vulnerabilities found by Google Project Zero), side-channel attacks,1 or even physical attacks2 can be used to undermine process isolation.},
+  number={2},
+  journal={IEEE Security \& Privacy},
+  author={Jauernig, Patrick and Sadeghi, Ahmad-Reza and Stapf, Emmanuel},
+  year={2020},
+  month=mar,
+  pages={56-60}
+}
+
+@inproceedings{tee_002_sactuary,
+  author    = {Brasser, Ferdinand and Gens, David and Jauernig, Patrick and Sadeghi, Ahmad-Reza and Stapf, Emmanuel},
+  title     = {SANCTUARY: ARMing TrustZone with User-space Enclaves},
+  booktitle = {Proceedings of the Network and Distributed System Security Symposium (NDSS)},
+  year      = {2019},
+  url       = {https://www.ndss-symposium.org/wp-content/uploads/2019/02/ndss2019_01A-1_Brasser_paper.pdf},
+  urldate   = {2026-02-14}
+}
+
+@inproceedings{tee_003,
+  address={Alexandria Virginia USA},
+  title={Remote attestation on program execution},
+  ISBN={9781605582955},
+  url={https://dl.acm.org/doi/10.1145/1456455.1456458},
+  DOI={10.1145/1456455.1456458},
+  booktitle={Proceedings of the 3rd ACM workshop on Scalable trusted computing},
+  publisher={ACM},
+  author={Gu, Liang and Ding, Xuhua and Deng, Robert Huijie and Xie, Bing and Mei, Hong},
+  year={2008},
+  month=oct,
+  pages={11–20},
+  language={en}
+}
+
+@article{tee_004,
+  title        = {Remote Attestation Utilizing Trusted Execution Environment},
+  journal      = {Internet of Things Finland},
+  volume       = {1},
+  year         = {2015},
+  pages        = {36--39},
+  url          = {https://www.internetofthings.fi/extras/IoTMagazine2015.pdf},
+  urldate      = {2026-02-14}
+}
+
+@inproceedings{tee_006,
+  title={Trusted Execution Environments: A Look under the Hood},
+  url={https://ieeexplore.ieee.org/abstract/document/6834973},
+  DOI={10.1109/MobileCloud.2014.47},
+  abstractNote={Smartphones are now handling personal and extremely important data and applications. This increases mobile environment threats and makes smartphones one of attackers’ preferred targets. To mitigate threats, many proposals and counter-measures have been proposed. In this paper, we focus on one of them, the Trusted Execution Environment (TEE) which is a new family of architecture having its own hardware and software environment completely isolated from the mobile ones. It intends to offer better security than the one provided by mobile platforms. It proposes for example secure storage to applications running on top of the mobile Operating System. We give a complete overview of standardization activities on TEE. We first detail the software and hardware architecture of the TEE as introduced by GlobalPlatform specifications. Then, we describe the different available TEE solutions. Finally, we compare these solutions according to key performance parameters with a special interest to security aspects.},
+  booktitle={2014 2nd IEEE International Conference on Mobile Cloud Computing, Services, and Engineering},
+  author={Arfaoui, Ghada and Gharout, Saïd and Traoré, Jacques},
+  year={2014},
+  month=apr,
+  pages={259–266}
+}
+
+@inproceedings {tee_007,
+  author = {Yuekai Jia and Shuang Liu and Wenhao Wang and Yu Chen and Zhengde Zhai and Shoumeng Yan and Zhengyu He},
+  title = {{HyperEnclave}: An Open and Cross-platform Trusted Execution Environment},
+  booktitle = {2022 USENIX Annual Technical Conference (USENIX ATC 22)},
+  year = {2022},
+  isbn = {978-1-939133-29-48},
+  address = {Carlsbad, CA},
+  pages = {437-454},
+  url = {https://www.usenix.org/conference/atc22/presentation/jia-yuekai},
+  publisher = {USENIX Association},
+  month = jul
+}
+
+@inproceedings{tee_008,
+  title={WaTZ: A Trusted WebAssembly Runtime Environment with Remote Attestation for TrustZone},
+  ISSN={2575-8411},
+  url={https://ieeexplore.ieee.org/abstract/document/9912246},
+  DOI={10.1109/ICDCS54860.2022.00116},
+  abstractNote={WebAssembly (Wasm) is a novel low-level bytecode format that swiftly gained popularity for its efficiency, versatility and security, with near-native performance. Besides, trusted execution environments (TEEs) shield critical software assets against compromised infrastructures. However, TEEs do not guarantee the code to be trustworthy or that it was not tampered with. Instead, one relies on remote attestation to assess the code before execution. This paper describes WaTZ, which is (i) an efficient and secure runtime for trusted execution of Wasm code for Arm’s TrustZone TEE, and (ii) a lightweight remote attestation system optimised for Wasm applications running in TrustZone, as it lacks built-in mechanisms for attestation. The remote attestation protocol is formally verified using a state-of-the-art analyser and model checker. Our extensive evaluation of Arm-based hardware uses synthetic and real-world benchmarks, illustrating typical tasks IoT devices achieve. WaTZ’s execution speed is on par with Wasm runtimes in the normal world and reaches roughly half the speed of native execution, which is compensated by the additional security guarantees and the inter-operability offered by Wasm. WaTZ is open-source and available on GitHub along with instructions to reproduce our experiments.},
+  booktitle={2022 IEEE 42nd International Conference on Distributed Computing Systems (ICDCS)},
+  author={Ménétrey, Jämes and Pasin, Marcelo and Felber, Pascal and Schiavoni, Valerio},
+  year={2022},
+  month=july,
+  pages={1177–1189}
+}
+
+@inproceedings {tee_009,
+  author = {Sinisa Matetic and Karl W{\"u}st and Moritz Schneider and Kari Kostiainen and Ghassan Karame and Srdjan Capkun},
+  title = {{BITE}: Bitcoin Lightweight Client Privacy using Trusted Execution},
+  booktitle = {28th USENIX Security Symposium (USENIX Security 19)},
+  year = {2019},
+  isbn = {978-1-939133-06-9},
+  address = {Santa Clara, CA},
+  pages = {783--800},
+  url = {https://www.usenix.org/conference/usenixsecurity19/presentation/matetic},
+  publisher = {USENIX Association},
+  month = aug
+}
+
+@inproceedings{spectre_attacks,
+  title={Spectre Attacks: Exploiting Speculative Execution},
+  ISSN={2375-1207},
+  url={https://ieeexplore.ieee.org/document/8835233/?arnumber=8835233},
+  DOI={10.1109/SP.2019.00002},
+  abstractNote={Modern processors use branch prediction and speculative execution to maximize performance. For example, if the destination of a branch depends on a memory value that is in the process of being read, CPUs will try to guess the destination and attempt to execute ahead. When the memory value finally arrives, the CPU either discards or commits the speculative computation. Speculative logic is unfaithful in how it executes, can access the victim’s memory and registers, and can perform operations with measurable side effects. Spectre attacks involve inducing a victim to speculatively perform operations that would not occur during correct program execution and which leak the victim’s confidential information via a side channel to the adversary. This paper describes practical attacks that combine methodology from side channel attacks, fault attacks, and return-oriented programming that can read arbitrary memory from the victim’s process. More broadly, the paper shows that speculative execution implementations violate the security assumptions underpinning numerous software security mechanisms, including operating system process separation, containerization, just-in-time (JIT) compilation, and countermeasures to cache timing and side-channel attacks. These attacks represent a serious threat to actual systems since vulnerable speculative execution capabilities are found in microprocessors from Intel, AMD, and ARM that are used in billions of devices. While makeshift processor-specific countermeasures are possible in some cases, sound solutions will require fixes to processor designs as well as updates to instruction set architectures (ISAs) to give hardware architects and software developers a common understanding as to what computation state CPU implementations are (and are not) permitted to leak.},
+  booktitle={2019 IEEE Symposium on Security and Privacy (SP)},
+  author={Kocher, Paul and Horn, Jann and Fogh, Anders and Genkin, Daniel and Gruss, Daniel and Haas, Werner and Hamburg, Mike and Lipp, Moritz and Mangard, Stefan and Prescher, Thomas and Schwarz, Michael and Yarom, Yuval},
+  year={2019},
+  month=may,
+  pages={1–19}
+}
 
 @Comment{jabref-meta: databaseType:bibtex;}
