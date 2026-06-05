@@ -1,3 +1,3 @@
-#+OPTIONS: nocompile
+#+LATEX: \addtocontents{toc}{}
 
-# Write an integration bridge with the SOTA and PoC/Architecture
+The state of the art reveals that existing solutions address BitTorrent's vulnerabilities in isolation. QUIC improves transport security and performance, TEE-based remote attestation provides hardware-root identity verification and code-execution trust, and I2P provides anonymity routing.Currently, no existing work combines all three technologies into a unified, modular P2P file-sharing protocol. This thesis proposes {{{mark(bqti)}}}, a proof-of-concept that addresses the gap by integrating QUIC with mTLS and long-lived, multiplexed connections for DHT, PEX and BitTorrent protocol layers. At the application layer, it implements the Kademlia DHT with proof-of-work admission, self-contained tokens, and PGP certificates, delegating the trust anchor to the swarm and defining a modular trust infrastructure that could evolve into a configurable, hardware-rooted system. Finally, integration with the I2P network demonstrates that meaningful security, attestation, and anonymity guarantees can coexist within a practical P2P transfer protocol.

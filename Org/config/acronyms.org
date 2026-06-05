@@ -46,3 +46,9 @@
 {{{setac(sigrl, SigRL, Signature Revocation List)}}}
 {{{setac(epid, EPID, Enhanced Privacy ID)}}}
 {{{setac(utxo, UTXO, Unspent Transactions Output)}}}
+{{{setac(ac, AC, Anonymous Communication)}}}
+{{{setac(intps, IntPs, Introduction Points)}}}
+{{{setac(hsdirs, HSDirs, Hidden Service Directories)}}}
+{{{setac(netdb, NetDB, Network Database)}}}
+{{{setac(bka, BKA, German Federal Criminal Police Office)}}}
+{{{setac(socks, SOCKS, Socket Secure)}}}
