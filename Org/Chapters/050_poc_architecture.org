@@ -3,7 +3,7 @@
 :CUSTOM_ID: poc_architecture
 :END:
 
-The previous chapter identified critical limitations in the current BitTorrent ecosystem. Specifically, weak incentive mechanisms that could be exploited resulting in free-riding, vulnerability to Sybil and collusion attacks, lack of a mechanism to ensure peer trustworthiness, and susceptibility to traffic analysis. This chapter addresses these challenges by presenting a high-level design and architecture for a trust-enhanced, privacy-preserving BitTorrent client Proof-of-concept aimed at mitigating these limitations. The chapter begins by establishing a threat model that defines the threat actors and their assumed capabilities underlying the design, followed by the architectural decisions and key technology choices.
+The previous chapter identified critical limitations in the current BitTorrent ecosystem. Specifically, weak incentive mechanisms that can be exploited, leading to free-riding, Sybil and collusion attacks, a lack of a mechanism to ensure peer trustworthiness, and susceptibility to traffic analysis. This chapter addresses these challenges by presenting a high-level design and architecture for a trust-enhanced, privacy-preserving BitTorrent client proof-of-concept aimed at mitigating these limitations. The chapter begins by establishing a threat model that defines the attacker and their assumed capabilities underlying the design, followed by the architectural decisions and key technology choices.
 
 ** Threat Model
 :PROPERTIES:
@@ -14,19 +14,19 @@ The threat model identifies a network-capable adversary operating within or arou
 
 + *Traffic analysis*
 
-  An adversary is capable of correlating peer activity, recovering IP addresses of reached nodes, recover downloaded torrents, identifying connection patterns, access public metadata, signatures, and de-anonymize participants in general.
+ An adversary can correlate peer activity, recover IP addresses of reachable nodes, identify downloaded torrents, analyse connection patterns, access public metadata and signatures, and de-anonymise participants in general.
 
 + *Malicious clients*
 
-  An adversary could introduce peers running modified clients that deviate from the protocol specification, allowing free-riding, corrupting honest peers and poisoning deployable content.
+  An adversary could introduce peers running modified clients that deviate from the protocol specification, allowing free-riding, corrupting honest peers and poisoning distributed content.
 
 + *DHT manipulation*
 
-  An adversary could operate a cluster of colluding nodes to flood the Distributed Hash Table, taking control over small regions of the swarm by eclipsing honest peers, slowly corrupting DHT lookups.
+  An adversary could operate a cluster of colluding nodes to flood the Distributed Hash Table, taking control of small regions of the swarm by eclipsing honest peers and slowly corrupting DHT lookups.
 
 + *Passive eavesdropping*
 
-  An adversary captures inter-peer traffic, recovering metadata within a peer swarm session.
+  An adversary captures inter-peer traffic and recovers metadata within a peer swarm session.
 
 The proposed model ignores global passive adversaries capable of monitoring all network links simultaneously and physical attacks on host hardware, unless where {{{gls(tee)}}} mitigations are discussed.
 
@@ -35,41 +35,41 @@ The proposed model ignores global passive adversaries capable of monitoring all 
 :CUSTOM_ID: poc_design_goals
 :END:
 
-The overarching goal of this architecture is to address the main security and privacy weaknesses identified in the State of the Art while preserving acceptable performance. The proposed design is guided by the CIA triad, with the main focus on Confidentiality and Integrity. That said, the design tackles the core weaknesses discussed on the previous chapter, such as:
+The overarching goal of this architecture is to address the main security and privacy weaknesses identified in the State of the Art while preserving acceptable performance. The proposed design is guided by the CIA triad, with the main focus on Confidentiality and Integrity. That said, the design tackles the core weaknesses discussed in the previous chapter, such as:
 
 + *Confidentiality*
 
-  Within a peer swarm session, its traffic and metadata must not be exposed or recoverable by a passive observer or any other swarm participant. In order to tackle this issue, it is proposed for all QUIC's traffic be routed through I2P, replacing direct P2P connections with garlic-routed tunnels. Thus, relying on I2P to secure peer's anonymity and confidentiality.
+  Within a peer swarm session, its traffic and metadata must not be exposed or recoverable by a passive observer or any other swarm participant. To tackle this issue, it is proposed that all QUIC traffic be routed through I2P, replacing direct P2P connections with garlic-routed tunnels, thereby relying on I2P to secure peers' anonymity and confidentiality.
 
 + *Integrity*
 
-  In addition to ensure confidentiality, a peer should be able to verify if any participant is running a trusted, unmodified client implementation. For instance, this can be guaranteed by relying on {{{gls(tee)}}} remote attestation, and secure code execution, and piece verification, which will be further detailed in further detail in the subsequent sections.
+  In addition to ensuring confidentiality, a peer should be able to verify whether any participant is running a trusted, unmodified client implementation. For instance, this can be assured by relying on {{{gls(tee)}}} remote attestation, secure code execution, and piece verification, detailed in subsequent sections.
 
 + *Availability and Authentication*
 
-  Each participant must possess a cryptographically verifiable identity that is strongly bounded to a hardware or software-rooted attestation quote from its TEE. By tying the peer's session identity to a valid remote attestation quote, the system prevents impersonation attacks and along with the proof of work raises the cost of Sybil attacks during a swarm admission and along the session.
+  Each participant must possess a cryptographically verifiable identity that is strongly bound to a hardware attestation quote from its TEE or a software-rooted identity. Binding the peer's session identity to a certified remote attestation quote mitigates impersonation attacks. It helps to certify computed proof-of-work, thereby raising the cost of Sybil attacks during swarm admission and throughout the session.
 
-Ultimately, the integration of these three technologies creates a powerful synergy across the CIA triad. For example, I2P ensures *Confidentiality* by anonymizing the underlying QUIC's communication. On the other hand, the TEE layer delivers integrity  and authentication through remote attestation and trusted execution. This culmination restores verifiable trust within an anonymous swarm. Finally, availability is preserved through a modular and flexible design. More specifically, supporting graceful degradation, where peers can decide whether to disable I2P and fall back to direct P2P QUIC connections, or disable the TEE layer and eventually rely on standard cryptographic authentication. Overall, ensuring clients remain fully functional even when not fully compatible with the required swarm layers. While each added layer, introduces some performance overhead, keeping a modular approach maintaining usability across heterogeneous systems.
+Ultimately, integrating these three technologies creates a powerful synergy across the CIA triad. For example, I2P ensures *Confidentiality* by anonymising QUIC communication. Meanwhile, the TEE layer delivers integrity and authentication through remote attestation and trusted execution. This culmination restores verifiable trust within an anonymous swarm. Finally, availability is maintained through a modular, flexible design that supports graceful degradation, allowing peers to decide whether to disable I2P and fall back to direct P2P QUIC connections, or to disable the TEE layer and eventually rely on standard cryptographic authentication. Overall, ensuring clients remain fully functional even when not fully compatible with the required swarm layers. While each added layer introduces some performance overhead, keeping a modular approach maintains usability across heterogeneous systems.
 
 ** High-Level Architecture
 :PROPERTIES:
 :CUSTOM_ID: poc_high_level_architecture
 :END:
 
-The proposed Proof-of-concept is structured into three composable layers that constitute the BitTorrent application. Each layer addresses one of the main design goals while ensuring each layer operates independently and as a unified stack, such as:
+The proposed proof-of-concept is structured into three composable layers that constitute the BitTorrent application. Each layer addresses one of the main design goals while ensuring each layer operates independently and as a unified stack, such as:
 
 {{{figure(diagrams/architecture/global_arch.pdf, High level architecture of the proposed system)}}}
 
 + *Transport Layer*
 
-  Different from stock BitTorrent specification, instead of relying on both TCP/UDP or uTP as the sole transport protocol. During a BitTorrent client swarm sessions, a single QUIC connection is maintained per peer, carrying a dedicated control stream for protocol signaling (DHT, PEX, BEP handshake) and multiple independent streams for each concurrent piece download. As a result, this approach eliminates head-of-line blocking issue with TCP and spreads overhead across all protocol activity for a given peer.
+  Unlike the standard BitTorrent specification, which relies on TCP/UDP or uTP as the sole transport protocol. During a BitTorrent client swarm session, a single QUIC connection is maintained per peer, carrying a dedicated control stream for protocol signalling (DHT, PEX, BEP handshake) and multiple independent streams for each concurrent piece download. As a result, this approach eliminates TCP's head-of-line blocking and spreads the overhead across all protocol activity for a given peer.
 
 + *Anonymity Layer*
 
-  In order to ensure an anonymity layer while also keeping QUIC as the underlying protocol for BitTorrent peer interaction, all QUIC's traffic is routed through an I2P instance via a local SAM bridge using a DATAGRAM session. Notably, creating an abstraction layer that can be adapted for any protocol that integrates with a SAM client. Overall, I2P is responsible for handling garlic routing, tunnel management, and NetDB queries.
+  To ensure an anonymity layer while keeping QUIC as the underlying protocol for BitTorrent peer interaction, all QUIC traffic is routed through an I2P instance via a local SAM bridge using a DATAGRAM session. Notably, creating an abstraction layer that can be adapted for any protocol that integrates with a SAM client. Overall, I2P is responsible for handling garlic routing, tunnel management, and NetDB queries.
 
 + *Trust Layer*
 
-  This layer ensures that only authentic peers running a verified client implementation are admitted into the swarm, mitigating Sybil, collusion, and malicious client attacks. By default, swarm admission requires the computation of a proof-of-work bound to the peer's cryptographic identity and a signed token issued by a bootstrap node, which establish a computational barrier against cheap identity creation. When TEE hardware is available, it increases security strength by remotely attesting itself to other peers. For instance, proposing an ideal case where both peers have hardware-rooted attestation, both peers exchange their attestation reports that cryptographically bind the running code to trusted hardware, thus providing a verifiable guarantee that neither is running a modified client. However, this layer needs to be compatible with peers that don't support this feature and still allow both paradigms to work together, with admission requirements configurable per swarm.
+  This layer ensures that only authentic peers running a verified client implementation are admitted to the swarm, mitigating Sybil attacks, collusion, and malicious client attacks. By default, swarm admission requires the computation of a proof-of-work bound to the peer's cryptographic identity and a signed token issued by a bootstrap node, which establishes a computational barrier against cheap identity creation. When TEE hardware is available, it increases security strength by remotely attesting itself to other peers. For instance, in an ideal case where both peers have hardware-rooted attestation, they exchange attestation reports that cryptographically bind the running code to trusted hardware, thereby providing a verifiable guarantee that neither is running a modified client. However, this layer needs to be compatible with peers that do not support this feature and still allow both paradigms to work together, with admission requirements configurable per swarm.
 
-This architecture integrates three complementary layers to achieve the established design goals. The following sections provide a detailed breakdown of each layer integration, including the motivation behind the chosen technologies and how they were integrated.
+This architecture integrates three complementary layers to achieve the established design goals. The following sections provide a detailed breakdown of each layer integration, including the motivation behind the chosen technologies and how they fit together.

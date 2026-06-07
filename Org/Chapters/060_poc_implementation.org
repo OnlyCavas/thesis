@@ -3,22 +3,21 @@
 :CUSTOM_ID: poc_implementation
 :END:
 
-The previous chapter established the architecture of the proposed system, a three layer stack composed of QUIC, I2P, and TEE with the objective of achieving a trust-enhanced and privacy-preserving BitTorrent implementation. That said, this chapter details the concrete implementation of {{{mark(bqti)}}}, a working proof-of-concept implemented using Rust.
+The previous chapter established the architecture of the proposed system, a three-layer stack composed of QUIC, I2P, and TEE, to achieve a trust-enhanced, privacy-preserving BitTorrent implementation. This chapter details the concrete implementation of {{{mark(bqti)}}}, a working proof-of-concept implemented using Rust.
 
-The following sections detail each component of the stack, starting at the {{{mark(.torrent)}}} file metadata layer through peer discovery protocol extensions, session management, and I2P integration.
+The following sections detail each component of the stack, beginning with the {{{mark(.torrent)}}} file metadata layer and extending to peer discovery protocol extensions, session management, and I2P integration.
 
 ** Project Structure
 :PROPERTIES:
 :CUSTOM_ID: impl_structure
 :END:
 
-# (citeme: github project poc link)
 
-The current implementation is organized as a Rust workspace with two crates: the main {{{mark(bqti)}}} crate, containing the full protocol stack. Followed by {{{mark(bqti-ipc)}}} crate, a minimal rust library project defining the shared types for interprocess communication between the daemon and CLI client. By separating both into different projects avoids code replication and reuse in different context.
+The current implementation is organised as a Rust workspace with two crates: the main {{{mark(bqti)}}} crate, containing the full protocol stack, and the {{{mark(bqti-ipc)}}} crate, a minimal Rust library project defining the shared types for interprocess communication between the daemon and CLI client {{{citep(bqti_impl)}}}. Separating both into separate projects avoids code duplication and reuse across contexts.
 
-Moreover, inside the {{{mark(bqti)}}} crate, the remaining code is organized by four top level modules. First, {{{mark(bit\_torrent)}}} module containing the core protocol stack and metadata specification, its responsible for the stock protocol implementation and control. Within, {{{mark(network)}}} crate where QUIC management, {{{mark(dht)}}} Kademlia peer discovery implementation, {{{mark(session)}}} peer wire protocol state machine, and {{{mark(chunks)}}} piece I/O operations, and fine grain. Following this crate, {{{mark(i2p)}}}  module provides the simple SAM client implementation that proxies both {{{mark(bit\_torrent)}}} and {{{mark(network)}}} abstracting the core network management implementation. Finally, {{{mark(ipc)}}} module that is responsible for managing the Unix socket control interface between the daemon and a client, in this case the CLI client.
+Inside the {{{mark(bqti)}}} crate, the remaining code is organised by four top-level modules. First, the {{{mark(bit\_torrent)}}} module contains the core protocol stack and metadata specification. It is responsible for the implementation and control of the stock protocol. Within it, the {{{mark(network)}}} module handles QUIC management, {{{mark(dht)}}} implements Kademlia peer discovery, {{{mark(session)}}} implements the peer wire protocol state machine, and {{{mark(chunks)}}} manages piece I/O operations.. The {{{mark(i2p)}}} module provides the simple SAM client implementation that proxies both {{{mark(bit\_torrent)}}} and {{{mark(network)}}} abstracting the core network management implementation. Finally, the {{{mark(ipc)}}} module that is responsible for managing the Unix socket control interface between the daemon and a client, in this case, the CLI client.
 
-Also, the implementation is powered by the following open-source Rust crates, acknowledged here in accordance with their responsible licenses:
+The implementation is powered by the following open-source Rust crates, acknowledged here in accordance with their respective licenses:
 
 | Crate       | Purpose                        |
 |-------------|--------------------------------|
@@ -28,4 +27,3 @@ Also, the implementation is powered by the following open-source Rust crates, ac
 | {{{mark(ring)}}}    |  Cryptographic primitives               |
 | {{{mark(tokio)}}}    |  Asynchronous runtime               |
 | {{{mark(rcgen)}}}    |  X.509 certificate generation               |
-
