@@ -187,8 +187,7 @@
   urldate     = {2026-02-14}
 }
 
-@book{
-  quic_001_cable_labs,
+@book{quic_001_cable_labs,
   type={Internet Draft},
   title={Analysis of SPDY and TCP Initcwnd},
   url={https://datatracker.ietf.org/doc/draft-white-httpbis-spdy-analysis/00/},
@@ -373,6 +372,52 @@
   pages={57–64}
 }
 
+@article{tee_001_15,
+  author = {Rushby, J. M.},
+  title = {Design and verification of secure systems},
+  year = {1981},
+  issue_date = {December 1981},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  volume = {15},
+  number = {5},
+  issn = {0163-5980},
+  url = {https://doi.org/10.1145/1067627.806586},
+  doi = {10.1145/1067627.806586},
+  abstract = {This paper reviews some of the difficulties that arise in the verification of kernelized secure systems and suggests new techniques for their resolution.It is proposed that secure systems should be conceived as distributed systems in which security is achieved partly through the physical separation of its individual components and partly through the mediation of trusted functions performed within some of those components. The purpose of a security kernel is simply to allow such a 'distributed' system to actually run within a single processor; policy enforcement is not the concern of a security kernel.This approach decouples verification of components which perform trusted functions from verification of the security kernel. This latter task may be accomplished by a new verification technique called 'proof of separability' which explicitly addresses the security relevant aspects of interrupt handling and other issues ignored by present methods.},
+  journal = {SIGOPS Oper. Syst. Rev.},
+  month = dec,
+  pages = {12–21},
+  numpages = {10}
+}
+
+@techreport{tee_001_17,
+  author      = {{National Security Agency}},
+  title       = {U.S. Government Protection Profile for Separation Kernels in Environments Requiring High Robustness},
+  institution = {National Security Agency},
+  type        = {Technical Report},
+  year        = {2007},
+  month       = jun,
+  note        = {Version 1.03},
+  url         = {https://www.niap-ccevs.org/pp/pp_skpp_hr_v1.03.pdf}
+}
+
+@techreport{tee_001_42,
+  author      = {{ARM Ltd}},
+  title       = {ARM Security Technology: Building a Secure System Using TrustZone Technology},
+  institution = {ARM Ltd},
+  year        = {2009},
+  url         = {https://developer.arm.com/documentation/PRD29-GENC-009492/c/}
+}
+
+@misc{tee_001_51,
+  author  = {Rosenberg, Dan},
+  title   = {Unlocking the Motorola Bootloader},
+  year    = {2013},
+  url     = {http://blog.azimuthsecurity.com/2013/04/unlocking-motorola-bootloader.html},
+  urldate = {2026-02-14}
+}
+
 @article{tee_002,
   title={Trusted Execution Environments: Properties, Applications, and Challenges},
   volume={18},
@@ -447,6 +492,70 @@
   month = jul
 }
 
+@inproceedings{tee_007_35,
+  author = {Ferraiuolo, Andrew and Baumann, Andrew and Hawblitzel, Chris and Parno, Bryan},
+  title = {Komodo: Using verification to disentangle secure-enclave hardware from software},
+  year = {2017},
+  isbn = {9781450350853},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3132747.3132782},
+  doi = {10.1145/3132747.3132782},
+  abstract = {Intel SGX promises powerful security: an arbitrary number of user-mode enclaves protected against physical attacks and privileged software adversaries. However, to achieve this, Intel extended the x86 architecture with an isolation mechanism approaching the complexity of an OS microkernel, implemented by an inscrutable mix of silicon and microcode. While hardware-based security can offer performance and features that are difficult or impossible to achieve in pure software, hardware-only solutions are difficult to update, either to patch security flaws or introduce new features.Komodo illustrates an alternative approach to attested, on-demand, user-mode, concurrent isolated execution. We decouple the core hardware mechanisms such as memory encryption, address-space isolation and attestation from the management thereof, which Komodo delegates to a privileged software monitor that in turn implements enclaves. The monitor's correctness is ensured by a machine-checkable proof of both functional correctness and high-level security properties of enclave integrity and confidentiality. We show that the approach is practical and performant with a concrete implementation of a prototype in verified assembly code on ARM TrustZone. Our ultimate goal is to achieve security equivalent to or better than SGX while enabling deployment of new enclave features independently of CPU upgrades.The Komodo specification, prototype implementation, and proofs are available at https://github.com/Microsoft/Komodo.},
+  booktitle = {Proceedings of the 26th Symposium on Operating Systems Principles},
+  pages = {287–305},
+  numpages = {19},
+  location = {Shanghai, China},
+  series = {SOSP '17}
+}
+
+@inproceedings{tee_007_49,
+  author = {Lee, Dayeol and Kohlbrenner, David and Shinde, Shweta and Asanovi\'{c}, Krste and Song, Dawn},
+  title = {Keystone: an open framework for architecting trusted execution environments},
+  year = {2020},
+  isbn = {9781450368827},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3342195.3387532},
+  doi = {10.1145/3342195.3387532},
+  abstract = {Trusted execution environments (TEEs) see rising use in devices from embedded sensors to cloud servers and encompass a range of cost, power constraints, and security threat model choices. On the other hand, each of the current vendor-specific TEEs makes a fixed set of trade-offs with little room for customization. We present Keystone---the first open-source framework for building customized TEEs. Keystone uses simple abstractions provided by the hardware such as memory isolation and a programmable layer underneath untrusted components (e.g., OS). We build reusable TEE core primitives from these abstractions while allowing platform-specific modifications and flexible feature choices. We showcase how Keystone-based TEEs run on unmodified RISC-V hardware and demonstrate the strengths of our design in terms of security, TCB size, execution of a range of benchmarks, applications, kernels, and deployment models.},
+  booktitle = {Proceedings of the Fifteenth European Conference on Computer Systems},
+  articleno = {38},
+  numpages = {16},
+  keywords = {trusted execution environment, side-channel attack, secure enclave, open source, memory isolation, hardware root of trust, hardware enclave, RISC-V},
+  location = {Heraklion, Greece},
+  series = {EuroSys '20}
+}
+
+@inproceedings{optee,
+   title={Open-TEE -- An Open Virtual Trusted Execution Environment},
+   url={http://dx.doi.org/10.1109/Trustcom.2015.400},
+   DOI={10.1109/trustcom.2015.400},
+   booktitle={2015 IEEE Trustcom/BigDataSE/ISPA},
+   publisher={IEEE},
+   author={McGillion, Brian and Dettenborn, Tanel and Nyman, Thomas and Asokan, N.},
+   year={2015},
+   month=Aug, pages={400–407}
+}
+@inproceedings{vimp,
+  author    = {Ahn, Chang-Woo},
+  title     = {ViMo (Virtualization for Mobile): A Virtual Machine Monitor Supporting Full Virtualization for ARM Mobile Systems},
+  booktitle = {CLOUD COMPUTING 2010},
+  year      = {2010}
+}
+
+@inproceedings{tlr,
+  author = {Santos, Nuno and Raj, Himanshu and Saroiu, Stefan and Wolman, Alec},
+  title = {Trusted Language Runtime (TLR): Enabling Trusted Applications on Smartphones},
+  booktitle = {HotMobile '11 Proceedings of the 12th Workshop on Mobile Computing Systems and Applications},
+  year = {2011},
+  month = {March},
+  abstract = {Despite their popularity, today's smartphones do not yet offer environments for building and running trusted applications. At the same time, current systems designed for traditional desktop or server machines to enable trusted applications are either too heavyweight for smartphones or too difficult to program. This paper presents the Trusted Language Runtime (TLR), a system for developing and running trusted applications on a smartphone. The TLR is lightweight because 1) it makes use of ARM TrustZone, hardware support that offers rich trusted computing primitives, and 2) it leverages the .NET MicroFramework, a language runtime for embedded and resource-constrained devices. The TLR is easy to program because .NET offers the productivity benefits of modern high-level languages, such as strong typing and garbage collection, to application developers.},
+  publisher = {ACM Press},
+  url = {https://www.microsoft.com/en-us/research/publication/trusted-language-runtime-tlr-enabling-trusted-applications-on-smartphones/},
+  edition = {HotMobile '11 Proceedings of the 12th Workshop on Mobile Computing Systems and Applications},
+}
+
 @inproceedings{tee_008,
   title={WaTZ: A Trusted WebAssembly Runtime Environment with Remote Attestation for TrustZone},
   ISSN={2575-8411},
@@ -460,6 +569,57 @@
   pages={1177–1189}
 }
 
+@inproceedings{tee_008_27,
+   title={Twine: An Embedded Trusted Runtime for WebAssembly},
+   url={http://dx.doi.org/10.1109/ICDE51399.2021.00025},
+   DOI={10.1109/icde51399.2021.00025},
+   booktitle={2021 IEEE 37th International Conference on Data Engineering (ICDE)},
+   publisher={IEEE},
+   author={Menetrey, James and Pasin, Marcelo and Felber, Pascal and Schiavoni, Valerio},
+   year={2021},
+   month=Apr, pages={205–216}
+}
+
+@misc{tee_008_28,
+  author  = {{Bytecode Alliance}},
+  title   = {WebAssembly Micro Runtime ({WAMR})},
+  year    = {2019},
+  url     = {https://github.com/bytecodealliance/wasm-micro-runtime},
+  urldate = {2026-02-14}
+}
+
+@inproceedings{tee_008_34,
+  author = {Goltzsche, David and Nieke, Manuel and Knauth, Thomas and Kapitza, R\"{u}diger},
+  title = {AccTEE: A WebAssembly-based Two-way Sandbox for Trusted Resource Accounting},
+  year = {2019},
+  isbn = {9781450370097},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3361525.3361541},
+  doi = {10.1145/3361525.3361541},
+  abstract = {Remote computation has numerous use cases such as cloud computing, client-side web applications or volunteer computing. Typically, these computations are executed inside a sandboxed environment for two reasons: first, to isolate the execution in order to protect the host environment from unauthorised access, and second to control and restrict resource usage. Often, there is mutual distrust between entities providing the code and the ones executing it, owing to concerns over three potential problems: (i) loss of control over code and data by the providing entity, (ii) uncertainty of the integrity of the execution environment for customers, and (iii) a missing mutually trusted accounting of resource usage.In this paper we present AccTEE, a two-way sandbox that offers remote computation with resource accounting trusted by consumers and providers. AccTEE leverages two recent technologies: hardware-protected trusted execution environments, and Web-Assembly, a novel platform independent byte-code format. We show how AccTEE uses automated code instrumentation for fine-grained resource accounting while maintaining confidentiality and integrity of code and data. Our evaluation of AccTEE in three scenarios -- volunteer computing, serverless computing, and pay-by-computation for the web -- shows a maximum accounting overhead of 10\%.},
+  booktitle = {Proceedings of the 20th International Middleware Conference},
+  pages = {123–135},
+  numpages = {13},
+  keywords = {WebAssembly, Trusted Computing, Sandbox, Resource Accounting, Intel SGX},
+  location = {Davis, CA, USA},
+  series = {Middleware '19}
+}
+
+@inproceedings{tee_008_35,
+  author    = {Qiang, Weizhong and Dong, Zezhao and Jin, Hai},
+  editor    = {Beyah, Raheem and Chang, Bing and Li, Yingjiu and Zhu, Sencun},
+  title     = {Se-Lambda: Securing Privacy-Sensitive Serverless Applications Using {SGX} Enclave},
+  booktitle = {Security and Privacy in Communication Networks},
+  year      = {2018},
+  publisher = {Springer International Publishing},
+  address   = {Cham},
+  pages     = {451--470},
+  isbn      = {978-3-030-01701-9},
+  doi       = {10.1007/978-3-030-01701-9_25},
+  abstract  = {Serverless computing is an emerging trend in the cloud, which represents a new paradigm for deploying applications and services. In the serverless computing framework, cloud users can deploy arbitrary code and process data on the service runtime. However, as neither cloud users nor cloud providers are trustworthy, serverless computing platform suffers from trust issues caused by both sides. In this paper, we propose a new serverless computing framework called Se-Lambda, which protects the API gateway by using SGX enclave and the service runtime by leveraging a two-way sandbox that combines SGX enclave and WebAssembly sandboxed environment. In the proposed service runtime, users' untrusted code is confined by WebAssembly sandboxed environment, while SGX enclave prevents malicious cloud providers from stealing users' privacy-sensitive data. In addition, we implement a privilege monitoring mechanism in SGX enclave to manage the access control of function modules from users. We implement the prototype of Se-Lambda based on the open source project OpenLambda. The experimental results show that the Se-Lambda imposes a low performance penalty, while buying a significantly increased level of security.}
+}
+
 @inproceedings {tee_009,
   author = {Sinisa Matetic and Karl W{\"u}st and Moritz Schneider and Kari Kostiainen and Ghassan Karame and Srdjan Capkun},
   title = {{BITE}: Bitcoin Lightweight Client Privacy using Trusted Execution},
@@ -469,6 +629,19 @@
   address = {Santa Clara, CA},
   pages = {783--800},
   url = {https://www.usenix.org/conference/usenixsecurity19/presentation/matetic},
+  publisher = {USENIX Association},
+  month = aug
+}
+
+@inproceedings {tee_009_39,
+  author = {Sinisa Matetic and Mansoor Ahmed and Kari Kostiainen and Aritra Dhar and David Sommer and Arthur Gervais and Ari Juels and Srdjan Capkun},
+  title = {{ROTE}: Rollback Protection for Trusted Execution},
+  booktitle = {26th USENIX Security Symposium (USENIX Security 17)},
+  year = {2017},
+  isbn = {978-1-931971-40-9},
+  address = {Vancouver, BC},
+  pages = {1289-1306},
+  url = {https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/matetic},
   publisher = {USENIX Association},
   month = aug
 }
@@ -503,9 +676,124 @@
 @misc{i2p_garlic,
   author       = {{I2P Project}},
   title        = {Garlic Routing in I2P},
+  year         = {2024},
   url          = {https://i2p.net/en/docs/overview/garlic-routing/},
   urldate      = {2026-02-14},
   note         = {I2P Project Documentation}
+}
+
+@article{tor_001,
+  title={Onion routing},
+  volume={42},
+  ISSN={0001-0782, 1557-7317},
+  url={https://dl.acm.org/doi/10.1145/293411.293443},
+  DOI={10.1145/293411.293443},
+  number={2},
+  journal={Communications of the ACM},
+  author={Goldschlag, David and Reed, Michael and Syverson, Paul},
+  year={1999},
+  month=feb,
+  pages={39–41},
+  language={en}
+}
+
+@inproceedings{i2p_005,
+  address={Boston MA USA},
+  title={An Empirical Study of the I2P Anonymity Network and its Censorship Resistance},
+  ISBN={9781450356190},
+  url={https://dl.acm.org/doi/10.1145/3278532.3278565},
+  DOI={10.1145/3278532.3278565},
+  booktitle={Proceedings of the Internet Measurement Conference 2018},
+  publisher={ACM},
+  author={Hoang, Nguyen Phong and Kintis, Panagiotis and Antonakakis, Manos and Polychronakis, Michalis},
+  year={2018},
+  month=oct,
+  pages={379–392},
+  language={en}
+}
+
+@inproceedings{i2p_006,
+  title={Group-Based Characterization for the I2P Anonymous File-Sharing Environment},
+  ISSN={2157-4960},
+  url={https://ieeexplore.ieee.org/abstract/document/6814020},
+  DOI={10.1109/NTMS.2014.6814020},
+  abstractNote={The I2P network provides an abstraction layer allowing two parties to communicate in an anonymous manner. This network is optimised for anonymous web hosting and anonymous file-sharing. I2P’s file- sharing community is highly active where users deploy their file-sharing applications on top of the network. I2P uses a variation of Onion routing, thus assuring the unlinkability between a user and its file-sharing application. In this paper, we take the first step towards the linkability of users and applications in the I2P network. We conduct a group-based characterisation, where we determine to what extent a group of users is responsible for the overall I2P’s file-sharing activity. We used Pearson’s coefficient to correlate users from two cities and the most used anonymous file-sharing application. We determine that two cities explain more than a third of all file-sharing activity within the I2P network.},
+  booktitle={2014 6th International Conference on New Technologies, Mobility and Security (NTMS)},
+  author={Timpanaro, Juan Pablo and Chrisment, Isabelle and Festor, Olivier},
+  year={2014},
+  month=mar,
+  pages={1–5}
+}
+
+@inproceedings{i2p_007,
+  title={I2P Anonymous Traffic Detection and Identification},
+  ISSN={2575-7288},
+  url={https://ieeexplore.ieee.org/abstract/document/8728517},
+  DOI={10.1109/ICACCS.2019.8728517},
+  abstractNote={Nowadays, network users are more and more aware of privacy protection. Anonymous communication technology has attracted much attention because it can hide the identity information of both sides of communication to achieve secure communication. Invisible Internet Project (I2P) is the most widely used open source anonymous communication tool besides The Onion Router (TOR) and Java Anon Proxy (JAP). It detects and identifies I2P traffic in the network, which plays an important role in network security monitoring and protection. Based on the analysis of the implementation mechanism of I2P anonymous service, this paper achieves the discovery and collection of I2P internal resources, and further analyses the NTCP communication protocol of I2P to realize the detection and identification of I2P network traffic. In addition, based on four traffic classification algorithms, the identification and classification of data traffic in I2P network are realized at anonymous service level, and the correlation between the selection of network traffic characteristics and classification performance is analyzed. The results show that Random Forest has the best classification performance compared with the other three classification algorithms. The classification performance improves with the decrease of the number of network traffic features selected.},
+  booktitle={2019 5th International Conference on Advanced Computing \& Communication Systems (ICACCS)},
+  author={Yin, Hongshan and He, Yongzhong},
+  year={2019},
+  month=mar,
+  pages={157–162}
+}
+
+@inproceedings{vs_008,
+  title={TOR vs I2P: A comparative study},
+  url={https://ieeexplore.ieee.org/abstract/document/7475027},
+  DOI={10.1109/ICIT.2016.7475027},
+  abstractNote={The Internet is the main source of communication now-a-days; however, the identities of senders and receivers are not hidden. If someone wants to hide his/her identity, the most suitable choice is to use anonymous communication. Anonymous communication not only provides anonymity but also privacy. Anonymity is not something which was invented with the Internet. To overcome this and provide anonymity, anonymous communication systems were developed. In this paper a comparison of The Onion Router and Invisible Internet Project is presented. The Onion Router is the most deployed anonymous communication system that provides online anonymity and privacy while The Invisible Internet Project allows applications to send messages to each other pseudonymously and securely by using garlic routing.},
+  booktitle={2016 IEEE International Conference on Industrial Technology (ICIT)},
+  author={Ali, Afzaal and Khan, Maria and Saddique, Muhammad and Pirzada, Umar and Zohaib, Muhammad and Ahmad, Imran and Debnath, Narayan},
+  year={2016},
+  month=mar,
+  pages={1748–1751}
+}
+
+@inbook{vs_008_10,
+  author    = {Berthold, Oliver and Federrath, Hannes and K{\"o}psell, Stefan},
+  editor    = {Federrath, Hannes},
+  title     = {Web {MIXes}: A System for Anonymous and Unobservable Internet Access},
+  booktitle = {Designing Privacy Enhancing Technologies: International Workshop on Design Issues in Anonymity and Unobservability Berkeley, CA, USA, July 25--26, 2000 Proceedings},
+  year      = {2001},
+  publisher = {Springer Berlin Heidelberg},
+  address   = {Berlin, Heidelberg},
+  pages     = {115--129},
+  abstract  = {We present the architecture, design issues and functions of a MIX-based system for anonymous and unobservable real-time Internet access. This system prevents traffic analysis as well as flooding attacks. The core technologies include an adaptive, anonymous, time/volumesliced channel mechanism and a ticket-based authentication mechanism. The system also provides an interface to inform anonymous users about their level of anonymity and unobservability.},
+  isbn      = {978-3-540-44702-3},
+  doi       = {10.1007/3-540-44702-4_7},
+  url       = {https://doi.org/10.1007/3-540-44702-4_7}
+}
+
+@inproceedings{vs_008_12,
+  author    = {Rennhard, Marc and Plattner, Bernhard},
+  editor    = {Juels, Ari},
+  title     = {Practical Anonymity for the Masses with {MorphMix}},
+  booktitle = {Financial Cryptography},
+  year      = {2004},
+  publisher = {Springer Berlin Heidelberg},
+  address   = {Berlin, Heidelberg},
+  pages     = {233--250},
+  abstract  = {MorphMix is a peer-to-peer circuit-based mix network to provide practical anonymous low-latency Internet access for millions of users. The basic ideas of MorphMix have been published before; this paper focuses on solving open problems and giving an analysis of the resistance to attacks and the performance it offers assuming realistic scenarios with very many users. We demonstrate that MorphMix scales very well and can support as many nodes as there are public IP addresses. In addition, we show that MorphMix is indeed practical because it provides good resistance from long-term profiling and offers acceptable performance despite the heterogeneity of the nodes and the fact that nodes can join or leave the system at any time.},
+  isbn      = {978-3-540-27809-2},
+  doi       = {10.1007/978-3-540-27809-2_24}
+}
+
+@misc{privoxy_ref,
+  author  = {{Privoxy Developers}},
+  title   = {Privoxy: A Non-Caching Web Proxy with Advanced Filtering Capabilities},
+  year    = {2001},
+  url     = {https://www.privoxy.org/},
+  urldate = {2026-02-14}
+}
+
+@inproceedings{vs_009,
+  author    = {Conrad, Bernd and Shirazi, Fatemeh},
+  title     = {A Survey on Tor and I2P},
+  booktitle = {Proceedings of the International Conference on Internet Monitoring and Protection (ICIMP)},
+  year      = {2014},
+  url       = {https://i2p.net/docs/historical/icimp_2014_1_40_30015.pdf},
+  urldate   = {2026-02-14}
 }
 
 @misc{bqti_impl,

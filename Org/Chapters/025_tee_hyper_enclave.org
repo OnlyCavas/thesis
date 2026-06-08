@@ -23,16 +23,12 @@ Using *HyperEnclave* with BitTorrent swarms, leveraging its process-based model,
 
 Beyond HyperEnclave, there are other academic and open source TEE implementations that tackle other aspects, that could enhance trust within BitTorrent swarms:
 
-+ *Komodo* [cite, 35], implements an SGX like enclave protection model on TrustZone backend.
++ *Komodo* {{{citep(tee_007_35)}}}, implements an SGX like enclave protection model on TrustZone backend.
 
-+ *Keystone* [cite, 49], another TEE that supports RISC-V platforms.
++ *Keystone* {{{citep(tee_007_49)}}}, another TEE that supports RISC-V platforms.
 
-+ *Genode* [cite, 35] by Genode Labs
++ *Open-TEE* {{{citep(optee)}}} by Intel Collaborative Research Institute for Secure Computing
 
-+ *Open-TEE* [cite, 47] by Intel Collaborative Research Institute for Secure Computing
++ *ViMoExpress* {{{citep(vimp)}}} by Electronic and Telecommunication Research Institute
 
-+ *SafeG* [cite, 48] by Nagoya University
-
-+ *ViMoExpress* [cite, 49] by Electronic and Telecommunication Research Institute
-
-+ *TLR* [cite, 8] by Microsoft Research
++ *TLR* {{{citep(tlr)}}} by Microsoft Research

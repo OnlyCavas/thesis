@@ -27,9 +27,9 @@ Hardware-rooted security mechanisms provide verifiable trust guarantees that pur
 
 {{{gls(tee)}}} are described as a hardware-backed approach to secure computation, implemented as isolated execution contexts that tightly integrate with the main CPU and {{{gls(soc)}}} {{{citep(tee_001)}}}. By taking advantage of native SoC, resources that include memory encryption engines, direct access to hardware, and privileged modes enable crypto operations and protected execution on general-purpose CPUs, without needing other external modules. Additionally, TEEs are tamper-resistant and provide remote attestation capabilities, which are imperative for proving trustworthiness to third parties.
 
-The separation kernel is the core foundation component of *TEE*. Sources indicate that it was first introduced by {{{citep(tee_002_15)}}} to allow the coexistence of systems that require different levels of security on the same platform. It achieves this by dividing the system into multiple partitions, guaranteeing stronger isolation between them, and by implementing it differently across providers.
+The separation kernel is the core foundation component of *TEE*. Sources indicate that it was first introduced by {{{citep(tee_001_15)}}} to allow the coexistence of systems that require different levels of security on the same platform. It achieves this by dividing the system into multiple partitions, guaranteeing stronger isolation between them, and by implementing it differently across providers.
 
-The sources further explain that security requirements for separation kernels are described in {{{gls(skpp)}}} {{{citep(tee_002_17)}}}. Furthermore, different from traditional kernels, this separation kernel is simpler, providing both time and space partitioning:
+The sources further explain that security requirements for separation kernels are described in {{{gls(skpp)}}} {{{citep(tee_001_17)}}}. Furthermore, different from traditional kernels, this separation kernel is simpler, providing both time and space partitioning:
 
 + *Spatial separation*: data can't be modified or read by other partitions.
 

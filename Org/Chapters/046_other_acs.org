@@ -10,11 +10,11 @@ Beyond the most common anonymity overlays, such as Tor and I2P, several open-sou
 
 + *JAP or JonDo (Java Anonymous Proxy)*
 
-  A mix network developed in Germany for web browsing with enhanced anonymity. Similar to I2P, it routes traffic through several intermediaries, called mixes {{{citep(i2p_008_10)}}}. Unlike I2P, mixes are fixed and primarily designed for web browsing on the ClearNet, and therefore do not support hidden services. Eventually, the {{{gls(bka)}}} compromised the overlay, leading to the project's shutdown.
+  A mix network developed in Germany for web browsing with enhanced anonymity. Similar to I2P, it routes traffic through several intermediaries, called mixes {{{citep(vs_008_10)}}}. Unlike I2P, mixes are fixed and primarily designed for web browsing on the ClearNet, and therefore do not support hidden services. Eventually, the {{{gls(bka)}}} compromised the overlay, leading to the project's shutdown.
 
 + *MorphMix*
 
-  A P2P mix network where every client is a mix. It is a decentralised network designed to be as low-latency and scalable, with strong protection against realistic observers {{{citep(i2p_008_12)}}}, offering good overall performance.
+  A P2P mix network where every client is a mix. It is a decentralised network designed to be as low-latency and scalable, with strong protection against realistic observers {{{citep(vs_008_12)}}}, offering good overall performance.
 
 + *MUTE*
 

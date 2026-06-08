@@ -13,7 +13,7 @@ For instance, the *Arm TrustZone* implementation in Qualcomm's QSEE, which is do
 
 # (citeme: 008, [20, 43, 27, 50])
 
-Moreover, *Intel SGX* is highly susceptible to internal leakage from *side-channel attacks* that exploit CPU caches. In some cases, the operating system can access memory within the enclave {{{citep(tee_008)}}} and infer enclave secrets by observing memory pages between enclave requests {{{citep(tee_008_58)}}}. Furthermore, research demonstrate that *SGX* can indeed be exploited by transient attacks, such as *Spectre* and *Meltdown*, to exfiltrate *attestation keys* and other *enclave secrets* from these CPUs.
+Moreover, *Intel SGX* is highly susceptible to internal leakage from *side-channel attacks* that exploit CPU caches. In some cases, the operating system can access memory within the enclave {{{citep(tee_008)}}} and infer enclave secrets by observing memory pages between enclave requests {{{citep(tee_008)}}}. Furthermore, research demonstrate that *SGX* can indeed be exploited by transient attacks, such as *Spectre* and *Meltdown*, to exfiltrate *attestation keys* and other *enclave secrets* from these CPUs.
 
 # (citeme: 007, AMD SME, HyperEnclave)
 # (citeme: 007, HyperEnclave, 25, 72, 74)
