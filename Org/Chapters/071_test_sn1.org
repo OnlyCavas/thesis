@@ -40,7 +40,7 @@ With swarm admission verified, this phase evaluates the end-to-end functional co
 
 Thus, configuring a testing environment to allow rigorously evaluate the client behaviour during an active file data transfer, and guaranteeing that the downloaded data actually matches with the given {{{mark(.torrent)}}} manifest and its reconstruction completes successfully without any data corruption.
 
-As previously stated in [[impl_kademlia_network_join][Section X.X]], any peer can act as a bootstrap node defining alone or with more nodes a swarm, being the swarm's trust anchor. Its configuration currently is done manually, generating a PGP key pair and signing its {{{mark(bqti)}}} CA root certificate with it. Once it generates the PGP signature, it will be automatically recognized as a bootstrapping node, then a swarm maintainer must load their PGP public key into the client and distribute it across all participating nodes prior to swarm initialisation.
+As previously stated in [[#impl_kademlia_network_join][Section 4.4.3]], any peer can act as a bootstrap node defining alone or with more nodes a swarm, being the swarm's trust anchor. Its configuration currently is done manually, generating a PGP key pair and signing its {{{mark(bqti)}}} CA root certificate with it. Once it generates the PGP signature, it will be automatically recognized as a bootstrapping node, then a swarm maintainer must load their PGP public key into the client and distribute it across all participating nodes prior to swarm initialisation.
 
 {{{figure(testbed/scone/001-bootstrap-ini.pdf, Bootstrap node loading PGP signed CA root certificate)}}}
 

@@ -5,7 +5,7 @@
 
 Using QUIC instead of plain TCP or UDP already solves some issues related to peer authenticity and integrity by adding a mandatory TLS 1.3 layer on top of the original transport protocol (UDP). However, that is not enough to fully protect participants in a public swarm, where a malicious peer can track their movement and actions within the network and potentially de-anonymise them.
 
-As already depicted in [[#tor_vs_i2p][Section X.X]], one of the initial goals was to integrate *Tor* as an anonymity overlay. However, the research pointed towards I2P being significantly better suited for P2P file sharing for the reasons discussed there. That said, routing QUIC traffic through I2P was achieved by integrating a local SAM bridge, as detailed in this section.
+As already depicted in [[#tor_vs_i2p][Section 2.4.6]], one of the initial goals was to integrate *Tor* as an anonymity overlay. However, the research pointed towards I2P being significantly better suited for P2P file sharing for the reasons discussed there. That said, routing QUIC traffic through I2P was achieved by integrating a local SAM bridge, as detailed in this section.
 
 To keep the system modular and configurable, users can select between standard QUIC and I2P routing via a CLI flag {{{mark(bqti serve :3000 --i2p)}}} (:3000, means 127.0.0.1:3000). Upon startup, the client will trigger the correct routing configuration adapting its inner transport protocol, in this case intercepting outbound QUIC packets and piping them through the virtual I2P stack.
 
