@@ -111,7 +111,7 @@ They achieve this in several ways, such as:
 
   Threat actors attempt to gain control over the swarm by deploying multiple rogue peers and executing a *Sybil* related attack to simultaneously overwhelm honest peers and prevent them from sharing protected resources.
 
-According to the authors [cite], mass-scale attacks aimed at preventing copyright infringement from circulating over BitTorrent swarms can provoke swarm failure. These attacks present a significant threat to the BitTorrent ecosystem. The authors complement by giving examples of clients (e.g., *Vuze* or *Transmission*) that lack the security measures to distinguish between honest and dishonest peers, becoming vulnerable and propagating corrupted data among participants.
+According to the authors {{{citep(bt_004)}}}, mass-scale attacks aimed at preventing copyright infringement from circulating over BitTorrent swarms can provoke swarm failure. These attacks present a significant threat to the BitTorrent ecosystem. The authors complement by giving examples of clients (e.g., *Vuze* or *Transmission*) that lack the security measures to distinguish between honest and dishonest peers, becoming vulnerable and propagating corrupted data among participants.
 
 *** Flash Crowds in BitTorrent Swarms
 :PROPERTIES:
@@ -124,7 +124,7 @@ According to the researchers {{{citep(bt_007)}}}, these sudden surges can direct
 
 Exacerbating this issue, BitTorrent core policies such as *Tit-for-Tat* (TFT) and *Rarest First* (RF) further complicate keeping up with downloading and uploading during a flash crowd event.
 
-Researchers [cite] analysed millions of swarms to quantify the frequency, duration, and characteristics of *flash crowds*. They claimed that *Flashcrowds* occur in only a small fraction of swarms (0.3-2%), but because some torrents experience rapid popularity spikes, they can affect over 10 million users worldwide. They propose a dedicated BitTorrent Flashcrowd model and an additional identification algorithm that aims to classify and detect them. Their model proposes the following 4 core components to classify and identify *Flashcrowds*:
+Researchers {{{citep(bt_007)}}} analysed millions of swarms to quantify the frequency, duration, and characteristics of *flash crowds*. They claimed that *Flashcrowds* occur in only a small fraction of swarms (0.3-2%), but because some torrents experience rapid popularity spikes, they can affect over 10 million users worldwide. They propose a dedicated BitTorrent Flashcrowd model and an additional identification algorithm that aims to classify and detect them. Their model proposes the following 4 core components to classify and identify *Flashcrowds*:
 
 + *Arrival Time*:
 

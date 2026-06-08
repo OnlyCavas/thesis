@@ -1,0 +1,14 @@
+direction: right
+
+idle: IDLE
+downloading: DOWNLOADING
+seeding: SEEDING
+cancelled: CANCELLED
+
+idle -> downloading: start / resume
+idle -> seeding: resume
+downloading -> seeding: complete
+downloading -> idle: pause
+downloading -> cancelled: cancel
+seeding -> idle: stop / pause
+seeding -> cancelled: cancel

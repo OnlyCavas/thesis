@@ -1,10 +1,21 @@
-* Appendix Title Here
+* Appendix
 :PROPERTIES:
 :CUSTOM_ID: appendix_begin
 :END:
 
-Write your Appendix content here, for sure.
+** Kademlia Admission
+:PROPERTIES:
+:CUSTOM_ID: appendix_kademlia_admission
+:END:
 
+#+BEGIN_EXPORT latex
+\begin{figure}[h]
+  \centering
+  \includegraphics[height=0.85\textheight]{diagrams/063/kademlia_admission.pdf}
+  \caption{Kademlia admission sequence}
+  \label{fig:bep-exchange}
+\end{figure}
+#+END_EXPORT
 
 ** Keccak-Ed25519 Verifier
 :PROPERTIES:

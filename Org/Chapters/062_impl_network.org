@@ -23,11 +23,9 @@ As depicted in [[#poc_bt_over_quic][Section 3.4]], a single QUIC connection is m
 
 #   This is the one diagram that makes the whole section immediately obvious at a glance.
 
-All incoming stream handlers across all active peer connections run concurrently as independent tasks, each feeding into a single central dispatch channel that is consumed sequentially by the main loop. Meanwhile, a slow or stalled stream will never block its sibling from delivering to the channel, buffering incoming packets with a capacity of {{{mark(1024)}}} queued messages before any producer would feel the backpressure. This approach keeps the actor model in one place, allowing the main loop to route each arriving packet to the correct handler based on its protocol {{{mark(ID byte)}}}, without requiring locks or synchronisation across concurrent readers. By default, the implementation caps concurrent connections at 50 swarm participants, keeping the buffer well within its capacity under normal load.
+{{{figure(diagrams/062/recv_stream.pdf, Concurrent stream handlers feeding into a single dispatch channel consumed by the main loop.)}}}
 
-# 2. Recv center diagram — goes after the dispatch channel paragraph. Show N stream handler boxes (concurrent) all
-#    pointing into one channel buffer, then one arrow from the channel into the main loop. Simple, but it makes the
-#   actor model click visually without needing to read the prose.
+All incoming stream handlers across all active peer connections run concurrently as independent tasks, each feeding into a single central dispatch channel that is consumed sequentially by the main loop. Meanwhile, a slow or stalled stream will never block its sibling from delivering to the channel, buffering incoming packets with a capacity of {{{mark(1024)}}} queued messages before any producer would feel the backpressure. This approach keeps the actor model in one place, allowing the main loop to route each arriving packet to the correct handler based on its protocol {{{mark(ID byte)}}}, without requiring locks or synchronisation across concurrent readers. By default, the implementation caps concurrent connections at 50 swarm participants, keeping the buffer well within its capacity under normal load.
 
 *** Packet Topology
 :PROPERTIES:

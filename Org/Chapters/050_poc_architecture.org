@@ -58,7 +58,7 @@ Ultimately, integrating these three technologies creates a powerful synergy acro
 
 The proposed proof-of-concept is structured into three composable layers that constitute the BitTorrent application. Each layer addresses one of the main design goals while ensuring each layer operates independently and as a unified stack, such as:
 
-{{{figure(diagrams/architecture/global_arch.pdf, High level architecture of the proposed system)}}}
+{{{figure(diagrams/architecture/global_arch.pdf, High-level architecture of proof-of-concept, illustrating the three composable layers: Trust, Application, and Transport)}}}
 
 + *Transport Layer*
 

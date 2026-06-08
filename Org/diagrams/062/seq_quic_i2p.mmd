@@ -1,0 +1,23 @@
+---
+config:
+  look: classic
+  theme: neutral
+  fontFamily: '''Open Sans Variable'', sans-serif'
+---
+sequenceDiagram
+    participant a as Peer A (10.0.0.1:3000)
+    participant b as Peer B (10.0.0.2:3000)
+
+    a->>b: Outgoing dial to B
+    b->>a: Incoming dial from A
+
+    rect rgb(212, 237, 218)
+        Note over a: Compare addrs:<br><br>Local: 10.0.0.1<br>Remote: 10.0.0.2<br><br>10.0.0.1 < 10.0.0.2<br>+ Keep INCOMING<br>- Drop OUTGOING
+    end
+
+    rect rgb(212, 237, 218)
+        Note over b: Compare addrs:<br><br>Local: 10.0.0.2<br>Remote: 10.0.0.1<br><br>10.0.0.2 > 10.0.0.1<br>+ Keep OUTGOING<br>- Drop INCOMING
+    end
+
+    a-->>b: Close Connection
+

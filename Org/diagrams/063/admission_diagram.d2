@@ -1,0 +1,86 @@
+Kademlia Admission: {
+  shape: sequence_diagram
+
+  a: New Peer
+  b: Bootstrap Node
+  e: Enclave
+  m: Manifest
+  net: DHT Network
+
+  request challenge: {
+    style.fill: "#f0f0f0"
+    style.stroke: "#aaaaaa"
+    a -> b: hash(Ed25519 pub_key)
+    b -> a: \{ challenge, difficulty \}
+  }
+
+  solve PoW: {
+    style.fill: "#e8e8e8"
+    style.stroke: "#999999"
+
+    tee path: {
+      style.fill: "#d8d8d8"
+      style.stroke: "#888888"
+      a -> e: invoke compute_pow \{ challenge, difficulty \}
+      e -> a: \{ pow_hash, signature, nonce \}
+    }
+
+    software path: {
+      style.fill: "#ebebeb"
+      style.stroke: "#aaaaaa"
+      style.stroke-dash: 4
+      a -> a: SHA256(pubkey || challenge || nonce)
+      a -> a: Ed25519_sign(priv_key, pow_hash)
+    }
+  }
+
+  submit proof: {
+    style.fill: "#f0f0f0"
+    style.stroke: "#aaaaaa"
+    a -> b: \{ pow, nonce, signature, client_version \}
+
+    tee path: {
+      style.fill: "#d8d8d8"
+      style.stroke: "#888888"
+      b -> b: verify attestation report
+      b -> m: GET /manifest (client_version)
+      m -> b: \[\{ client_version, enclave_hash, sig \}\]
+      b -> b: extract enclave_hash for client_version
+      b -> b: assert report.enclave_hash == manifest.enclave_hash
+    }
+
+    verify proof: {
+      style.fill: "#e8e8e8"
+      style.stroke: "#999999"
+      b -> b: assert SHA256(pubkey || challenge || nonce) < difficulty
+      b -> b: Ed25519_verify(pub_key, pow_hash, signature)
+    }
+
+    sign admission: {
+      style.fill: "#d8d8d8"
+      style.stroke: "#888888"
+      b -> b: token = \{ pub_key, node_id, timestamp, expiry, ... \}
+      b -> b: sig = PGP_sign(pgp_privkey, token)
+      b -> a: \{ token, sig \}
+    }
+  }
+
+  assert token: {
+    style.fill: "#e8e8e8"
+    style.stroke: "#999999"
+    a -> a: verify token PGP signature
+    a -> a: store admission token
+  }
+
+  a -> a: self-lookup
+
+  admitted: {
+    style.fill: "#f0f0f0"
+    style.stroke: "#aaaaaa"
+    style.stroke-dash: 4
+    a -> net: FIND_NODE (self-lookup)
+    net -> a: closest peers
+    a -> net: PING / STORE / FIND_VALUE ...
+  }
+}
+

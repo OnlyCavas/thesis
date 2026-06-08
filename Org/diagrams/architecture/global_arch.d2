@@ -1,0 +1,116 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+  }
+}
+
+grid-columns: 1
+
+title: BQTI System Architecture {
+  near: top-center
+  shape: text
+  style.font-size: 20
+  style.bold: true
+}
+
+peer_a: Peer A {
+  direction: right
+
+  trust: Trust Layer (--features tee) {
+    tee: Keystone Enclave\nPoW · Sign · Attest {
+      style.fill: "#d4edda"
+    }
+    soft: Software Keys\nPoW · Sign\n(fallback) {
+      style.fill: "#fff3cd"
+      style.stroke-dash: 4
+    }
+  }
+
+  app: Application Layer {
+    dht: Kademlia DHT
+    pex: PEX Gossip
+    bep: BitTorrent Protocol
+  }
+  transport: Transport Layer {
+    quic: QUIC (TLS 1.3)
+  }
+  anon: Anonymity Layer {
+    style.stroke-dash: 4
+    sam: SAM Bridge
+    i2pd: i2pd
+    sam -> i2pd
+  }
+
+  trust.tee -> app: Ed25519 identity {
+    style.stroke: "#28a745"
+  }
+  trust.soft -> app: Ed25519 identity {
+    style.stroke-dash: 4
+    style.stroke: "#ffc107"
+  }
+
+  app.dht -> transport.quic
+  app.pex -> transport.quic
+  app.bep -> transport.quic
+
+  transport.quic -> anon.sam: optional {
+    style.stroke-dash: 4
+  }
+}
+
+peer_b: Peer B {
+  direction: right
+
+  trust: Trust Layer (--features tee) {
+    tee: Keystone Enclave\nPoW · Sign · Attest {
+      style.fill: "#d4edda"
+    }
+    soft: Software Keys\nPoW · Sign\n(fallback) {
+      style.fill: "#fff3cd"
+      style.stroke-dash: 4
+    }
+  }
+
+  app: Application Layer {
+    dht: Kademlia DHT
+    pex: PEX Gossip
+    bep: BitTorrent Protocol
+  }
+  transport: Transport Layer {
+    quic: QUIC (TLS 1.3)
+  }
+  anon: Anonymity Layer {
+    style.stroke-dash: 4
+    sam: SAM Bridge
+    i2pd: i2pd
+    sam -> i2pd
+  }
+
+  trust.tee -> app: Ed25519 identity {
+    style.stroke: "#28a745"
+  }
+  trust.soft -> app: Ed25519 identity {
+    style.stroke-dash: 4
+    style.stroke: "#ffc107"
+  }
+
+  app.dht -> transport.quic
+  app.pex -> transport.quic
+  app.bep -> transport.quic
+
+  transport.quic -> anon.sam: optional {
+    style.stroke-dash: 4
+  }
+}
+
+peer_a.transport.quic <-> peer_b.transport.quic: direct QUIC {
+  style.stroke-dash: 4
+  style.font-size: 16
+  style.bold: true
+}
+
+peer_a.anon.i2pd <-> peer_b.anon.i2pd: I2P Network {
+  style.stroke-dash: 4
+  style.font-size: 16
+  style.bold: true
+}

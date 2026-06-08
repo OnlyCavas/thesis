@@ -1,0 +1,12 @@
+** Security based on Reputation and Trust
+:PROPERTIES:
+:CUSTOM_ID: fw_protocol_reputation
+:END:
+
+Currently, {{{mark(bqti)}}} distinguishes peers' attestation level by binding their DHT token to an attestation level: *attested*, *non-attested*, TEE-based and software-only peers, respectively (see [[#eval_sn2][Scenario 5.3]]). However, this level of trust is merely informational. It does not influence the swarm behaviour, but establishes a baseline for a full reputation system that weights peer interactions according to their *trust level* and *client version*, with higher reputation matching greater trustworthiness.
+
+Considering this reputation scheme as another security measure against dishonest peers, each peer would accumulate a reputation score derived from both its attestation level and its observed behaviour over time, bound to its DHT identity, such as *seeding back to the network* and *respecting protocol semantics*. Upon admission, TEE-based peers would be granted a higher baseline reputation, reflecting the hardware-rooted guarantee that they are running an unmodified client. Still, dishonest behaviour, such as serving corrupted data or free-riding, would reduce a peer's standing. Based on each peer's reputation, honest peers could allocate more bandwidth and offer unchoke slots to higher-reputation participants, naturally marginalising adversarial or free-riding nodes.
+
+Additionally, by leveraging the signed public manifest currently used for remote attestation (see [[#impl_tee_remote_attestation][Section 4.9.5]]), swarm maintainers could use this metadata to define swarm admission policies, that specify the requirements a peer must fulfil to participate. For instance, a swarm maintainer could demand that every peer present a valid TEE attestation or restrict membership to a specific client version (matching an enclave hash), encoded in a PGP-signed policy manifest issued by the swarm maintainer. These policies would complement the computational barrier (proof-of-work) by adding a policy-driven model that allows each swarm to define its trust requirements, thereby operating similarly to a Darknet (see [[#public_vs_private_darknets][Section 2.1.9]]).
+
+Finally, the proof-of-work admission cost could be complemented by a {{{gls(por)}}} scheme that requires peers to periodically prove they still hold the data they announce. As a result, mitigating Sybil attacks (proof-of-work) along with DHT poisoning attacks and dead entries, thereby preventing a peer from advertising a torrent it does not hold.

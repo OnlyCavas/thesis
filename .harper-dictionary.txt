@@ -56,6 +56,7 @@ IAS
 IDT
 IETF
 IMA
+IPFS
 IPs
 JAP
 JonDo

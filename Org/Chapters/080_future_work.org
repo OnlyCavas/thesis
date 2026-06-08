@@ -1,0 +1,15 @@
+* Future Work
+:PROPERTIES:
+:CUSTOM_ID: future_work
+:END:
+
+** Protocol Optimisations
+:PROPERTIES:
+:CUSTOM_ID: fw_protocol_opt
+:END:
+
+The evaluation in [[#eval_sn3][Section 5.4]] revealed that the most significant limitation of the current implementation is the performance overhead introduced by the I2P anonymity layer.
+
+Currently, {{{mark(bqti)}}} relies on an external I2P client instance running alongside it to access the I2P network, communicating via the SAM bridge protocol, thereby introducing an external dependency. Removing the SAM client and embedding the I2P router by statically linking {{{mark(libi2pd)}}} via an FFI layer would produce a self-contained binary that requires no auxiliary router process running alongside the client.
+
+During the I2P performance evaluation, the piece exchange process stalls stem from QUIC's congestion control misinterpreting I2P's tunnel-induced latency and packet loss as network congestion, thereby unnecessarily throttling throughput. The current implementation uses {{{mark(quinn)}}}, a high-level async wrapper around {{{mark(quinn-proto)}}} that drives its sans-IO state machine but offers limited control over congestion control behaviour. A promising solution could be to drop down to {{{mark(quinn-proto)}}} directly, thereby allowing more control to change the underlying congestion controller to one better suited for high-latency, lossy transports, such as BBR (Bottleneck Bandwidth and Round-trip propagation time), potentially recovering the throughput losses observed over I2P.
