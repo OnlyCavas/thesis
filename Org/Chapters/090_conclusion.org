@@ -2,3 +2,13 @@
 :PROPERTIES:
 :CUSTOM_ID: summary
 :END:
+
+# 1 opening + problem
+
+# 2 contribution (bqti)
+
+# 3 Limitations [tee emulated and I2P large downloads turn out to be impractical over I2P]
+
+# 4 future work [replace SAM bridge, implement a reputation system, bqti-FS]
+
+# 5 culmination

@@ -3,35 +3,48 @@
 :CUSTOM_ID: eval_sn3
 :END:
 
-This scenario evaluates the anonymity layer end-to-end and quantifies the performance cost relative to that of direct QUIC. Additionally, to guarantee that only two nodes are necessary to establish a DHT connection, {{{mark(bootstrap)}}} serves two roles: {{{mark(bootstrapping)}}} and {{{mark(seeding)}}}. As such, two nodes will be routed through I2P via a local SAM bridge, as described in [[#][Section X.X]], demonstrating that the anonymity layer encapsulates the underlying QUIC protocol and requires no code-level modifications. To keep the I2P measurement tractable, given the increased latency of garlic-routed transfers, a reduced ~{{{mark(10 MB)}}} across 21 pieces is used to complete a full end-to-end download between the two counterparts.
+This scenario evaluates the anonymity layer end-to-end and quantifies the performance cost relative to that of direct QUIC. Additionally, to guarantee that only two nodes are necessary to establish a DHT connection, {{{mark(bootstrap)}}} serves two roles: {{{mark(bootstrapping)}}} and {{{mark(seeding)}}}. As such, two nodes will be routed through I2P via a local SAM bridge, as described in [[#impl_i2p_sam][Section 4.8]], demonstrating that the anonymity layer encapsulates the underlying QUIC protocol and requires no code-level modifications. To keep the I2P measurement tractable, given the increased latency of garlic-routed transfers, a reduced ~{{{mark(10 MB)}}} payload across 21 pieces is used to complete a full end-to-end download between the two counterparts.
 
-As described in the testbed configuration, the {{{mark(i2pd)}}} instance is deployed on a *Podman* container and configured to expose a SAM bridge at {{{mark(0.0.0.0:7656)}}}. With the I2P client running, both {{{mark(bqti)}}} instances are launched in I2P mode via the {{{mark(--i2p)}}} flag. Upon startup, each node establishes a TCP control connection to the SAM bridge, which is maintained for the node's entire lifespan. This control session negotiates a {{{mark(DATAGRAM)}}} session, binding a local UDP socket to the SAM bridge, responsible for intercepting QUIC traffic and carrying it over to I2P. Additionally, the control session is responsible for converting from {{{mark(.b32.i2p)}}} addresses over to full base64 destination addresses, thereby enabling I2P to route traffic to their respective locations within the network.
+As described in the testbed configuration, the {{{mark(i2pd)}}} instance is deployed on a *Podman* container and configured to expose a SAM bridge at {{{mark(0.0.0.0:7656)}}}. With the I2P client running, both {{{mark(bqti)}}} instances are launched in I2P mode via the {{{mark(--i2p)}}} flag. Upon startup, each node establishes a TCP control connection to the SAM bridge, which is maintained for the node's entire lifespan. This control session negotiates a {{{mark(DATAGRAM)}}} session, binding a local UDP socket to the SAM bridge, responsible for intercepting QUIC traffic and carrying it over to I2P. Additionally, the control session is responsible for converting {{{mark(.b32.i2p)}}} addresses into full base64 destination addresses, thereby enabling I2P to route traffic to their respective locations within the network.
 
-# [label on the text bellow]
-# a single photo block
-# figure bootstrap setting a i2p connection.
-# figure seeder setting a i2p connection
-# caption:
+#+BEGIN_EXPORT latex
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[b]{0.95\columnwidth}
+    \centering
+    \includegraphics[width=\textwidth]{testbed/sthree/001-bootstrap-connects-sam-bridge.pdf}
+    \caption{Bootstrap node establishing a TCP control and UDP DATAGRAM session with the local SAM bridge.}
+  \end{subfigure}
 
-After establishing both a TCP control session and a UDP DATAGRAM session with a {{{mark(TRANSIENT)}}} destination, thereby rotating keys each time the node reboots, the i2pd returns the node's *base32* and full *base64* destinations. The internal destination mapper assigns a synthetic IPv4 address within the range {{{mark(10.0.0.0/8)}}} to the remote I2P destinations, thereby allowing every protocol layer to operate as if it were communicating over an ordinary UDP connection. As shown in the [[#][Figure X.X]], the complete SAM negotiation and tunnel establishment took approximately {{{mark(y seconds)}}} before the endpoint became operational.
+  \vspace{0.5em}
+
+  \begin{subfigure}[b]{0.95\columnwidth}
+    \centering
+    \includegraphics[width=\textwidth]{testbed/sthree/002-leecher-connect-sam-bridge.pdf}
+    \caption{Leecher node establishing a TCP control and UDP DATAGRAM session with the local SAM bridge.}
+  \end{subfigure}
+
+  \caption{SAM bridge negotiation and I2P tunnel establishment for both the bootstrap and leecher nodes, completing in approximately 18.8 seconds before either endpoint became operational.}
+  \label{fig:i2p-bootstrapping}
+\end{figure}
+#+END_EXPORT
+
+After establishing both a TCP control session and a UDP DATAGRAM session with a {{{mark(TRANSIENT)}}} destination, thereby rotating keys each time the node reboots, the i2pd returns the node's *base32* and full *base64* destinations. The internal destination mapper assigns a synthetic IPv4 address from the {{{mark(10.0.0.0/8)}}} range to remote I2P destinations, allowing every protocol layer to operate as if it were communicating over an ordinary UDP connection. As shown in [[#fig:i2p-bootstrapping][Figure 5.13]], the complete SAM negotiation and tunnel establishment took approximately {{{mark(18.8 seconds)}}} before the endpoint became operational.
 
 *** File Transfer over I2P
 :PROPERTIES:
 :CUSTOM_ID: eval_sn3_transfer
 :END:
 
-# figure show leech admission
-# caption:
+After the tunnel is established, the {{{mark(leecher)}}} completes a full admission sequence over I2P, thereby requesting the challenge, computing the {{{gls(pow)}}}, and acquiring a signed token upon submission, entirely through the garlic-routed transport. Every protocol layer operated correctly over the abstraction, thereby proxying all traffic between QUIC and I2P over the UDP DATAGRAM session and the SAM bridge. It is worth noting that, just like standard QUIC in I2P mode, the same QUIC control stream and bidirectional streams-per-piece requests are maintained and managed by the destination mapper and proxied through a custom *quinn endpoint*. As a result, this proves that the anonymity layer is fully composable, abstracting away the inner transport layer, and preserving QUIC's characteristics over I2P traffic, but with a high performance overhead.
 
-After the tunnel is established, the {{{mark(leecher)}}} completes a full admission sequence over I2P, thereby requesting the challenge, computing the {{{gls(pow)}}}, and acquiring a signed token upon submission, entirely through the garlic-routed transport. Nonetheless, every protocol layer operated correctly over the abstraction, thereby proxying all traffic between QUIC and I2P over the UDP DATAGRAM session and the SAM bridge. It is worth noting that, just like standard QUIC in I2P mode, the same QUIC control stream and bidirectional streams per-piece requests are maintained and managed by the destination mapper, proxied through a custom *quinn endpoint*. As a result, this proves that the anonymity layer is fully composable, abstracting away the inner transport layer, and preserving QUIC's characteristics over I2P traffic, but with a high performance overhead.
+{{{figure(testbed/sthree/008-bootstrap-completed.pdf, Leecher completing the full PoW admission sequence over I2P\, including challenge retrieval\, proof-of-work computation\, and signed token acquisition\, entirely through the garlic-routed transport.)}}}
 
-# figure Show that TEE also works, bootstrap TEE acceptance
-# caption:
+The transfer was slower than a standard QUIC download, as expected. After the first piece arrived, the download stalled for approximately {{{mark(2.14 minutes)}}} while I2P tunnels were being established, with only DHT heartbeats flowing over the control stream. Once the tunnels settled, the stream delivered the remaining {{{mark(20 pieces)}}} in a rapid burst, completing the download in {{{mark(2.24 minutes)}}}, thereby indicating that, for a small set of files, the dominant cost is the one-time tunnel establishment rather than the steady-state throughput.
 
-# speak about TEE acceptance
-The transfer was slower than a standard QUIC download, as expected. After the first piece arrived at {{{mark(??)}}}, the download stalled for approximately {{{mark(??)}}} while I2P tunnels were being established, with only DHT heartbeats flowing over the control stream. Once the tunnels settled, the stream delivered the remaining {{{mark(20 pieces)}}} in a rapid burst, thereby indicating that, for a small set of files, the dominant cost is the one-time tunnel establishment rather than the steady-state throughput.
+{{{figure(testbed/sthree/009-download-complte.pdf, Leecher completing the full 21-piece download over I2P\, confirming end-to-end transfer integrity across the garlic-routed transport.)}}}
 
-For for larger transfers, the same {{{mark(arch\_linux.iso)}}} payload (~{{{mark(1.5 GB)}}}, 2949 pieces) followed the same pattern. After the initial establishment, pieces arrived in recurring bursts of roughly {{{mark(10 to 15 pieces)}}} at a time, separated by long stalls ranging from {{{mark(?? seconds)}}} to {{{mark(?? seconds)}}}, driven by the increased latency and constrained bandwidth. As I2P's tunnels expired and were later rebuilt mid-transfer, the leecher occasionally lost its connection to the seeder entirely, halting the transfer until new tunnels were established and the connection recovered. The {{{mark(.bqtiresume)}}} file helps preserve state across reconnections, thereby making paced downloads optional for large downloads. Therefore, due to recurring disruptions, the download completed after several hours, making it impractical for large downloads within I2P and reinforcing that the anonymity layer is better suited for smaller or long-lived transfers rather than a large single-session download.
+For larger transfers, the same {{{mark(arch\_linux.iso)}}} payload (~{{{mark(1.5 GB)}}}, 2949 pieces) followed the same pattern. After the initial establishment, pieces arrived in recurring bursts of roughly {{{mark(10 to 20 pieces)}}} at a time, separated by long stalls ranging from {{{mark(30 seconds)}}} to {{{mark(2 minutes)}}}, driven by the increased latency and constrained bandwidth. As I2P's tunnels expired and were later rebuilt mid-transfer, the leecher occasionally lost its connection to the seeder entirely, halting the transfer until new tunnels were established and the connection recovered. The {{{mark(.bqtiresume)}}} file helps preserve state across reconnections, thereby allowing large downloads to be paused and resumed across sessions. Therefore, due to recurring disruptions, the download completed after several hours, making it impractical for large downloads within I2P and reinforcing that the anonymity layer is better suited for smaller or long-lived transfers rather than a large single-session download.
 
 Considering the test results, the user must decide whether to accept these constraints and whether the latency and long download times are worth the anonymity gained.
 
@@ -40,16 +53,13 @@ Considering the test results, the user must decide whether to accept these const
 :CUSTOM_ID: eval_sn3_performance
 :END:
 
-To evaluate the performance differences between both direct QUIC and QUIC-over-I2P, the same {{{mark(10 MB)}}} payload was transferred both direct QUIC and QUIC-over-I2P on the same hardware.
+To evaluate the performance differences between direct QUIC and QUIC-over-I2P, the same {{{mark(10 MB)}}} payload was transferred over both protocols on the same hardware.
 
-| Transport          | Tunnel/Conn setup | Transfer (10 MB) | Effective rate |
-|--------------------+-------------------+------------------+----------------|
-| Direct QUIC (LAN)  | < 1 s             | [X] s            | [Y] MB/s       |
-| QUIC over I2P      | ~30 s + warmup    | 578 s (total)    | ~17 KB/s       |
-| QUIC over I2P*     | (steady-state)    | ~2.5 s           | ~3.8 MB/s      |
+| Transport          | Throughput (10 MB) |
+|--------------------+--------------------|
+| Direct QUIC (LAN)  | 220.68 MB/s        |
+| QUIC over I2P      | ~80 KB/s           |
 
-This evaluation confirms that while the integration of QUIC over I2P is successful and maintains full protocol compatibility, it introduces a significant performance-to-anonymity trade-off.
+Routing QUIC through I2P results in a substantial reduction in throughput from 220.68 MB/s to approximately 80 KB/s, primarily due to cumulative latency from garlic-routed multi-hop routing and the overhead of SAM datagram framing. For long-lived transfer sessions, this results in recurrent stalls and possible connection loss due to periodic tunnel rotation. Additionally, further evaluation identified a critical distinction within the adopted stream model: the unidirectional control stream, carrying DHT and PEX traffic, remains functional under high-latency conditions, whereas bidirectional piece-exchange streams are significantly impacted by stream creation and subsequent data transfer for each piece request, resulting in small, contained bursts of 10 to 20 pieces between long-lived intervals, which can make the download take up to several hours.
 
-By routing QUIC through I2P results in a substantial reduction in throughput from [X] MB/s to approximately 17 KB/s, primarily due to the cumulative latency of garlic-routed multi-hop routing and the overhead of the SAM datagram framing. For long-lived transfer sessions, results in recurrent stalls and possible connection loss due to periodic tunnel rotation. Additionally, further evaluation identified a critical distinction between the adopted stream model: the unidirectional control stream, carrying DHT and PEX traffic, remains functional under high-latency conditions. While the bidirectional piece-exchange streams are significantly impacted by stream creation and subsequent data transfer for each piece request, resulting in small, contained bursts of 10 to 15 pieces between long-lived intervals, which can make the download take up to several hours.
-
-Under the established threat model in [[#][Section X.X]], this overhead must be considered by the user to determine whether it is an acceptable trade-off, sacrificing performance in exchange for anonymity. The current implementation proves that a secure, anonymous BitTorrent swarm is technically viable, but with the overhead inherent to I2P. Nevertheless, the modularity of the {{{mark(bqti)}}} architecture ensures that the anonymity layer remains optional, allowing users to fall back to the full performance of standard QUIC.
+Under the established design model in [[#poc_design_goals][Section 3.2]], this overhead must be considered by the user to determine whether it is an acceptable trade-off, sacrificing performance in exchange for anonymity. The current implementation proves that a secure, anonymous BitTorrent swarm is technically viable, but with the overhead inherent to I2P. Nevertheless, the modularity of the {{{mark(bqti)}}} architecture ensures that the anonymity layer remains optional, allowing users to fall back to the full performance of standard QUIC.
