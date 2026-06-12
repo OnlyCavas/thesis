@@ -281,6 +281,28 @@
                   tex_file = "${convertConfig}/acronyms.tex";
                 }}
 
+                cat "${convertConfig}/abstract-pt.tex"
+                ${setConfiguration {
+                  input = "Abstract-pt";
+                  target_file = "precontent.tex";
+                  tex_file = "${convertConfig}/abstract-pt.tex";
+                }}
+
+                cat "${convertConfig}/abstract-en.tex"
+                ${setConfiguration {
+                  input = "Abstract-en";
+                  target_file = "precontent.tex";
+                  tex_file = "${convertConfig}/abstract-en.tex";
+                }}
+
+                cat "${convertConfig}/acknowledgements.tex"
+                ${setConfiguration {
+                  input = "Acknowledgements";
+                  target_file = "precontent.tex";
+                  tex_file = "${convertConfig}/acknowledgements.tex";
+                }}
+
+
                 echo "Preparing header PDF ..."
                 cp -v ${compile-header}/header.pdf Front/main.pdf || {
                   echo "ERROR: could not copy header.pdf"
