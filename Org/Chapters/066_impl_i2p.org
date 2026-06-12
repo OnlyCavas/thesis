@@ -5,7 +5,7 @@
 
 Using QUIC instead of plain TCP or UDP already solves some issues related to peer authenticity and integrity by adding a mandatory TLS 1.3 layer on top of the original transport protocol (UDP). However, that is not enough to fully protect participants in a public swarm, where a malicious peer can track their movement and actions within the network and potentially de-anonymise them.
 
-As already depicted in [[#tor_vs_i2p][Section 2.4.6]], one of the initial goals was to integrate *Tor* as an anonymity overlay. However, the research pointed towards I2P being significantly better suited for P2P file sharing for the reasons discussed there. That said, routing QUIC traffic through I2P was achieved by integrating a local SAM bridge, as detailed in this section.
+As already depicted in [[#tor_vs_i2p][Section 2.4.6]], one of the initial goals was to integrate *Tor* as an anonymity overlay. However, the research pointed towards I2P being significantly better suited for P2P file sharing for the reasons discussed there. That said, routing QUIC traffic through I2P was achieved by integrating a local {{{gls(sam)}}} bridge, as detailed in this section.
 
 To keep the system modular and configurable, users can select between standard QUIC and I2P routing via a CLI flag {{{mark(bqti serve :3000 --i2p)}}} (:3000, means 127.0.0.1:3000). Upon startup, the client will trigger the correct routing configuration adapting its inner transport protocol, in this case intercepting outbound QUIC packets and piping them through the virtual I2P stack.
 
@@ -15,7 +15,16 @@ Upon start, the client establishes a TCP control connection to the SAM bridge on
 
 The hardest challenge while integrating I2P and QUIC was the {{{mark(quinn)}}} crate. This QUIC library expects communication over standard UDP with IPv4 and IPv6 addresses, while long base64 destination strings identify I2P peers. To address this issue, a custom socket is injected directly into the quinn endpoint, supplying a different implementation at the socket-level interface, completely replacing the underlying UDP layer. All outbound traffic is intercepted at the socket boundary, and the fake local IPv4 address is resolved to its corresponding I2P base64 address. With the valid address, a SAM header is prepended, and the packet is forwarded to the SAM UDP port. Inbound traffic arriving from the SAM bridge with the sender's I2P destination prefix is stripped and mapped to a local IPv4 address, delivering the payload back to quinn as if it arrived from a standard UDP channel.
 
-Mapping I2P addresses to local IPv4 addresses is handled by a destination map that stores incremental fake local addresses in the private range {{{mark(10.0.0.0\//8)}}}, assigning each new I2P destination to its local IPv4 counterpart. Which in practice translates into {{{mark(10.0.0.1\//4242)}}}, {{{mark(10.0.0.2\//4242)}}} and so on, using private address space as defined by RFC 1918 with a generic port of 4242. To enable reverse address resolution, the map is bidirectional, allowing inbound connections forward (I2P base64 destination to local IPv4) and outbound connections (local IPv4 to I2P base64 destination). Additionally, the client handles prefix matching against shortened {{{mark(base32)}}} addresses and their full {{{mark(base64)}}} counterparts, ensuring that peers encountered with the shortened address can resolve to the full destination without creating a duplicate entry.
+#+BEGIN_EXPORT latex
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.55\textwidth]{diagrams/066/dest_map.pdf}
+  \caption{Bidirectional destination mapper  resolving synthetic IPv4 addresses to I2P destinations for outbound and inbound traffic}
+  \label{fig:dest-mapper}
+\end{figure}
+#+END_EXPORT
+
+Mapping I2P addresses to local IPv4 addresses is handled by a destination map that stores incremental fake local addresses in the private range {{{mark(10.0.0.0\//8)}}}, assigning each new I2P destination to its local IPv4 counterpart. Which in practice translates into {{{mark(10.0.0.1\//4242)}}}, {{{mark(10.0.0.2\//4242)}}} and so on, using private address space as defined by RFC 1918 with a generic port of 4242. To enable reverse address resolution, the map is bidirectional, allowing inbound connections forward (I2P base64 destination to local IPv4) and outbound connections (local IPv4 to I2P base64 destination). Additionally, the client handles prefix matching against shortened {{{mark(base32)}}} addresses and their full {{{mark(base64)}}} counterparts, ensuring that peers encountered with the shortened address can resolve to the full destination without creating a duplicate entry, as illustrated in [[#fig:dest-mapper][Figure 4.5]].
 
 By embracing this method through a common abstraction {{{mark(NetworkEndpoint)}}}, the codebase interacts uniformly, guaranteeing that the underlying API remains the same across both networking modes. Switching between QUIC and I2P does not require any changes to the connection management, sustaining all implemented extensions: {{{mark(DHT)}}}, {{{mark(PEX)}}}, or {{{mark(BEP)}}} protocol layers, behind the same IPv4 layer format, with only the endpoint and resolver differing between modes.
 

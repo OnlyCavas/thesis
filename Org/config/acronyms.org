@@ -1,12 +1,12 @@
 #+INCLUDE: "macros.org"
 
-{{{setac(bt, BT, Bit Torrent)}}}
+{{{setac(bt, BT, BitTorrent)}}}
 {{{setac(rf, RF, Rarest First)}}}
 {{{setac(tft, TFT, Tit-for-Tat)}}}
 {{{setac(dht, DHT, Distributed Hash Table)}}}
 {{{setac(pex, PEX, Peer Exchange)}}}
 {{{setac(pt, PT, Private Trackers)}}}
-{{{setac(sre, SRE, Sharing Rario Enforcement)}}}
+{{{setac(sre, SRE, Sharing Ratio Enforcement)}}}
 {{{setac(pow, PoW, Proof of Work)}}}
 {{{setac(plt, PLT, Page Load Times)}}}
 {{{setac(quic, QUIC, Quick UDP Internet Connections)}}}
@@ -54,3 +54,8 @@
 {{{setac(socks, SOCKS, Socket Secure)}}}
 {{{setac(poc, PoC, Proof-of-Concept)}}}
 {{{setac(por, PoR, Proof-of-Retrievability)}}}
+{{{setac(sam, SAM, Simple Anonymous Messaging)}}}
+{{{setac(i2p, I2P, Invisible Internet Project)}}}
+{{{setac(pgp, PGP, Pretty Good Privacy)}}}
+{{{setac(ipc, IPC, Inter-Process Communication)}}}
+{{{setac(rpc, RPC, Remote Procedure Call)}}}

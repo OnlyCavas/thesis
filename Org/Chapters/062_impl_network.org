@@ -13,19 +13,18 @@ As depicted in [[#poc_bt_over_quic][Section 3.4]], a single QUIC connection is m
 
   These are used for single major requests and are thus associated with data transfer. A new bidirectional stream is opened for each piece request, and it is responsible for delivering the piece blocks that compose the final piece, enabling higher fidelity and performance while allowing fine-grained multiplexing and independent flow control per request. As a result, if a piece request stalls, it does not block all the others.
 
-# 1. Stream topology diagram — goes right after the control/bidirectional bullets in "Peer Connectivity". Show
+{{{figure(diagrams/062/quic-connection.pdf, QUIC's connection topology\, multiplexing of both a single unidirectional (control signals) stream\, and several bidirectional streams (piece exchange))}}}
 
-#   Peer A and Peer B with:
+All incoming stream handlers across all active peer connections run concurrently as independent tasks, each feeding into a single central dispatch channel that is consumed sequentially by the main loop, as illustrated in [[#fig:recv-stream][Figure 4.3]]. Meanwhile, a slow or stalled stream will never block its sibling from delivering to the channel, buffering incoming packets with a capacity of {{{mark(1024)}}} queued messages before any producer would feel the backpressure. This approach keeps the actor model in one place, allowing the main loop to route each arriving packet to the correct handler based on its protocol {{{mark(ID byte)}}}, without requiring locks or synchronisation across concurrent readers. By default, the implementation caps concurrent connections at 50 swarm participants, keeping the buffer well within its capacity under normal load.
 
-#   - One unidirectional arrow each way labeled "control (DHT, PEX, BEP)"
-#   - Several bidirectional arrows labeled "piece request / piece data"
-#   - Both over a single QUIC connection box
-
-#   This is the one diagram that makes the whole section immediately obvious at a glance.
-
-{{{figure(diagrams/062/recv_stream.pdf, Concurrent stream handlers feeding into a single dispatch channel consumed by the main loop.)}}}
-
-All incoming stream handlers across all active peer connections run concurrently as independent tasks, each feeding into a single central dispatch channel that is consumed sequentially by the main loop. Meanwhile, a slow or stalled stream will never block its sibling from delivering to the channel, buffering incoming packets with a capacity of {{{mark(1024)}}} queued messages before any producer would feel the backpressure. This approach keeps the actor model in one place, allowing the main loop to route each arriving packet to the correct handler based on its protocol {{{mark(ID byte)}}}, without requiring locks or synchronisation across concurrent readers. By default, the implementation caps concurrent connections at 50 swarm participants, keeping the buffer well within its capacity under normal load.
+#+BEGIN_EXPORT latex
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.55\textwidth]{diagrams/062/recv_stream.pdf}
+  \caption{Incoming stream dispatch and routing architecture, composed by a central buffered channel consumed sequentially by the main loop, routing to the right protocol layer}
+  \label{fig:recv-stream}
+\end{figure}
+#+END_EXPORT
 
 *** Packet Topology
 :PROPERTIES:
@@ -56,10 +55,6 @@ A keep-alive is a special case: a four-byte zero frame that carries no ID byte o
 :END:
 
 The current implementation of the {{{mark(Connection Manager)}}} handles three edge cases that arise within the {{{gls(poc)}}} network context: *self connections*, *simultaneous dials*, and *duplicate dial attempts*.
-
-# 3. Simultaneous dial sequence diagram — goes in Connection Management after the tiebreaker paragraph. Two peers,
-#  both dialing at the same time, the comparison happening on each side, one connection closing. A sequence
-# diagram with 4-5 steps. This one shows the examiner you thought about a real race condition.
 
 To prevent self-connection attempts before the handshake even begins, the implementation rejects them as early as possible. When the endpoint is bound to the unspecified address {{{mark((0.0.0.0))}}}, the manager determines the endpoint's actual outbound IP by probing a local UDP socket. Later, it compares this resolved address and port against the target peer's address. A match on both is rejected immediately.
 

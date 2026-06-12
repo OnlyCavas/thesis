@@ -1,0 +1,7 @@
+# ** Kademlia K-bucket Eviction Policy
+# :PROPERTIES:
+# :CUSTOM_ID: appendix_kbucket_eviction
+# :END:
+#
+# #+begin_src
+# #+end_src

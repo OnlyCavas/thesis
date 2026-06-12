@@ -1,0 +1,39 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+  }
+}
+
+peer_a: Peer A {
+  style.fill: "#f5f5f5"
+}
+
+peer_b: Peer B {
+  style.fill: "#f5f5f5"
+}
+
+conn: Single QUIC Connection {
+  style.fill: "#f8f9fa"
+  style.stroke-dash: 4
+  near: top-center
+}
+
+peer_a -> peer_b: "Control Stream (A→B)\nDHT · PEX · BEP" {
+  style.stroke: "#6f42c1"
+  style.bold: true
+}
+peer_b -> peer_a: "Control Stream (B→A)\nDHT · PEX · BEP" {
+  style.stroke: "#6f42c1"
+  style.bold: true
+}
+
+peer_a <-> peer_b: "Piece Stream 1\n(request / blocks)" {
+  style.stroke: "#0056b3"
+}
+peer_a <-> peer_b: "Piece Stream 2\n(request / blocks)" {
+  style.stroke: "#0056b3"
+}
+peer_a <-> peer_b: "Piece Stream N\n(5–10 concurrent)" {
+  style.stroke: "#0056b3"
+  style.stroke-dash: 4
+}

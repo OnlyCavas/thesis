@@ -1,0 +1,57 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+  }
+}
+
+conn: I2P Address Mapping (DestMap) {
+  style.fill: "#f8f9fa"
+  style.stroke-dash: 4
+  style.font-size: 20
+  near: top-center
+}
+
+quinn: quinn Endpoint {
+  label: "quinn Endpoint\n(operates on IPv4)\n10.0.0.1:4242"
+}
+
+destmap: Destination Mapper {
+  fwd: "Forward\nbase64 destination → 10.0.0.x:4242"
+  rev: "Reverse\n10.0.0.x:4242 → base64 destination"
+}
+
+sam: SAM Bridge {
+  label: "SAM Bridge\n(operates on I2P destinations)"
+}
+
+i2p: I2P Network {
+  style.stroke-dash: 4
+  style.stroke: "#8b5cf6"
+  label: "I2P Network\nykvaysbkw7...mcabty3a.b32.i2p\n(garlic routed)"
+}
+
+quinn -> destmap.rev: outbound\n(IPv4 packet) {
+  style.stroke: "#8b5cf6"
+  style.bold: true
+}
+destmap.rev -> sam: resolved destination {
+  style.stroke: "#8b5cf6"
+  style.bold: true
+}
+sam -> i2p: outbound datagram {
+  style.stroke: "#8b5cf6"
+  style.bold: true
+}
+
+i2p -> sam: inbound datagram {
+  style.stroke: "#10b981"
+  style.bold: true
+}
+sam -> destmap.fwd: source destination {
+  style.stroke: "#10b981"
+  style.bold: true
+}
+destmap.fwd -> quinn: synthetic IPv4 packet {
+  style.stroke: "#10b981"
+  style.bold: true
+}

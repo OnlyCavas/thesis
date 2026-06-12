@@ -53,13 +53,15 @@ Considering the test results, the user must decide whether to accept these const
 :CUSTOM_ID: eval_sn3_performance
 :END:
 
-To evaluate the performance differences between direct QUIC and QUIC-over-I2P, the same {{{mark(10 MB)}}} payload was transferred over both protocols on the same hardware.
+To evaluate the performance differences between direct QUIC and QUIC-over-I2P, both transfers were measured on the same {{{mark(10 MB)}}} payload on the same hardware, providing a directly comparable baseline.
 
-| Transport          | Throughput (10 MB) |
-|--------------------+--------------------|
-| Direct QUIC (LAN)  | 220.68 MB/s        |
-| QUIC over I2P      | ~80 KB/s           |
+| Transport          | Throughput (10 MB)     |
+|--------------------+------------------------|
+| Direct QUIC (LAN)  | 104.27 MB/s (834 Mbps) |
+| QUIC over I2P      | ~80 KB/s               |
 
-Routing QUIC through I2P results in a substantial reduction in throughput from 220.68 MB/s to approximately 80 KB/s, primarily due to cumulative latency from garlic-routed multi-hop routing and the overhead of SAM datagram framing. For long-lived transfer sessions, this results in recurrent stalls and possible connection loss due to periodic tunnel rotation. Additionally, further evaluation identified a critical distinction within the adopted stream model: the unidirectional control stream, carrying DHT and PEX traffic, remains functional under high-latency conditions, whereas bidirectional piece-exchange streams are significantly impacted by stream creation and subsequent data transfer for each piece request, resulting in small, contained bursts of 10 to 20 pieces between long-lived intervals, which can make the download take up to several hours.
+The slightly higher throughput observed in the {{{mark(1.5 GB)}}} (see [[#eval_sn1][Section 5.2]]) is explained by QUIC's congestion-control dynamics, with smaller transfers indicating that most of their duration is spent in slow start before reaching steady state. On the other hand, the larger transfer maintains peak throughput for longer, reaching {{{mark(897.79 Mbps)}}}.
+
+When QUIC was routed through I2P, throughput dropped significantly from {{{mark(104.27 MB/s)}}} to around {{{mark(80 KB/s)}}}. The overhead of SAM datagram framing and the accumulated latency from garlic-routed routing primarily affected overall throughput. Long-term transfer sessions caused intermittent tunnel rotation, leading to frequent delays and occasional connection loss. On top of that, further evaluation identified a critical distinction within the adopted stream model: the unidirectional control stream, carrying DHT and PEX traffic, remained functional under high-latency conditions, whereas bidirectional piece exchange streams were significantly impacted by stream creation and subsequent data transfer for each piece requested, thereby resulting in small, contained bursts of 10 to 20 pieces between approximately {{{mark(1 minute)}}} intervals, taking several hours to complete the download.
 
 Under the established design model in [[#poc_design_goals][Section 3.2]], this overhead must be considered by the user to determine whether it is an acceptable trade-off, sacrificing performance in exchange for anonymity. The current implementation proves that a secure, anonymous BitTorrent swarm is technically viable, but with the overhead inherent to I2P. Nevertheless, the modularity of the {{{mark(bqti)}}} architecture ensures that the anonymity layer remains optional, allowing users to fall back to the full performance of standard QUIC.

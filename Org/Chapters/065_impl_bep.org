@@ -8,20 +8,20 @@
 :CUSTOM_ID: impl_bep_protocol
 :END:
 
-As explained in section [[#torrent_specification][Section 2.1.1]], the BitTorrent wire protocol governs how peers negotiate availability and exchange piece data.
+As explained in [[#torrent_specification][Section 2.1.1]], the BitTorrent wire protocol governs how peers negotiate availability and exchange piece data.
 
 The connection process begins when an interested peer sends a handshake message containing both the torrent's {{{mark(info\_hash)}}} and {{{mark(peer identification)}}} (typically obtained via DHT), which the receiving counterpart validates before proceeding. If they are valid, both sides complete the handshake by acknowledging each other, establishing a channel for further protocol exchange. Each peer broadcasts its bitfield, a compacted bitmap indicating which pieces it currently holds, for an agreed {{{mark(info\_hash)}}}, allowing both sides to determine whether the counterpart has anything of interest.
 
 From that point forward, piece exchange becomes a simple four-state pipeline, exchange the following states ({{{mark(interested)}}}, {{{mark(not\_interested)}}}, {{{mark(unchoked)}}}, {{{mark(choked)}}}). A peer signals {{{mark(Interested)}}} when a remote holds a piece that it needs. The remote may respond with {{{mark(Unchoke)}}} to grant upload permission, or {{{mark(Choke)}}} to withhold data. Once {{{mark(unchoked)}}}, the requesting peer establishes a request pipeline, issuing up to *128 concurrent block requests*. Depending on the piece size defined by the torrent metadata file, being the default {{{mark(piece\_size)}}} of 512 kilobytes, this typically translates to requesting approximately *4 to 5 concurrent pieces* at a time. Each request is selected sequentially from the difference between the remote's bitfield and the local peer's bitfield (e.g., pieces the remote has that the local still needs). As each block arrives, it is validated and processed, and the pipeline is immediately refilled with new requests to keep the bidirectional stream fully saturated. If a peer is choked, all pending requests are cleared, and the pipeline drains until the remote unchokes again.
 
-#+BEGIN_EXPORT latex
-\begin{figure}[h]
-  \centering
-  \includegraphics[height=0.75\textheight]{diagrams/065/bep.pdf}
-  \caption{BEP piece exchange sequence}
-  \label{fig:bep-exchange}
-\end{figure}
-#+END_EXPORT
+# #+BEGIN_EXPORT latex
+# \begin{figure}[h]
+#   \centering
+#   \includegraphics[width=0.1\textwidth]{diagrams/065/bep.pdf}
+#   \caption{BEP piece exchange sequence}
+#   \label{fig:bep-exchange}
+# \end{figure}
+# #+END_EXPORT
 
 As described earlier, the current *BEP router implementation* relies on a long-lived unidirectional *shared control stream* for handling the following messages: {{{mark(handshake)}}}, {{{mark(bitfield)}}}, {{{mark(unchoke)}}}, {{{mark(choke)}}}, {{{mark(interested)}}} and {{{mark(not\_interested)}}}. However, to maximise throughput, it dispatches several *bidirectional concurrent data streams*, while respecting the BitTorrent protocol specifications, ensuring no more than 5 concurrent pieces are streamed to another swarm participant.
 
@@ -58,7 +58,7 @@ To solve this without introducing additional overhead, the client creates hard l
 
 As explained in the previous section, a torrent session occupies one of four states during its lifespan, without persisting internal data across transitions: {{{mark(Idle)}}}, {{{mark(Downloading)}}}, {{{mark(Seeding)}}}, or {{{mark(Cancel)}}}. Upon creation, a session always begins in the *idle state*, then transitions to the appropriate state based on the requested session purpose. Unlike all the other states, the *idle state* acts as a neutral transition state, the only one capable of preserving the last known state and its data. This choice was motivated by the need to implement a pausing system that allows the session to transition to a stale state without losing the progress made in the previous one. From *idle state*, a session can transition to *downloading state*, where the node starts sending {{{mark(Interested)}}} requests to already-known swarm participants, or directly to *seeding state*, where it verifies its local data and starts serving.
 
-{{{figure(diagrams/065/state_machine.pdf, Torrent session state machine illustrating transitions between the Idle\, Downloading\, Seeding\, and terminal Cancelled states\, where Idle internally preserves the last active state for resumption.)}}}
+{{{figure(diagrams/065/state_machine.pdf, Torrent session state machine with transitions between Idle, Downloading, Seeding, and Cancelled states.)}}}
 
 Once in the *download state*, the session will try to start and complete the download, naturally transition to the *seeding state* once it finishes, without returning to the *idle state*. Either active state (*download*, *seeding*) can be paused back to *idle state*, while presenting progress through the persisted bitfield, or can be cancelled irreversibly, transitioning to its final state *cancel state*. Cancel state is a terminal state with no recovery path, optionally purging downloaded data.
 
@@ -79,6 +79,6 @@ Once the CLI connects to the running daemon, it sends a single serialised reques
 
 From that point forward, the client starts by receiving a continuous feed of typed events formatted in JSON: {{{mark(TorrentAdded)}}}, {{{mark(SessionStateChanged)}}}, {{{mark(DownloadCompleted)}}}, and many more to keep the client interface always updated with the current backend state. During the event stream, the CLI renders a simple, meaningful TUI that presents the current state of each active torrent session to the user. For instance, for a *downloading torrent*, it reports the current and total pieces alongside the download rate, while during a *seeding torrent* it reports the upload rate and the connected peer count.
 
-In case a client falls behind the broadcast buffer, it will eventually receive an error and can reconnect cleanly. All things considered, the event stream pattern was inspired by the {{{mark(niri's)}}} compositor's IPC architecture, which essentially follows the same snapshot-stream approach for managing window manager state with external clients {{{cite(niri_ref)}}}.
+In case a client falls behind the broadcast buffer, it will eventually receive an error and can reconnect cleanly. All things considered, the event stream pattern was inspired by the {{{mark(niri's)}}} compositor's {{{gls(ipc)}}} architecture, which essentially follows the same snapshot-stream approach for managing window manager state with external clients {{{cite(niri_ref)}}}.
 
 Overall, despite relying on a hardcoded socket destination, the design still supports several concurrent daemon instances per user by varying the {{{mark(BQTI\_INSTANCE)}}} environment variable, which changes the underlying socket path. This approach proves its usefulness in isolated testing environments and running parallel instances.

@@ -1,0 +1,62 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+  }
+}
+
+grid-columns: 3
+horizontal-gap: 350
+vertical-gap: 80
+
+title: bqti-FS Trust Topology {
+  near: top-center
+  shape: text
+  style.font-size: 20
+  style.bold: true
+}
+
+untrusted: Untrusted Machine {
+  style.stroke-dash: 4
+
+  wasm: WASM Application\n(sandbox)
+
+  watz: WATZ Secure World\n(decrypt logic) {
+    style.fill: "#d4edda"
+  }
+
+  wasm -> watz: ephemeral decrypt
+}
+
+device: Trusted TEE Device (RISC-V) {
+  key: Enclave\n(Hardware-Sealed Key)
+  id: DHT Identity\n(Attested Public Key)
+  bqti: bqti daemon
+
+  key -> id: Cryptographic Derivation
+  bqti -> key: Secure OCALL (host to enclave)
+  bqti -> id: Identity Binding
+}
+
+swarm: bqti Swarm {
+  p1: Peer\n(encrypted user data)
+  p2: Peer\n(encrypted user data)
+  p3: Peer\n(encrypted user data)
+  p4: Peer\n(encrypted user data)
+
+  p1 <-> p2
+  p3 <-> p1
+  p2 <-> p3
+  p2 <-> p4
+  p1 <-> p4
+  p3 <-> p4
+}
+
+untrusted.watz <-> device: Attestation-gated channel\n+ Ephemeral key material\n+ DRM-inspired piece exchange {
+  style.stroke: "#28a745"
+  style.bold: true
+}
+
+device <-> swarm: QUIC / I2P (Anonymous Transit) {
+  style.stroke: "#6f42c1"
+  style.bold: true
+}

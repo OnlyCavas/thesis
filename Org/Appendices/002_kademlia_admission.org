@@ -1,0 +1,19 @@
+#+BEGIN_EXPORT latex
+\clearpage
+#+END_EXPORT
+
+** Kademlia Admission
+:PROPERTIES:
+:CUSTOM_ID: appendix_kademlia_admission
+:END:
+
+The following diagram demonstrates the admission sequence for a new peer joining a PGP-gated swarm. Concrete implementations are detailed in [[#impl_kademlia_network_join][Section 4.4.3]].
+
+#+BEGIN_EXPORT latex
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=0.85\textheight]{diagrams/063/kademlia_admission.pdf}
+  \caption{Kademlia admission and network-join sequence}
+  \label{fig:kademlia-admission}
+\end{figure}
+#+END_EXPORT

@@ -1,0 +1,32 @@
+** Identity Backend Selection
+:PROPERTIES:
+:CUSTOM_ID: appendix_id_backend_selection
+:END:
+
+The following code snippet demonstrates the compile-time selection between software and TEE identity backends, as detailed in [[#impl_tee_identity][Section 4.9.7]]. Depending on the compilation feature flag ({{{mark(--features tee)}}}), {{{mark(ActiveKeyIdentity)}}} type alias resolves to either {{{mark(TeeKeyIdentity)}}} or the {{{mark(SoftwareKeyIdentity)}}} implementation. Following the Interface Segregation Principle, the {{{mark(KeyIdentity)}}} decomposes into action-specific traits. Hence, each consumer depends only on what it actually needs rather than on its entire functionality, regardless of the underlying backend.
+
+#+begin_src rust
+ #[cfg(feature = "tee")]
+ pub type ActiveKeyIdentity = tee::TeeKeyIdentity;
+
+ #[cfg(not(feature = "tee"))]
+ pub type ActiveKeyIdentity = soft::SoftwareKeyIdentity;
+
+ pub trait PublicKey {
+     fn pub_key(&self) -> &[u8];
+ }
+
+ pub trait Signer: PublicKey + Send + Sync {
+     fn sign(&self, data: &[u8]) -> Result<Signature, CertError>;
+ }
+
+ pub trait Verifier {
+     fn verify(pub_key: &[u8], data: &[u8], signature: &[u8]) -> bool;
+ }
+
+ pub trait KeyIdentity: Signer + Verifier {
+     fn leaf(&self, common_name: &str, as_ca: bool) -> Result<ActiveKeyIdentity, CertError>;
+     fn cert_der(&self) -> CertificateDer<'static>;
+     fn certified_key(&self) -> Arc<CertifiedKey>;
+ }
+#+end_src

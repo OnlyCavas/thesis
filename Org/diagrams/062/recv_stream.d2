@@ -1,0 +1,68 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+  }
+}
+
+direction: up
+
+conn: Packet Dispatch and Protocol Routing {
+  style.fill: "#f8f9fa"
+  style.stroke-dash: 4
+  style.font-size: 20
+  near: top-center
+}
+
+streams: Incoming Streams {
+  style.fill: "#f8f9fa"
+  uni: "Unidirectional Control\n(DHT · PEX · BEP)" {
+    style.fill: "#e8d5f5"
+  }
+  bi: "Bidirectional Piece\n(per request)\nreply-aware" {
+    style.fill: "#cce5ff"
+  }
+}
+
+channel: "Central Dispatch Channel\n(buffered, 1024)" {
+  style.fill: "#f5f5f5"
+}
+
+loop: "Main Loop\n(routes by protocol ID byte)" {
+  style.fill: "#f5f5f5"
+}
+
+dht: "DHT Handler\n→ RpcHandler\n(correlates responses)" {
+  style.fill: "#f5f5f5"
+}
+
+pex: "PEX Handler\n(fire-and-forget)\ngossip" {
+  style.fill: "#f5f5f5"
+}
+
+bep: "BEP Handler\n→ control: fire-and-forget\n→ piece: replies via bi-stream" {
+  style.fill: "#f5f5f5"
+}
+
+streams.uni -> channel: packet {
+  style.stroke: "#6f42c1"
+}
+streams.bi -> channel: packet + reply handle {
+  style.stroke: "#0056b3"
+}
+
+channel -> loop: sequential consume {
+  style.stroke: "#5b5ea6"
+}
+
+loop -> dht: 0x09 {
+  style.stroke: "#6f42c1"
+}
+
+loop -> pex: 0x14 {
+  style.stroke: "#6f42c1"
+}
+
+loop -> bep: 0x13 / piece {
+  style.stroke: "#0056b3"
+}
+

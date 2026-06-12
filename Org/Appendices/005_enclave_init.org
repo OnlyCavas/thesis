@@ -1,0 +1,34 @@
+** Hardware-rooted Key Derivation
+:PROPERTIES:
+:CUSTOM_ID: appendix_enclave_init
+:END:
+
+The following code snippet is from the enclave embedded into {{{mark(bqti)}}} executing within a Keystone-supported device, as detailed in [[#impl_tee_kp_sealing_key][Section 4.9.2]]. To always generate the same key pair, the enclave relies on TweetNaCl's {{{mark(randombytes)}}} entropy source to return the enclave's {{{mark(sealing key)}}}. This approach always yields the same deterministic Ed25519 key pair, thereby remaining reproducible only within the same enclave running on the same hardware. After consuming the sealing key, it is immediately wiped from memory.
+
+#+begin_src c
+void crypto_wipe(void *buf, size_t len) {
+  volatile uint8_t *p = (volatile uint8_t *)buf;
+  while (len--) *p++ = 0;
+}
+
+// TweetNaCl requires the host to provide randombytes().
+// It is driven deterministically from the Keystone sealing key so the
+// enclave keypair is stable across boots.
+void randombytes(unsigned char *x, unsigned long long xlen) {
+  static struct sealing_key sk;
+  get_sealing_key(&sk, sizeof(sk), NULL, 0);
+
+  for (unsigned long long i = 0; i < xlen; i++) {
+    x[i] = sk.key[i % SEALING_KEY_SIZE];
+  }
+
+  crypto_wipe(&sk, sizeof(sk));
+}
+
+static void enclave_init(void) {
+  assert(!g_initialized);
+
+  crypto_sign_keypair(g_enclave_pk, g_enclave_sk);
+  g_initialized = true;
+}
+#+end_src

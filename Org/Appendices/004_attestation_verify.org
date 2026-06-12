@@ -1,0 +1,79 @@
+** Attestation Verifier
+:PROPERTIES:
+:CUSTOM_ID: appendix_attestation_verifier
+:END:
+
+The following code snippet implements the client-side verification of a Keystone attestation report, as detailed in [[#impl_tee_remote_attestation][Section 4.9.5]]. The {{{mark(KeystoneAttestReport)}}} bundles the three layers of the chain of trust, representing the generated attestation report produced by the Keystone Enclave, containing the {{{mark(Enclave Report)}}}, {{{mark(Security Monitor Report)}}} and the {{{mark(device key)}}}. According to the report definition, the {{{mark(verify)}}} function assesses the trustworthiness of a foreign report by validating each layer of the chain of trust. More information on the enclave structure is provided in [[#impl_tee_enclave_str][Section 4.9.1]].
+
+#+begin_src rust
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EnclaveReport {
+    #[serde(with = "BigArray")]
+    pub hash: [u8; 64],
+
+    pub data_len: u64,
+
+    #[serde(with = "BigArray")]
+    pub data: [u8; 1024],
+
+    #[serde(with = "BigArray")]
+    pub signature: [u8; 64],
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SmReport {
+    #[serde(with = "BigArray")]
+    pub hash: [u8; 64],
+
+    pub public_key: [u8; 32],
+
+    #[serde(with = "BigArray")]
+    pub signature: [u8; 64],
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct KeystoneAttestReport {
+    pub enclave: EnclaveReport,
+    pub sm: SmReport,
+    pub dev_public_key: [u8; 32],
+}
+
+impl KeystoneAttestReport {
+    pub fn verify(
+        &self,
+        nonce: &[u8],
+        expected_hash: Option<&[u8]>,
+        trusted_dev_key: &[u8; 32],
+    ) -> bool {
+        if trusted_dev_key != &self.dev_public_key {
+            return false;
+        }
+
+        let sm_msg: Vec<u8> = [self.sm.hash.as_ref(), self.sm.public_key.as_ref()].concat();
+        if !verify_keccak_ed25519(trusted_dev_key, &sm_msg, &self.sm.signature) {
+            return false;
+        }
+
+        let data_len = self.enclave.data_len as usize;
+        let enclave_msg: Vec<u8> = [
+            self.enclave.hash.as_ref(),
+            self.enclave.data_len.to_le_bytes().as_ref(),
+            &self.enclave.data[..data_len],
+        ]
+        .concat();
+
+        if !verify_keccak_ed25519(&self.sm.public_key, &enclave_msg, &self.enclave.signature) {
+            return false;
+        }
+
+        if let Some(expected) = expected_hash {
+            if self.enclave.hash.as_ref() != expected {
+                return false;
+            }
+        }
+
+        let nonce_len = nonce.len().min(data_len);
+        nonce_len > 0 && self.enclave.data[..nonce_len] == nonce[..nonce_len]
+    }
+}
+#+end_src

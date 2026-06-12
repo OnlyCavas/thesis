@@ -5,21 +5,6 @@
 
 As introduced in [[#distributed_hash_tables][Section 2.1.9]], BitTorrent's mainline DHT is based on Kademlia. This section details how the concrete implementation diverges from the stock protocol, the additional security mitigations applied on top, and the core decisions made.
 
-# Screenshots
-
-# 1. Routing section -> logs showing nodes being inserted into k-buckets, a Ping liveness probe firing, a bucket split.
-# 2. Network Join -> logs of a full joining sequence, request challenge, submit, token gather, self lookup.
-# 3. Sybil Protection -> a node being rejected for replaying a challenge or failing POW.
-# 4. DDoS section -> rate limiter rejecting a peer after 100 requests.
-
-# Diagrams
-
-# 1. Interactive FIND_NODE -> show a = 3 concurrent RPC firing per round, candidates being merged, search converging K
-# 2. XOR metric / key space -> a simple number line showing two node IDs, their XOR distance, and which bucket they land
-# 3. K-bucket split -> before/after showing a full bucket containing the local node getting split
-# 4. RPC correlation -> request/response flow over two unidirectional streams with the ID matching in the middle
-# 5. Token life cycle -> issued at join, embedded in subsequent RPCs, verified on arrival, exp 30 minutes, time arrow
-
 *** Routing and Node Identity
 :PROPERTIES:
 :CUSTOM_ID: impl_kademlia_routing_identity
@@ -47,7 +32,7 @@ By default, Kademlia over UDP relies on application-level transaction IDs to cor
 :CUSTOM_ID: impl_kademlia_network_join
 :END:
 
-For a node to be accepted and actively participate in the DHT, it must be admitted by a known bootstrap node, which acts as the entry point to the network. The newcomer first requests the challenge from the bootstrap, which responds with a value derived from the sender's {{{mark(public key)}}}, IP address, a server-side secret salt that rotates every few seconds, and a difficulty target. The joining node must then compute a nonce value such that its hash, combined with its {{{mark(public key)}}} and the received challenge, meets a minimum difficulty target. Once found, it signs the proof with its private key and submits the {{{mark(challenge)}}}, {{{mark(nonce)}}}, and {{{mark(signature)}}} back to the bootstrap for further verification. If the bootstrap accepts the proof, it issues a signed short-lived token granting access to the network. With the token in hand, the joining node performs an iterative lookup against its own identifier, querying for the closest known nodes and progressively widening its range and gradually populating its routing table. At the end of this sequence, the node holds a populated routing table and a valid token that will be used to serve and respond to RPCs as a full participant. Each outbound request embeds the token, and the receiving end verifies it by checking the bootstrap's signature and recomputing the proof, confirming that the requesting node is indeed authenticated.
+For a node to be accepted and actively participate in the DHT, it must be admitted by a known bootstrap node, which acts as the entry point to the network. The newcomer first requests the challenge from the bootstrap, which responds with a value derived from the sender's {{{mark(public key)}}}, IP address, a server-side secret salt that rotates every few seconds, and a difficulty target. The joining node must then compute a nonce value such that its hash, combined with its {{{mark(public key)}}} and the received challenge, meets a minimum difficulty target. Once found, it signs the proof with its private key and submits the {{{mark(challenge)}}}, {{{mark(nonce)}}}, and {{{mark(signature)}}} back to the bootstrap for further verification. If the bootstrap accepts the proof, it issues a signed short-lived token granting access to the network. With the token in hand, the joining node performs an iterative lookup against its own identifier, querying for the closest known nodes and progressively widening its range and gradually populating its routing table. At the end of this sequence, the node holds a populated routing table and a valid token that will be used to serve and respond to RPCs as a full participant. Each outbound request embeds the token, and the receiving end verifies it by checking the bootstrap's signature and recomputing the proof, confirming that the requesting node is indeed authenticated. The network join sequence is illustrated in [[#appendix_kademlia_admission][Kademlia Admission]].
 
 The token is a self-contained, signed data structure carrying the following fields:
 

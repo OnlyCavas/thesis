@@ -1,0 +1,31 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+  }
+}
+
+direction: right
+
+device: Device Root Key {
+  label: "Device Root Key\n(hardware trust anchor)"
+  style.font-size: 42
+}
+
+sm: Security Monitor Report {
+  label: "SM Report\nSM measurement hash\n+ SM public key"
+  style.font-size: 42
+}
+
+enclave: Enclave Report {
+  label: "Enclave Report\nenclave hash\n+ nonce [proof-of-work] (report data)"
+  style.font-size: 42
+}
+
+device -> sm: "Device SK signs\n(Keccak-Ed25519)\nSM Report" {
+  style.font-size: 30
+}
+
+sm -> enclave: "SM SK signs\n(Keccak-Ed25519)\nEnclave Report" {
+  style.font-size: 30
+}
+ecure Monitor SK signs (Keccak-Ed25519) Enclave Report
