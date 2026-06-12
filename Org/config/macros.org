@@ -8,6 +8,8 @@
 
 # image macro
 #+MACRO: figure @@latex:\begin{figure}[h] \centering \includegraphics[width=0.95\columnwidth]{Figures/$1} \caption{$2} \end{figure}@@
+#+MACRO: figurelabel @@latex:\begin{figure}[h] \centering \includegraphics[width=0.95\columnwidth]{Figures/$1} \caption{$2} \label{$3} \end{figure}@@
+
 #+MACRO: figure-group @@latex:\begin{figure}[h] \centering \begin{subfigure}[b]{0.48\columnwidth} \centering \includegraphics[width=\textwidth]{Figures/$1} \caption{$2} \end{subfigure} \hfill \begin{subfigure}[b]{0.48\columnwidth} \centering \includegraphics[width=\textwidth]{Figures/$3} \caption{$4} \end{subfigure} \caption{$5} \end{figure}@@
 
 # citations

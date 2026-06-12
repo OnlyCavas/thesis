@@ -71,11 +71,17 @@ This section assumes that the adversarial remote peer is already legitimately bo
 
 Additionally, the leeching node is compiled with TEE capabilities and runs within a Keystone RISC-V virtual machine. Therefore, proving that both software-only and TEE-capable nodes can coexist within the same swarm, with different attestation levels that are shown as the test cases evolve.
 
-{{{figure(testbed/stwo/014-bootstrap-attestation.pdf, TEE leecher remote attestation verified, manifest resolved to expect measurement *0x4855bd98*, hardware attestation *report accepted*)}}}
-@@latex:\label{fig:attestation}@@
+#+BEGIN_EXPORT latex
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.95\columnwidth]{Figures/testbed/stwo/014-bootstrap-attestation.pdf}
+  \caption{TEE leecher remote attestation verified, manifest resolved to expect measurement \texttt{0x4855bd98}, hardware attestation report accepted}
+  \label{fig:attestation}
+\end{figure}
+#+END_EXPORT
 
-{{{figure(testbed/stwo/015-sig-failed.pdf, TEE leecher detecting piece substitution attack, consecutive piece signature verification failures)}}}
+{{{figure(testbed/stwo/015-sig-failed.pdf, TEE leecher detecting piece substitution attack\, consecutive piece signature verification failures)}}}
 
-Both peers begin by being admitted within the swarm, proving their identities to the bootstrap node. Unlike the malicious node, the leecher is assigned a higher trust level, as shown in Figure @@latex:\ref{fig:attestation}@@. Upon admission, the leecher queries the DHT for available seeding nodes and then starts the download pipeline. For each received piece of data, the leecher verifies its hash concatenation {{{mark(sha256( index | piece data ))}}} with the locally cached piece index. If the match fails, the leecher automatically rejects the piece, discarding it and requesting a replacement until it finds an honest seeder and completes the download.
+Both peers begin by being admitted within the swarm, proving their identities to the bootstrap node. Unlike the malicious node, the leecher is assigned a higher trust level, as shown in [[#fig:attestation][Figure 5.11]]. Upon admission, the leecher queries the DHT for available seeding nodes and then starts the download pipeline. For each received piece of data, the leecher verifies its hash concatenation {{{mark(sha256( index | piece data ))}}} with the locally cached piece index. If the match fails, the leecher automatically rejects the piece, discarding it and requesting a replacement until it finds an honest seeder and completes the download.
 
 Across all three attack vectors, the security mitigations operated as designed. Admission attacks were intercepted at the DHT layer, preventing an adversarial peer from further interacting with the rest of the protocol extensions implemented. Piece-level corruption was caught at the BEP layer, dropping malicious pieces without stalling the download or requiring manual intervention. The layered design ensures that compromising one layer does not cascade to the others, preserving the modularity claim established in [[#poc_design_goals][Section 3.2]].

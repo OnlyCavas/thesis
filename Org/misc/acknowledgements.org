@@ -1,0 +1,7 @@
+This thesis would not have been possible without the guidance and support of some of the most important individuals in my life. I want to start by thanking my supervisor, Professor Doutor Rolando Martins, for the opportunity to undertake this topic, for giving me the chance to delve into the world of decentralised systems, and for offering guidance and pointing me in the right direction. Most importantly, for the freedom to shape this project in my own voice.
+
+This thesis marked a turning point for me, a real opportunity to engage with and research a real system, and to implement a complex project that would challenge me to the fullest. I am deeply grateful for the independence and challenge this work provided, and, most of all, for what it taught me along the way and for the pride of seeing something difficult through to the end, largely on my own.
+
+Above all, I would like to thank my brother, who stood by me in my hardest moments and brought joy and happiness when all seemed lost and doomed to fail. To my mother and father, who never gave up on me and supported me when I needed them the most throughout my college life, giving me the confidence to overcome this stage, thank you.
+
+Finally, I acknowledge all the open-source communities and projects that formed the foundation for this thesis, providing us all with the means to grow, collaborate, and share the most sacred power a human will ever hold: *knowledge*.

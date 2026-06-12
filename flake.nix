@@ -240,6 +240,10 @@
             auto_import = false;
           };
 
+          convertMisc = org2tex {
+            dir = ./Org/misc;
+          };
+
           compile-header = mkThesis {
             name = "header";
             entryMainTex = "main.tex";
@@ -274,32 +278,28 @@
                   texFiles = convertAppendices;
                 }}
 
-                cat "${convertConfig}/acronyms.tex"
                 ${setConfiguration {
                   input = "Acronyms";
                   target_file = "precontent.tex";
                   tex_file = "${convertConfig}/acronyms.tex";
                 }}
 
-                cat "${convertConfig}/abstract-pt.tex"
                 ${setConfiguration {
                   input = "Abstract-pt";
                   target_file = "precontent.tex";
-                  tex_file = "${convertConfig}/abstract-pt.tex";
+                  tex_file = "${convertMisc}/abstract-pt.tex";
                 }}
 
-                cat "${convertConfig}/abstract-en.tex"
                 ${setConfiguration {
                   input = "Abstract-en";
                   target_file = "precontent.tex";
-                  tex_file = "${convertConfig}/abstract-en.tex";
+                  tex_file = "${convertMisc}/abstract-en.tex";
                 }}
 
-                cat "${convertConfig}/acknowledgements.tex"
                 ${setConfiguration {
                   input = "Acknowledgements";
                   target_file = "precontent.tex";
-                  tex_file = "${convertConfig}/acknowledgements.tex";
+                  tex_file = "${convertMisc}/acknowledgements.tex";
                 }}
 
 
