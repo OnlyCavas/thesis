@@ -4,11 +4,12 @@ vars: {
   }
 }
 
-direction: right
-
-device: Device Root Key {
-  label: "Device Root Key\n(hardware trust anchor)"
+direction: down
+conn: Keystone Remote Attestation Verification {
+  style.fill: "#f8f9fa"
+  style.stroke-dash: 4
   style.font-size: 42
+  near: top-center
 }
 
 sm: Security Monitor Report {
@@ -17,15 +18,48 @@ sm: Security Monitor Report {
 }
 
 enclave: Enclave Report {
-  label: "Enclave Report\nenclave hash\n+ nonce [proof-of-work] (report data)"
   style.font-size: 42
+  label: "Enclave Report\nenclave hash\n+ nonce [proof-of-work] (report data)"
 }
 
-device -> sm: "Device SK signs\n(Keccak-Ed25519)\nSM Report" {
-  style.font-size: 30
+manifest: Developer Manifest {
+  style.stroke-dash: 4
+  style.font-size: 42
+  label: "Signed Manifest\nexpected enclave hash\nper bqti version"
 }
 
-sm -> enclave: "SM SK signs\n(Keccak-Ed25519)\nEnclave Report" {
-  style.font-size: 30
+verifier: Verifier {
+  style.font-size: 42
+  label: "Verifying Peer (Attestor)"
 }
-ecure Monitor SK signs (Keccak-Ed25519) Enclave Report
+
+report: Keystone Report {
+  style.font-size: 42
+  label: "KeyStone Report\n+ SM Report\n+ Enclave Report\n+ Device Public Key"
+}
+
+verifier -> report: 1. trusted_dev_key == device_key {
+  style.font-size: 30
+  style.stroke: "#5B9BD5"
+}
+
+verifier -> sm: 2. trusted_dev_key validate sig (Ed25519 with SHA3-512) SM Report {
+  style.font-size: 30
+  style.stroke: "#6f42c1"
+}
+
+verifier -> enclave: 3. SM Public Key validate sig (Ed25519 with SHA3-512) Enclave {
+  style.font-size: 30
+  style.stroke: "#6f42c1"
+}
+
+verifier -> enclave: 4. enclave_hash\[...nonce\] == expected_nonce\[proof-of-work\] {
+  style.font-size: 30
+  style.stroke: "#6f42c1"
+}
+
+enclave <-> manifest: 5. enclave hash == manifest hash (signed) {
+  style.font-size: 30
+  style.stroke: "#6f42c1"
+  style.stroke-dash: 4
+}

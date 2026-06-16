@@ -1,6 +1,6 @@
 ** Peer Exchange (PEX)
 :PROPERTIES:
-:CUSTOM_ID: impl_kademlia_bep_extension
+:CUSTOM_ID: impl_pex_bep_extension_section
 :END:
 
 As specified in [[#peer_exchange][Section 2.1.10]], Peer Exchange allows connected peers to share knowledge of other swarm participants without querying the DHT, acting as a low-overhead gossip layer that complements discovery, and enables peer discovery to move faster. In {{{mark(bqti)}}} PEX operates over the same unidirectional control stream as the DHT and BEP handshakes, consistent with the design model established in [[#impl_quic_config][Section 4.3]].

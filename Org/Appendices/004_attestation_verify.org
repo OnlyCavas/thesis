@@ -42,7 +42,7 @@ impl KeystoneAttestReport {
     pub fn verify(
         &self,
         nonce: &[u8],
-        expected_hash: Option<&[u8]>,
+        expected_hash: &[u8],
         trusted_dev_key: &[u8; 32],
     ) -> bool {
         if trusted_dev_key != &self.dev_public_key {
@@ -66,10 +66,8 @@ impl KeystoneAttestReport {
             return false;
         }
 
-        if let Some(expected) = expected_hash {
-            if self.enclave.hash.as_ref() != expected {
-                return false;
-            }
+        if self.enclave.hash.as_ref() != expected_hash {
+            return false;
         }
 
         let nonce_len = nonce.len().min(data_len);

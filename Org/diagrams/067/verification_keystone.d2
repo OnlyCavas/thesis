@@ -43,12 +43,12 @@ verifier -> report: 1. trusted_dev_key == device_key {
   style.stroke: "#5B9BD5"
 }
 
-verifier -> sm: 2. trusted_dev_key validate sig (Keccak-Ed25519) SM Report {
+verifier -> sm: 2. trusted_dev_key validate sig (Ed25519 with SHA3-512) SM Report {
   style.font-size: 30
   style.stroke: "#6f42c1"
 }
 
-verifier -> enclave: 3. SM Public Key validate sig (Keccak-Ed25519) Enclave {
+verifier -> enclave: 3. SM Public Key validate sig (Ed25519 with SHA3-512) Enclave {
   style.font-size: 30
   style.stroke: "#6f42c1"
 }

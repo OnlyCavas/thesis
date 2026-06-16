@@ -33,7 +33,7 @@ The entire manifest file is a single *bencoded dictionary* containing the essent
 
     + *path*: it represents a list of UTF-8-encoded strings that correspond to subdirectory names, with the last one being the actual filename, a *zero-length* list represents an error.
 
-Taking a deeper insight into BitTorrent's *peer protocol*, we can observe that it operates over *TCP* or *uTP*. Also, peer connections are *symmetrical*, meaning that *messages* sent in both directions look the same. The peer protocol checks the lookup table in the metadata file *.torrent* and selects pieces by their index, starting at zero. When one finishes downloading a piece and checks that the hash matches, it then announces it to its peers.
+Taking a deeper insight into BitTorrent's *peer protocol*, it operates over *TCP* or *uTP*. Also, peer connections are *symmetrical*, meaning that *messages* sent in both directions look the same. The peer protocol checks the lookup table in the metadata file *.torrent* and selects pieces by their index, starting at zero. When one finishes downloading a piece and checks that the hash matches, it then announces it to its peers.
 
 *** uTP (UDP Tracker Protocol)
 :PROPERTIES:

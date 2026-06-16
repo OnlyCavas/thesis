@@ -1,7 +1,3 @@
-#+BEGIN_EXPORT latex
-\clearpage
-#+END_EXPORT
-
 ** Kademlia Admission
 :PROPERTIES:
 :CUSTOM_ID: appendix_kademlia_admission
