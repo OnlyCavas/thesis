@@ -9,7 +9,7 @@ These problems stem from the lack of a verifiable *trust anchor* among peers, wh
 
 # (citeme: 002)
 
-Hardware-rooted security mechanisms provide verifiable trust guarantees that purely software-based mechanisms cannot. This section examines the foundational concepts underlying{{gls(tee)}}}, including relevant hardware security primitives, before investigating how TEE-based attestation can promote trust and authenticity, identifying and mitigating possible vulnerabilities, as described in previous sections.
+Hardware-rooted security mechanisms provide verifiable trust guarantees that purely software-based mechanisms cannot. This section examines the foundational concepts underlying {{{gls(tee)}}}, including relevant hardware security primitives, before investigating how TEE-based attestation can promote trust and authenticity, identifying and mitigating possible vulnerabilities, as described in previous sections.
 
 + *Trusted Platform Modules (TPM)*:
 

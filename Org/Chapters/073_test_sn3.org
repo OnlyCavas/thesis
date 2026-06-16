@@ -24,7 +24,7 @@ As described in the testbed configuration, the {{{mark(i2pd)}}} instance is depl
     \caption{Leecher node establishing a TCP control and UDP DATAGRAM session with the local SAM bridge.}
   \end{subfigure}
 
-  \caption{SAM bridge negotiation and I2P tunnel establishment for both the bootstrap and leecher nodes, completing in approximately 18.8 seconds before either endpoint became operational.}
+  \caption{SAM bridge negotiation and I2P tunnel establishment (18.8 seconds) for the bootstrap and leecher nodes.}
   \label{fig:i2p-bootstrapping}
 \end{figure}
 #+END_EXPORT
@@ -38,7 +38,7 @@ After establishing both a TCP control session and a UDP DATAGRAM session with a 
 
 After the tunnel is established, the {{{mark(leecher)}}} completes a full admission sequence over I2P, thereby requesting the challenge, computing the {{{gls(pow)}}}, and acquiring a signed token upon submission, entirely through the garlic-routed transport. Every protocol layer operated correctly over the abstraction, thereby proxying all traffic between QUIC and I2P over the UDP DATAGRAM session and the SAM bridge. It is worth noting that, just like standard QUIC in I2P mode, the same QUIC control stream and bidirectional streams-per-piece requests are maintained and managed by the destination mapper and proxied through a custom *quinn endpoint*. As a result, this proves that the anonymity layer is fully composable, abstracting away the inner transport layer, and preserving QUIC's characteristics over I2P traffic, but with a high performance overhead.
 
-{{{figure(testbed/sthree/008-bootstrap-completed.pdf, Leecher completing the full PoW admission sequence over I2P\, including challenge retrieval\, proof-of-work computation\, and signed token acquisition\, entirely through the garlic-routed transport.)}}}
+{{{figure(testbed/sthree/008-bootstrap-completed.pdf, Leecher completing PoW admission over I2P (challenge\, proof-of-work\, signed token))}}}
 
 The transfer was slower than a standard QUIC download, as expected. After the first piece arrived, the download stalled for approximately {{{mark(2.14 minutes)}}} while I2P tunnels were being established, with only DHT heartbeats flowing over the control stream. Once the tunnels settled, the stream delivered the remaining {{{mark(20 pieces)}}} in a rapid burst, completing the download in {{{mark(2.24 minutes)}}}, thereby indicating that, for a small set of files, the dominant cost is the one-time tunnel establishment rather than the steady-state throughput.
 

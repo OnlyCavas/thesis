@@ -1,4 +1,4 @@
-For others to exchange chunks of files with peers, it's paramount that they communicate with each other. One of the most used mechanisms for Peer discovery* is centralised *trackers*.
+For others to exchange chunks of files with peers, it's paramount that they communicate with each other. One of the most used mechanisms for Peer discovery is centralised *trackers*.
 
 *** Trackers
 :PROPERTIES:

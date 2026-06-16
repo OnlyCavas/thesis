@@ -35,7 +35,7 @@ This model works by incorporating three key BitTorrent mechanisms inspired by th
 
 + *Dependency*:
 
-  The growth rate of *predators* is proportional to the amount of *prey*; this results in more seeders, improved download performance, and the attraction or retention of a larger number of concurrent downloaders. Conversely, the decline in prey-driven upload rate is directly proportional to the scarcity of predators. In other words, the intense consumption of available uploaded resources eventually leads to higher bandwidth saturation, demotivating seeders and causing them to cease uploading entirely when sharing ratios become significantly imbalanced.
+  The growth rate of *predators* is proportional to the amount of *prey*, resulting in more seeders, improved download performance, and the attraction or retention of a larger number of concurrent downloaders. Conversely, the decline in prey-driven upload rate is directly proportional to the scarcity of predators. In other words, the intense consumption of available uploaded resources eventually leads to higher bandwidth saturation, demotivating seeders and causing them to cease uploading entirely when sharing ratios become significantly imbalanced.
 
 + *Transition*:
 
