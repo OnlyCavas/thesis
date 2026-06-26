@@ -3,9 +3,9 @@
 :CUSTOM_ID: bt_start
 :END:
 
-Since its introduction in 2001, BitTorrent has grown into one of the most widely deployed peer-to-peer protocols, responsible for a significant fraction of the global internet traffic. Its decentralised nature removes the need for a single origin server, distributing both content and transfer load across all participating peers, improving scalability and availability. As a result, it presents itself as a robust content-sharing solution that relies on a sparse community of peers rather than a single centralised entity.
+Since its introduction in 2001, BitTorrent has grown into one of the most widely deployed peer-to-peer protocols, having historically accounted for a significant fraction of the global internet traffic {{{citep(izal_2004)}}}. Its decentralised nature removes the need for a single origin server, distributing both content and transfer load across all participating peers, improving scalability and availability. As a result, it presents itself as a robust content-sharing solution that relies on a sparse community of peers rather than a single centralised entity.
 
-Decentralised networks offer resilience and scalability, making them a foundational technology across domains ranging from file-sharing distribution to telecommunications. As open-source systems such as Matrix adopt similar decentralised principles, they may be keen to offer a more user-controlled software option rather than the standard, proprietary options.
+Decentralised networks offer resilience and scalability, making them a foundational technology across domains ranging from file-sharing distribution to telecommunications. As open-source systems such as Matrix {{{citep(matrix)}}} adopt similar decentralised principles, they may be keen to offer a more user-controlled software option rather than the standard, proprietary options.
 
 In this section, the BitTorrent protocol architecture is examined, along with its operational mechanics, and common attack vectors that compromise both network integrity and contributor anonymity.
 
