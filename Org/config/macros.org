@@ -20,3 +20,5 @@
 
 #+MACRO: mark @@latex:\texttt{$1}@@
 #+MACRO: latex @@latex:$1@@
+
+#+MACRO: ref @@latex:\ref{$1}@@

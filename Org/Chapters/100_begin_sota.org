@@ -1,4 +1,4 @@
-* State of the Art
+* Related Work
 :PROPERTIES:
 :CUSTOM_ID: sota
 :END:

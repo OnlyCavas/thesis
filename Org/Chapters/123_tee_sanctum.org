@@ -1,3 +1,8 @@
+** Trusted Execution Systems
+:PROPERTIES:
+:CUSTOM_ID: tee_sys
+:END:
+
 *** Sanctum: RISC-V Enclave Architecture
 :PROPERTIES:
 :CUSTOM_ID: sanctum
