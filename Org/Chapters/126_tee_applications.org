@@ -1,6 +1,6 @@
 *** Remote Attestation Approaches
 :PROPERTIES:
-:CUSTOM_ID: remote_attestation
+:CUSTOM_ID: remote_attestation_rw
 :END:
 
 Researchers {{{citep(tee_004)}}} propose implementing HSM-like features using an *ARM CPU emulator* by leveraging the built-in *ARM TrustZone TEE*. Their attestation protocol emulates TPM functionality as a {{{gls(ta)}}} that runs within the protected TrustZone Secure World, then exposes it via a TPM-like interface for remote attestation and integrity verification. Their implementation is composed of the following key components composing their *attestation process*:
