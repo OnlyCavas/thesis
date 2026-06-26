@@ -1,0 +1,26 @@
+# previously on BT006
+
+*** Security Considerations in BitTorrent
+:PROPERTIES:
+:CUSTOM_ID: security_bt_considerations
+:END:
+
+# (cime: 008 and last)
+
+The authors {{{citep(bt_008)}}} evaluates these attacks against three main BitTorrent clients: *Azureus* (now called Vuze), *µTorrent*, and *BitTornado*. To conduct the following experiment, they used a modified version of the *BitTornado* client to create an instrumented attack client. Also, they developed a BitTorrent traffic analyser to monitor and quickly identify the bandwidth used by seeds, honest leechers, and threats over time.
+
+The researchers consider two natural seed attacks that threat actors seek to reduce or ideally prevent the uploading of blocks:
+
++ *Bandwidth Attack*
+
+  Adversaries exploit vulnerabilities in BitTorrent's seeding algorithm and the asymmetric nature of typical access links, such as DSL, cable, and Fibre, where upload bandwidth is significantly lower than download bandwidth. Moreover, in traditional bandwidth-first seeding algorithms, like the one used in *BitTornado*, the seed *unchokes* most *leechers*, enabling them to upload while periodically evaluating their upload rates. Every 30 seconds, the *seed* chokes the slowest unchoked *leecher* and replaces it with a randomly selected peer via an optimistic unchoking. Furthermore, in this attack, attackers join the *torrent* early and attempt to consume most of the seed's unchoke slots by performing downloads at higher rates than those achievable by honest peers. As a result, this clogs the available upload bandwidth of the seeder, eventually *starving honest leechers*.
+
++ *Connection Attack*
+
+  Knowing that a seed maintains up to $x$ TCP connection slots, the sources typically indicate about 50 connections, configurable. Of these, up to $x$ are unchocked for active uploading. Knowing this, the attack aims to exhaust all available connection slots with malicious peers, preventing honest peers from establishing connections. To accomplish this, it requires early detection of the torrent and effective occupation of the slots, while maintaining connections without consuming excessive bandwidth, even when an attacker periodically downloads small amounts of data. The low bandwidth behaviour distinguishes this attack from a pure bandwidth exhaustion.
+
+Researchers {{{citep(bt_007)}}} have conducted several experiments simulating the *Flash crowd effect*, in which 5 honest leechers were connected to a seed first. After being connected, all the adversaries launch concurrently, followed by the remaining 25 leechers. They configured the seed with 4 unchoke slots and a maximum of 59 connection slots overall. Additionally, they analysed the code and documented its connection management and state transition logic of the *Vuze* client. They demonstrated that the *Vuze* client accepts incoming requests right away, unless the connection limit is reached. On top of that, it implements a finite queue called "Discovered Peers" that may be discovered by the *tracker*, *DHT* or *PEX* through gossip. Also, if there are free slots available, *Vuze* performs "Optimistic Disconnect" by starting outbound connections with the oldest peers in its queue.
+
+Even with relatively low bandwidth, threat actors can benefit from *Vuze*'s unchoke criteria, which prioritise peers with high download rates and low amounts of data downloaded from the seed. Low downloaded resources allow attackers to gain access to some unchoke slots. Saturating slots prevents honest leechers from maintaining active connections for more than 5 minutes and progressively disconnects them via Optimistic Disconnect, while adversaries persistently try to reoccupy available slots. Notably, even attackers may suffer occasional disconnections, but if they maintain a high reconnect rate, they further increase their dominance.
+
+# Speak about *BTSync*

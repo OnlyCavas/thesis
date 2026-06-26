@@ -1,0 +1,45 @@
+*** Remote Attestation Approaches
+:PROPERTIES:
+:CUSTOM_ID: remote_attestation
+:END:
+
+Researchers {{{citep(tee_004)}}} propose implementing HSM-like features using an *ARM CPU emulator* by leveraging the built-in *ARM TrustZone TEE*. Their attestation protocol emulates TPM functionality as a {{{gls(ta)}}} that runs within the protected TrustZone Secure World, then exposes it via a TPM-like interface for remote attestation and integrity verification. Their implementation is composed of the following key components composing their *attestation process*:
+
++ *Measurement and Extension*
+
+  All user-space executables are hashed inside the kernel using SHA-1. The resulting value is passed to the TPM via the {{{mark(TPM\_extend)}}} function, which stores it in a *PCR*.
+
++ *Signed Quote and Verification*
+
+  The verifier sends an attestation request that includes a nonce to protect against replay attacks. The attester's TA returns a properly signed message containing the selected PCR values, the nonce, and a measurement log. The challenger verifies the integrity by replaying the log against a reference hash for authorised software and firmware, then recalculating the expected PCR, validating the signature chain against the trusted key pair.
+
+In their experiment, the challenger peer sends a request with a nonce to the attestation platform, in this case, their Arm Emulator. Then, the attester, through the {{{gls(ta)}}}, handles the secure storage of the RSA key pair and PCR maintenance, and sends a response that includes the signed PCR values, the nonce, and the full measurement log. Finally, the challenger consults the reference hash values to conclude the verification.
+
+The researchers {{{citep(tee_003)}}} provide a formal analysis of Intel SGX remote attestation, detailing how it establishes cryptographic trust between an enclave and a remote verifier. Intel SGX follows a modified Sigma protocol variant that incorporates {{{gls(epid)}}} for anonymous group signatures, relying on Diffie-Hellman to establish a secure, attested channel.
+
++ *Initial Attestation*:
+
+  The verifier sends a challenge to the SGX enclave (prover) to initiate the attestation process, including a nonce to prevent replay attacks.
+
++ *Ephemeral DH Key Generation by Prover*:
+
+  The *enclave* replies to the verifier with its public key after generating an ephemeral *Elliptic Curve Diffie-Hellman* (ECDH) key pair to establish a shared secret.
+
++ *Verifier Prepares for EPID Verification*:
+
+  Meanwhile, the verifier retrieves a recent {{{gls(sigrl)}}} from the Intel Attestation Service (IAS) that contains the recently revoked EPID signatures, used to determine whether the prover's platform has been revoked.
+
++ *Verifier's Response*:
+
+  The verifier generates its own ephemeral DH key pair and signs the public key with its long-term key before sending it to the prover's enclave. Signing the public key allows the enclave to authenticate the verifier and ensures that only authorised parties can request attestation. In practice, the verifier's public key is typically hardcoded into the enclave.
+
++ *Quote Generation in Enclave*:
+
+  Next, the enclave computes a new shared secret from the exchanged public keys, then produces a quote that embeds the hashes of both keys, binding the quote to the derived shared secret, the enclave's measurements, the challenge, and the enclave itself. Then, the platform signs the quote using its EPID private key, cryptographically binding the ephemeral public key to the attested enclave and unambiguously identifying it.
+
++ *Quote Verification*:
+
+  After the verifier receives the enclave's quote, it submits it to the {{{gls(ias)}}}. The IAS validates the EPID signature against SigRL and the enclave's platform attributes, then returns a signed {{{gls(avr)}}} to the verifier, signed with Intel's private key.
+
+The researchers {{{citep(tee_004)}}} propose implementing a *remote attestation* process that leverages *TPM* functionality in software via TrustZone, enabling secure bootstrapping and remote attestation. In BitTorrent, this could allow swarms to prevent modified clients from joining the network and detect possible compromised pieces via IMA extended measurements. Moreover, by implementing an attestation protocol between peers, mitigating *Sybil Attacks* and *Collusion Attacks*.
+
