@@ -3,7 +3,7 @@
 :CUSTOM_ID: impl_quic_config
 :END:
 
-As depicted in [[#poc_bt_over_quic][Section 3.4]], a single QUIC connection is maintained for the entire BitTorrent session with each remote peer. All protocol traffic is multiplexed over this connection using independent QUIC streams of different types, such as:
+As depicted in Section {{{ref(poc_bt_over_quic)}}}, a single QUIC connection is maintained for the entire BitTorrent session with each remote peer. All protocol traffic is multiplexed over this connection using independent QUIC streams of different types, such as:
 
 + *Control streams*
 

@@ -3,7 +3,7 @@
 :CUSTOM_ID: impl_torrent_specification
 :END:
 
-As depicted in [[#torrent_specification][Section 2.1.1]], the {{{mark(.torrent)}}} format encodes torrent metadata using Bencode. The implementation supports both *V1* and *V2* specifications, covering three operations: *Creation*, generating a {{{mark(.torrent)}}} metadata file from a single file or a directory, *Inspection*, parsing and presenting the torrent's metadata fields (using the {{{mark(serde\_bencode)}}} deserialization framework), and *Validation*, which verifies both structural and piece hash integrity against the metadata rules.
+As depicted in Section {{{ref(torrent_specification)}}}, the {{{mark(.torrent)}}} format encodes torrent metadata using Bencode. The implementation supports both *V1* and *V2* specifications, covering three operations: *Creation*, generating a {{{mark(.torrent)}}} metadata file from a single file or a directory, *Inspection*, parsing and presenting the torrent's metadata fields (using the {{{mark(serde\_bencode)}}} deserialization framework), and *Validation*, which verifies both structural and piece hash integrity against the metadata rules.
 
 #+BEGIN_EXPORT latex
 \begin{figure}[h]

@@ -3,7 +3,7 @@
 :CUSTOM_ID: evaluation
 :END:
 
-This chapter evaluates the proof-of-concept implementation across three scenarios, validating both the functional correctness of the protocol stack and the effectiveness of the integrated security mitigations. On top of that, evaluates the performance overhead between standard QUIC and the I2P anonymous overlay, testing interoperability between both TEE backends and software-only devices, thereby achieving a higher trust level within the swarm. Each testing scenario targets a specific claim within the System Design & Architecture (see [[#poc_design_goals][Section 3.2]]).
+This chapter evaluates the proof-of-concept implementation across three scenarios, validating both the functional correctness of the protocol stack and the effectiveness of the integrated security mitigations. On top of that, evaluates the performance overhead between standard QUIC and the I2P anonymous overlay, testing interoperability between both TEE backends and software-only devices, thereby achieving a higher trust level within the swarm. Each testing scenario targets a specific claim within the System Design & Architecture (see Section {{{ref(poc_design_goals)}}}).
 
 ** Testbed Setup
 :PROPERTIES:

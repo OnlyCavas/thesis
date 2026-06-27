@@ -5,7 +5,7 @@
 
 This section demonstrated that QUIC represents a significant evolution from TCP, offering true stream multiplexing without {{{gls(hol)}}}, lower connection latency, built-in encryption, and enabling mobile devices to switch between LAN and WAN networks without breaking connections. On top of that, offers better loss recovery mechanisms, such as pacing, and congestion control. Despite some performance measurements indicating that HTTP/2 and HTTP/1.1 sometimes outperform QUIC in low-churn, high-bandwidth scenarios, QUIC excels in low-bandwidth, high-churn networks, improving latency and download times.
 
-Most modern BitTorrent clients already implement uTP (see [[#utp_tracker][Section 2.1.2]]), developed as a viable alternative to TCP, addressing some of the issues with BitTorrent networks, such as *high churn*, *lossy*, and high download demand over UDP. It provides LEDBAT-based congestion control, built-in NAT traversal, and avoiding TCP's HoL blocking and connection establishment overhead issues, making it well-suited for the BitTorrent context.
+Most modern BitTorrent clients already implement uTP (see Section {{{ref(utp_tracker)}}}), developed as a viable alternative to TCP, addressing some of the issues with BitTorrent networks, such as *high churn*, *lossy*, and high download demand over UDP. It provides LEDBAT-based congestion control, built-in NAT traversal, and avoiding TCP's HoL blocking and connection establishment overhead issues, making it well-suited for the BitTorrent context.
 
 The QUIC protocol developed by Google offers a modern protocol that addresses the limitations that solve the concurrent issues with HTTP/2 and HTTP/1.1, also providing benefits that could improve the BitTorrent protocol significantly:
 

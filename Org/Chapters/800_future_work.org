@@ -8,7 +8,7 @@
 :CUSTOM_ID: fw_protocol_opt
 :END:
 
-The evaluation in [[#eval_sn3][Section 5.4]] revealed that the most significant limitation of the current implementation is the performance overhead introduced by the I2P anonymity layer.
+The evaluation in Section {{{ref(eval_sn3)}}} revealed that the most significant limitation of the current implementation is the performance overhead introduced by the I2P anonymity layer.
 
 Currently, {{{mark(bqti)}}} relies on an external I2P client instance running alongside it to access the I2P network, communicating via the SAM bridge protocol, thereby introducing an external dependency. Removing the SAM client and embedding the I2P router by statically linking {{{mark(libi2pd)}}} via an FFI layer would produce a self-contained binary that requires no auxiliary router process running alongside the client.
 
