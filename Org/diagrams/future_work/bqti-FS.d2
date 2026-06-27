@@ -1,62 +1,73 @@
-vars: {
-  d2-config: {
-    layout-engine: elk
-  }
-}
-
-grid-columns: 3
-horizontal-gap: 350
-vertical-gap: 80
-
-title: bqti-FS Trust Topology {
-  near: top-center
-  shape: text
-  style.font-size: 20
-  style.bold: true
-}
-
-untrusted: Untrusted Machine {
-  style.stroke-dash: 4
-
-  wasm: WASM Application\n(sandbox)
-
-  watz: WATZ Secure World\n(decrypt logic) {
-    style.fill: "#d4edda"
+  vars: {
+    d2-config: {
+      layout-engine: elk
+      theme-id: 1
+    }
   }
 
-  wasm -> watz: ephemeral decrypt
-}
+  grid-columns: 3
+  horizontal-gap: 450
+  vertical-gap: 80
 
-device: Trusted TEE Device (RISC-V) {
-  key: Enclave\n(Hardware-Sealed Key)
-  id: DHT Identity\n(Attested Public Key)
-  bqti: bqti daemon
+  title: bqti-FS Trust Topology {
+    near: top-center
+    shape: text
+    style.font-size: 26
+    style.bold: true
+  }
 
-  key -> id: Cryptographic Derivation
-  bqti -> key: Secure OCALL (host to enclave)
-  bqti -> id: Identity Binding
-}
+  untrusted: Untrusted Machine {
+    style.stroke-dash: 4
+    style.font-size: 24
 
-swarm: bqti Swarm {
-  p1: Peer\n(encrypted user data)
-  p2: Peer\n(encrypted user data)
-  p3: Peer\n(encrypted user data)
-  p4: Peer\n(encrypted user data)
+    wasm: WASM Application\n(sandbox) {
+      style.font-size: 24
+    }
 
-  p1 <-> p2
-  p3 <-> p1
-  p2 <-> p3
-  p2 <-> p4
-  p1 <-> p4
-  p3 <-> p4
-}
+    watz: WATZ Secure World\n(decrypt logic) {
+      style.fill: "#d4edda"
+      style.font-size: 24
+    }
 
-untrusted.watz <-> device: Attestation-gated channel\n+ Ephemeral key material\n+ DRM-inspired piece exchange {
-  style.stroke: "#28a745"
-  style.bold: true
-}
+    wasm -> watz: ephemeral decrypt {
+      style.font-size: 24
+    }
+  }
 
-device <-> swarm: QUIC / I2P (Anonymous Transit) {
-  style.stroke: "#6f42c1"
-  style.bold: true
-}
+  device: Trusted TEE Device (RISC-V) {
+    style.font-size: 24
+    key: Enclave\n(Hardware-Sealed Key) { style.font-size: 24 }
+    id: DHT Identity\n(Attested Public Key) { style.font-size: 24 }
+    bqti: bqti daemon { style.font-size: 24 }
+
+    key -> id: Cryptographic Derivation { style.font-size: 24 }
+    bqti -> key: Secure OCALL (host to enclave) { style.font-size: 24 }
+    bqti -> id: Identity Binding { style.font-size: 24 }
+  }
+
+  swarm: bqti Swarm {
+    style.font-size: 24
+    p1: Peer\n(encrypted user data) { style.font-size: 24 }
+    p2: Peer\n(encrypted user data) { style.font-size: 24 }
+    p3: Peer\n(encrypted user data) { style.font-size: 24 }
+    p4: Peer\n(encrypted user data) { style.font-size: 24 }
+
+    p1 <-> p2
+    p3 <-> p1
+    p2 <-> p3
+    p2 <-> p4
+    p1 <-> p4
+    p3 <-> p4
+  }
+
+  untrusted.watz <-> device: Attestation-gated channel\n+ Ephemeral key material\n+ DRM-inspired piece exchange {
+    style.stroke: "#28a745"
+    style.bold: false
+    style.font-size: 20
+  }
+
+  device <-> swarm: QUIC / I2P (Anonymous Transit) {
+    style.stroke: "#6f42c1"
+    style.bold: false
+    style.font-size: 20
+  }
