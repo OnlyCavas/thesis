@@ -13,15 +13,15 @@ Building on this idea, consider a scenario in which the user accesses their swar
 
 Several existing systems address decentralised storage, each with distinct limitations:
 
-+ *Filecoin*:
++ *Filecoin* {{{citep(filecoin)}}}:
 
   A decentralised storage network that uses cryptographic proofs and economic incentives to ensure peers reliably host data, without providing any *confidentiality* or *hardware-root trust*.
 
-+ *Tahoe-LAFS*:
++ *Tahoe-LAFS* {{{citep(tahoe)}}}:
 
   A zero-knowledge distributed filesystem that encrypts and erasure-codes data before distributing it across storage nodes. However, its trust is software-based and therefore doesn't support either *hardware-rooted trust* or *anonymity*.
 
-+ *Sia*:
++ *Sia* {{{citep(sia)}}}:
 
   A blockchain-based decentralised marketplace storage platform where users rent storage from hosts via smart contracts and must periodically submit cryptographic storage proofs. However, these keys reside only on the client machine, without any hardware-rooted protection, meaning a compromised device could expose all user data.
 
