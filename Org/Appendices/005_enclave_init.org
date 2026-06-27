@@ -3,7 +3,7 @@
 :CUSTOM_ID: appendix_enclave_init
 :END:
 
-The following code snippet is from the enclave embedded into {{{mark(bqti)}}} executing within a Keystone-supported device, as detailed in [[#impl_tee_kp_sealing_key][Section 4.9.2]]. To always generate the same key pair, the enclave relies on TweetNaCl's {{{mark(randombytes)}}} entropy source to return the enclave's {{{mark(sealing key)}}}. This approach always yields the same deterministic Ed25519 key pair, thereby remaining reproducible only within the same enclave running on the same hardware. After consuming the sealing key, it is immediately wiped from memory.
+The following code snippet is from the enclave embedded into {{{mark(bqti)}}} executing within a Keystone-supported device, as detailed in Section {{{ref(impl_tee_kp_sealing_key)}}}. To always generate the same key pair, the enclave relies on TweetNaCl's {{{mark(randombytes)}}} entropy source to return the enclave's {{{mark(sealing key)}}}. This approach always yields the same deterministic Ed25519 key pair, thereby remaining reproducible only within the same enclave running on the same hardware. After consuming the sealing key, it is immediately wiped from memory.
 
 #+begin_src c
 void crypto_wipe(void *buf, size_t len) {

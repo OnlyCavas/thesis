@@ -3,7 +3,7 @@
 :CUSTOM_ID: appendix_kademlia_admission
 :END:
 
-The following diagram demonstrates the admission sequence for a new peer joining a PGP-gated swarm. Concrete implementations are detailed in [[#impl_kademlia_network_join][Section 4.4.3]].
+The following diagram demonstrates the admission sequence for a new peer joining a PGP-gated swarm. Concrete implementations are detailed in Section {{{ref(impl_kademlia_network_join)}}}.
 
 #+BEGIN_EXPORT latex
 \begin{figure}[H]

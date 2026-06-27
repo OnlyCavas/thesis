@@ -3,7 +3,7 @@
 :CUSTOM_ID: appendix_id_backend_selection
 :END:
 
-The following code snippet demonstrates the compile-time selection between software and TEE identity backends, as detailed in [[#impl_tee_identity][Section 4.9.7]]. Depending on the compilation feature flag ({{{mark(--features tee)}}}), {{{mark(ActiveKeyIdentity)}}} type alias resolves to either {{{mark(TeeKeyIdentity)}}} or the {{{mark(SoftwareKeyIdentity)}}} implementation. Following the Interface Segregation Principle, the {{{mark(KeyIdentity)}}} decomposes into action-specific traits. Hence, each consumer depends only on what it actually needs rather than on its entire functionality, regardless of the underlying backend.
+The following code snippet demonstrates the compile-time selection between software and TEE identity backends, as detailed in Section {{{ref(impl_tee_identity)}}}. Depending on the compilation feature flag ({{{mark(--features tee)}}}), {{{mark(ActiveKeyIdentity)}}} type alias resolves to either {{{mark(TeeKeyIdentity)}}} or the {{{mark(SoftwareKeyIdentity)}}} implementation. Following the Interface Segregation Principle, the {{{mark(KeyIdentity)}}} decomposes into action-specific traits. Hence, each consumer depends only on what it actually needs rather than on its entire functionality, regardless of the underlying backend.
 
 #+begin_src rust
  #[cfg(feature = "tee")]

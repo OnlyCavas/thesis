@@ -29,7 +29,7 @@ As described in the testbed configuration, the {{{mark(i2pd)}}} instance is depl
 \end{figure}
 #+END_EXPORT
 
-After establishing both a TCP control session and a UDP DATAGRAM session with a {{{mark(TRANSIENT)}}} destination, thereby rotating keys each time the node reboots, the i2pd returns the node's *base32* and full *base64* destinations. The internal destination mapper assigns a synthetic IPv4 address from the {{{mark(10.0.0.0/8)}}} range to remote I2P destinations, allowing every protocol layer to operate as if it were communicating over an ordinary UDP connection. As shown in [[#fig:i2p-bootstrapping][Figure 5.13]], the complete SAM negotiation and tunnel establishment took approximately {{{mark(18.8 seconds)}}} before the endpoint became operational.
+After establishing both a TCP control session and a UDP DATAGRAM session with a {{{mark(TRANSIENT)}}} destination, thereby rotating keys each time the node reboots, the i2pd returns the node's *base32* and full *base64* destinations. The internal destination mapper assigns a synthetic IPv4 address from the {{{mark(10.0.0.0/8)}}} range to remote I2P destinations, allowing every protocol layer to operate as if it were communicating over an ordinary UDP connection. As shown in Figure {{{ref(fig:i2p-bootstrapping)}}}, the complete SAM negotiation and tunnel establishment took approximately {{{mark(18.8 seconds)}}} before the endpoint became operational.
 
 *** File Transfer over I2P
 :PROPERTIES:

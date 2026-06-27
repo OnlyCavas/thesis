@@ -3,7 +3,7 @@
 :CUSTOM_ID: appendix_attestation_verifier
 :END:
 
-The following code snippet implements the client-side verification of a Keystone attestation report, as detailed in [[#impl_tee_remote_attestation][Section 4.9.5]]. The {{{mark(KeystoneAttestReport)}}} bundles the three layers of the chain of trust, representing the generated attestation report produced by the Keystone Enclave, containing the {{{mark(Enclave Report)}}}, {{{mark(Security Monitor Report)}}} and the {{{mark(device key)}}}. According to the report definition, the {{{mark(verify)}}} function assesses the trustworthiness of a foreign report by validating each layer of the chain of trust. More information on the enclave structure is provided in [[#impl_tee_enclave_str][Section 4.9.1]].
+The following code snippet implements the client-side verification of a Keystone attestation report, as detailed in Section {{{ref(impl_tee_remote_attestation)}}}. The {{{mark(KeystoneAttestReport)}}} bundles the three layers of the chain of trust, representing the generated attestation report produced by the Keystone Enclave, containing the {{{mark(Enclave Report)}}}, {{{mark(Security Monitor Report)}}} and the {{{mark(device key)}}}. According to the report definition, the {{{mark(verify)}}} function assesses the trustworthiness of a foreign report by validating each layer of the chain of trust. More information on the enclave structure is provided in Section {{{ref(impl_tee_enclave_str)}}}.
 
 #+begin_src rust
 #[derive(Debug, Clone, Serialize, Deserialize)]

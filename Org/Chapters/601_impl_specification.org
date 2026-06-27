@@ -24,4 +24,4 @@ As depicted in Section {{{ref(torrent_specification)}}}, the {{{mark(.torrent)}}
 \end{figure}
 #+END_EXPORT
 
-Beyond the standard specification fields, announce list, web seeds and DHT node fields support three declaration formats: standard IPv4 for ClearNet peers, *.b32.i2p* human readable I2P addresses, and full base 64 I2P destination for direct private connections. Thus, the user relies on {{{mark(.torrent)}}} to provide the details needed to bootstrap a swarm over either ClearNet or I2P without any direct modification, as shown in [[#fig:torrent-cli][Figure 4.1]].
+Beyond the standard specification fields, announce list, web seeds and DHT node fields support three declaration formats: standard IPv4 for ClearNet peers, *.b32.i2p* human readable I2P addresses, and full base 64 I2P destination for direct private connections. Thus, the user relies on {{{mark(.torrent)}}} to provide the details needed to bootstrap a swarm over either ClearNet or I2P without any direct modification, as shown in Figure {{{ref(fig:torrent-cli)}}}.

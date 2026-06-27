@@ -3,7 +3,7 @@
 :CUSTOM_ID: poc_bt_over_quic
 :END:
 
-As established in Chapter 2 (see [[#quic_intro][Section 2.2.1]]), QUIC solves many limitations of TCP and UDP in P2P environments. This section details how QUIC is integrated as the sole transport protocol within the proposed architecture, replacing both TCP and UDP and eliminating the need for uTP.
+As established in Chapter 2 (see Section {{{ref(quic_intro)}}}), QUIC solves many limitations of TCP and UDP in P2P environments. This section details how QUIC is integrated as the sole transport protocol within the proposed architecture, replacing both TCP and UDP and eliminating the need for uTP.
 
 A unique QUIC connection is established per peer when the first torrent session initiates a connection, in contrast to a traditional BitTorrent client, which may open multiple TCP connections to the same peer for different purposes. Establishing a single connection per peer reduces connection overhead, significantly simplifying connection management, as all streams are controlled by a single connection that shares a congestion window and flow control context.
 
