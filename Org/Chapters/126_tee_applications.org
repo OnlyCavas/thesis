@@ -15,7 +15,7 @@ Researchers {{{citep(tee_004)}}} propose implementing HSM-like features using an
 
 In their experiment, the challenger peer sends a request with a nonce to the attestation platform, in this case, their Arm Emulator. Then, the attester, through the {{{gls(ta)}}}, handles the secure storage of the RSA key pair and PCR maintenance, and sends a response that includes the signed PCR values, the nonce, and the full measurement log. Finally, the challenger consults the reference hash values to conclude the verification.
 
-The researchers {{{citep(tee_003)}}} provide a formal analysis of Intel SGX remote attestation, detailing how it establishes cryptographic trust between an enclave and a remote verifier. Intel SGX follows a modified Sigma protocol variant that incorporates {{{gls(epid)}}} for anonymous group signatures, relying on Diffie-Hellman to establish a secure, attested channel.
+The researchers {{{citep(tee_sgx_ra)}}} describe Intel SGX remote attestation, detailing how it establishes cryptographic trust between an enclave and a remote verifier. Intel SGX follows a modified Sigma protocol variant that incorporates {{{gls(epid)}}} for anonymous group signatures, relying on Diffie-Hellman to establish a secure, attested channel.
 
 + *Initial Attestation*:
 

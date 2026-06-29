@@ -8,12 +8,12 @@
 :CUSTOM_ID: sanctum
 :END:
 
-In this section, other solutions that leverage TEE primitives will be presented, with a focus on open or academic designs that address or seek to improve upon the limitations of commercial implementations.
+In this section, other solutions that leverage TEE primitives will be presented, with a focus on open or academic designs that address or seek to improve upon the limitations of commercial implementations {{{citep(tee_002)}}}.
 
 # (citeme: 002, Sanctum)
 # (citeme: 002, Costan et al. in 2016 [cite])
 
-One of them is *Sanctum*, which presents itself as a framework proposed by {{{citep(tee_002)}}} for the open *RISC-V* architecture. This solution adopts a threat model similar to that of *Intel SGX* and follows the same user-space enclave implementation, with architectural differences and enhanced security.
+One of them is *Sanctum*, which presents itself as a framework proposed by {{{citep(tee_sanctum)}}} for the open *RISC-V* architecture. This solution adopts a threat model similar to that of *Intel SGX* and follows the same user-space enclave implementation, with architectural differences and enhanced security.
 
 *Sanctum* draws inspiration from *SGX*, where enclaves are bundled with non-sensitive host applications running in untrusted code that invoke the enclave functions, while the untrusted Operating System handle exceptions and provide the libraries that enable integration with the enclave environment.
 
