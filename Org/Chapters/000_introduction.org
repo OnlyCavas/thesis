@@ -7,64 +7,74 @@ Peer-to-peer (P2P) networks enable decentralised communication, removing the sin
 
 Among the most popular applications leveraging decentralised peer-to-peer communication are file-sharing networks, blockchain systems and online multiplayer gaming. These types of applications rely on high-bandwidth, low-resource consumption connections, efficiently allocating resources among participants. The most prominent example is BitTorrent, a distributed file-sharing protocol that often outperforms centralised alternatives {{{citep(izal_2004)}}}, offering faster download times for larger files and allocating higher bandwidth than traditional CDN servers, which typically bottleneck or limit bandwidth. BitTorrent is primarily used for open-source software distribution, academic data sharing, content delivery, and the distribution of unofficial copyrighted content.
 
-Despite BitTorrent networks offering scalability and resilience, adversarial nodes exploit their intrinsic characteristics, thereby jeopardising user confidentiality, network availability, and integrity. Exposing participants to malware distribution, traffic analysis, surveillance, free-riding, and swarm poisoning, corrupting honest peers, deceiving them into spreading misinformation to others, and slowly taking over the swarm.
-
-More importantly, current BitTorrent implementations lack a mechanism for peers to authenticate one another and guarantee that the counterpart is using a verified, honest client implementation, thereby preventing dishonest clients from participating. On top of that, accounting for the decentralised nature of BitTorrent, there must be a client capable of masking the user identity, allowing them to hide from surveillance, while enforcing incentives honestly and keeping the swarm scalable, performant, and healthy.
-
-Several solutions offer anonymity by hiding the user behind a publicly known server, such as MSE/PE protocol encryption {{{citep(introduction_mse)}}} or VPN tunnelling. However, neither of these solutions offers meaningful anonymity, shifting trust to a third-party provider that may log user activity data while using its service. Third-party providers are known for sharing users' private data {{{citep(introduction_vpn)}}} or cooperating with other entities, thereby de-anonymising users' network fingerprints and often impacting performance and experience. On the other hand, dedicated anonymity overlays such as Tor avoid this single point of trust, but explicitly discourage BitTorrent traffic due to its bandwidth demands {{{citep(tor_blog_project)}}}, leaving an uncertain path for anonymous P2P file-sharing.
-
-This thesis explores a novel approach that integrates three complementary technologies: *Trusted Execution Environment (TEE)-based client attestation*, the *QUIC* transport protocol, and a solution for routing QUIC traffic through an anonymity overlay. Crucially, no BitTorrent specification adopts QUIC as a transport, not considering open source or research prototypes, thereby introducing it as the sole native transport for peer discovery and piece exchange, defining a core contribution of this work, rather than merely adopting an existing feature. This thesis implements a custom BitTorrent client that deviates from the standard protocol, aiming to maintain confidentiality, availability, and integrity within a swarm, leveraging trusted hardware for peer authenticity, integrating with an anonymity overlay to hide the client's identity, and experimenting with a modern, increasingly adopted secure transport protocol. This research investigates whether this combination of technologies provides meaningful security and anonymity while safeguarding performance, compatibility, and distribution, supporting a wide range of hardware.
+Despite BitTorrent's capabilities, it exposes participants to security and anonymity threats, including malware distribution, traffic analysis, surveillance, free-riding (see {{{ref(free_riding_mechanisms)}}}), and swarm poisoning, and lacks a mechanism to prevent dishonest clients from connecting and exploiting the swarm's resources.
 
 ** Motivation
 :PROPERTIES:
 :CUSTOM_ID: motivation
 :END:
 
-This thesis proposes a proof-of-concept BitTorrent Protocol that aims to mitigate these challenges by combining three complementary mechanisms:
+While current BitTorrent implementations offer scalability and resilience, adversarial nodes exploit their intrinsic characteristics, thereby jeopardising user confidentiality, network availability, and integrity. More importantly, these implementations lack a mechanism for peers to authenticate one another and guarantee that the counterpart is using a verified, honest client implementation, thereby preventing dishonest clients from participating. Given the decentralised nature of BitTorrent, there must be a client capable of masking user identity, allowing users to hide from surveillance, while enforcing incentives honestly and keeping the swarm scalable, performant, and healthy.
 
-  + *QUIC*
+Several solutions offer anonymity by hiding the user behind a publicly known server, such as MSE/PE protocol encryption {{{citep(introduction_mse)}}} or VPN tunnelling. However, neither of these solutions offers meaningful anonymity, shifting trust to a third-party provider that may log user activity data while the user is using its service. Third-party providers are known for sharing users' private data {{{citep(introduction_vpn)}}} or cooperating with other entities, thereby de-anonymising users' network fingerprints and often impacting performance and experience. On the other hand, dedicated anonymity overlays such as Tor avoid this single point of trust, but explicitly discourage BitTorrent traffic due to its bandwidth demands {{{citep(tor_blog_project)}}}, leaving an uncertain path for anonymous P2P file-sharing.
 
-    Even though traditional BitTorrent clients rely on either the TCP transport protocol or uTP for networking, the main objective of this dissertation is to experiment with new technologies and create a new paradigm. The {{{gls(quic)}}}, the transport layer of HTTP/3, outperforms TCP-based connections by offering mandatory encryption by default, reducing passive eavesdropping. Its multiplexed stream architecture removes head-of-line blocking, enabling concurrent requests to be dispatched over a single connection to a counterpart. This dissertation focuses on implementing peer discovery mechanisms (DHT and PEX) along with piece exchange natively, leveraging QUIC's properties to address TCP constraints.
+Thus, there is currently no BitTorrent specification that reconciles all three requirements: peer authenticity and integrity, network-level anonymity, and acceptable performance. Existing approaches address these requirements only in isolation.
 
-  + *Anonymity Overlay*
+** Research Questions
+:PROPERTIES:
+:CUSTOM_ID: research_questions
+:END:
 
-    To prevent traffic analysis and IP exposure, thereby protecting the user's identity, this research evaluates the integration of two anonymity overlays, namely *Tor* and *I2P*. The main objective is to route QUIC's underlying transport traffic through one of these overlays, thereby maintaining QUIC's properties and ensuring users' anonymity, helping to prevent:
+This thesis defines the following research questions:
 
-      + *Traffic Analysis*:
+  + *RQ1*: How can peer authenticity be established within a decentralised swarm, thus detecting dishonest or modified clients without relying on a centralised authority?
 
-        Adversaries attempt to correlate network traffic patterns at the network edge, thereby inferring peers' behaviour and profiling their actions within the network.
+  + *RQ2*: Can QUIC act as the sole transport protocol, sustaining peer discovery and piece exchange, thus replacing completely TCP or uTP?
 
-      + *IP Leakage*:
+  + *RQ3*: How can a BitTorrent client's traffic be anonymised while preserving the underlying transport's protocol properties, such as stream multiplexing and congestion control?
 
-        Prevents intermediary nodes from logging connection metadata, thereby preventing the compromise of user anonymity. For instance, BitTorrent trackers maintain logs of joining peers' addresses.
-
-    The research investigates the feasibility of integrating an anonymity overlay that proxies the underlying QUIC's traffic while preserving the control and security mechanisms QUIC provides, acknowledging the performance trade-offs involved. Specifically, it analyses the difference between standard and proxied QUIC, comparing the increased latency and reduced bandwidth of the anonymous path against the inherent tension between anonymity and practical usability.
-
-  + *Trusted Hardware (TEE)*:
-
-    Traditional BitTorrent client implementations lack a mechanism to remotely attest to neighbours, proving their authenticity and integrity. To solve this, Trusted Execution Environments such as *Intel SGX/TDX*, *ARM TrustZone*, or *AMD SEV-SNP* enable peers to remotely attest to others that they are running trusted code within a secure enclave. For instance, during swarm admission, a newcomer produces an attestation report signed with the enclave's private key, proving that it is running a known, unmodified client version. If the attestation report is invalid, participants reject incoming connection attempts, declaring the caller as potentially malicious. This approach roots the swarm's trust anchor directly in hardware rather than in software certificate authorities, thereby significantly reducing the attack surface for content poisoning, protocol manipulation, and other common P2P attacks.
-
-This thesis addresses the inherent tension among security, anonymity, and performance in P2P systems, where each protective measure carries additional computational and network overhead. For instance, TEE remote attestation not only requires special hardware but also introduces computational overhead. At the transport layer, QUIC's congestion control and flow control introduce network overhead in high-churn, low-bandwidth networks. Finally, at the anonymity layer, introducing an anonymity overlay inevitably increases latency and reduces effective bandwidth.
-
-This study aims to evaluate how these technologies interact when integrated into the BitTorrent protocol and proposes a proof-of-concept secure file-sharing protocol that mitigates the vulnerabilities described earlier. In doing so, the research addresses the balance between security, anonymity, efficiency, and practical usability.
-
-#+begin_quote
-/Can TEE-based attestation combined with QUIC and onion routing meaningfully improve security and anonymity in P2P file-sharing without unacceptable performance penalties?/
-#+end_quote
+  + *RQ4*: How can TEE-based hardware be integrated within the peer authentication procedure, and what performance penalty does it impose alongside the anonymity overlay?
 
 ** Objectives
 :PROPERTIES:
 :CUSTOM_ID: objectives
 :END:
 
-  To investigate the research question, this thesis defines the following objectives:
+To answer the defined research questions, this thesis proposes the following objectives:
 
-    + *Design and implement a DHT admission protocol*: Develop a Kademlia-based peer discovery and admission protocol that incorporates proof-of-work Sybil resistance and CA-anchored token authentication per swarm, enabling peers to verify the legitimacy of swarm participants.
+    + *Design and implement a DHT admission protocol*: Develop a Kademlia-based peer discovery and admission protocol that incorporates proof-of-work Sybil resistance and CA-anchored token authentication per swarm, enabling peers to verify the legitimacy of swarm participants. /(RQ1)/
 
-    + *Integrate QUIC*: Integrate QUIC as the underlying transport protocol for both peer discovery and piece exchange, incorporating mutual TLS with a PGP-rooted PKI for swarm-scoped trust, departing from the traditional TCP-based BitTorrent transport.
+    + *Integrate QUIC*: Integrate QUIC as the underlying transport protocol for both peer discovery and piece exchange, incorporating mutual TLS with a PGP-rooted PKI for swarm-scoped trust, departing from the traditional TCP-based BitTorrent transport. /(RQ2)/
 
-    + *Implement TEE-based peer attestation*: Incorporate a remote attestation mechanism that enables TEE-based peers to achieve a higher trust level within the swarm than software-only peers.
+    + *Implement TEE-based peer attestation*: Incorporate a remote attestation mechanism that enables TEE-based peers to achieve a higher trust level within the swarm than software-only peers. /(RQ1 and RQ4)/
 
-    + *Integrate an anonymity overlay*: Find and evaluate the optimal anonymity overlay for proxying QUIC's traffic, mitigating traffic analysis and preventing IP exposure.
+    + *Integrate an anonymity overlay*: Find and evaluate the optimal anonymity overlay for proxying QUIC's traffic, mitigating traffic analysis and preventing IP exposure. /(RQ3)/
 
-    + *Evaluate performance trade-offs*: Evaluate security properties under adversarial conditions, validating the implemented security layers against concrete attack vectors, and demonstrating attack detection and mitigation at their respective protocol boundaries.
+    + *Evaluate performance trade-offs*: Evaluate security properties under adversarial conditions, validating the implemented security layers against concrete attack vectors, and demonstrating attack detection and mitigation at their respective protocol boundaries. /(RQ4)/
+
+** Contributions
+:PROPERTIES:
+:CUSTOM_ID: contributions
+:END:
+
+Relative to the work reviewed in Chapter {{{ref(sota)}}}, this thesis makes the following contributions:
+
++ QUIC as the sole transport protocol
+
+  Unlike all surveyed BitTorrent clients, which rely on either TCP or uTP, this thesis proposes a Rust BitTorrent client implementation that replaces the underlying transport, multiplexing DHT, PEX, and piece-exchange traffic over a single QUIC connection per peer.
+
++ Mutual TEE attestation upon bootstrapping
+
+  Taking into consideration solutions such as BITE {{{citep(tee_009)}}} and SafeKeeper {{{citep(tee_safekeeper)}}}, which rely on TEE remote attestation to prove that sensitive code is running on a valid, isolated environment (enclave), but depend on a centralised verification service (Intel's IAS) to validate attestation reports, this thesis implementation leverages hardware-rooted attestation (Keystone/RISC-V) to prove to a bootstrapping node that the initiator is running a verified, honest client implementation, thereby being granted a higher trust level than software-only peers. Rather than relying on a centralised component such as these solutions, the client is bound by its enclave hash, published in a signed manifest that any participant can verify independently.
+
++ Variable Peer identity
+
+  Unlike solutions such as Tribler {{{citep(pouwelse2008tribler)}}}, which derive a single static peer identifier from the public key and use it as the peer's swarm identity for communication and reputation, this thesis client implementation generates a fresh certificate derived from the asymmetric key pair generated upon startup that serves as the peer's swarm identity only in software-only mode, changing upon every DHT integration. In TEE-supported peers, the enclave's public key is used as the DHT identity.
+
++ Proxy QUIC's traffic over I2P
+
+  This thesis sustains a modular design by allowing both direct QUIC and QUIC over I2P connections, supporting I2P via a SAM bridge abstracting the anonymity overlay and maintaining the same underlying behaviour without modifying the transport layer, thereby preserving QUIC's security and management features such as multiplexing and congestion control, keeping full client functionality in both modes.
+
++ Empirical evaluation of both client performance and security
+
+  A testbed was defined to evaluate the performance and security of the client's implemented layers against token forgery, replay, and piece-substitution attacks, and to quantify the overhead between direct QUIC and I2P-routed QUIC downloads in a local testing environment.
