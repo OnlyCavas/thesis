@@ -20,7 +20,7 @@ All incoming stream handlers across all active peer connections run concurrently
 #+BEGIN_EXPORT latex
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.55\textwidth]{diagrams/062/recv_stream.pdf}
+  \includegraphics[width=0.95\textwidth]{diagrams/062/recv_stream.pdf}
   \caption{Incoming stream dispatch and routing architecture, composed by a central buffered channel consumed sequentially by the main loop, routing to the right protocol layer}
   \label{fig:recv-stream}
 \end{figure}

@@ -18,7 +18,7 @@ The hardest challenge while integrating I2P and QUIC was the {{{mark(quinn)}}} c
 #+BEGIN_EXPORT latex
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.55\textwidth]{diagrams/066/dest_map.pdf}
+  \includegraphics[width=0.95\textwidth]{diagrams/066/dest_map.pdf}
   \caption{Bidirectional destination mapper  resolving synthetic IPv4 addresses to I2P destinations for outbound and inbound traffic}
   \label{fig:dest-mapper}
 \end{figure}
