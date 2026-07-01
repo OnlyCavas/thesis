@@ -11,8 +11,19 @@ To prevent peer flooding, each swarm tracker is bound to {{{mark(200)}}} peers, 
 
 The PEX message carries the following fields:
 
-| Field        | Description                                      |
-|--------------+--------------------------------------------------|
-| {{{mark(info\_hash)}}} | Identifies the torrent this exchange belongs to  |
-| {{{mark(added)}}}      | Peers newly known since the last exchange        |
-| {{{mark(dropped)}}}    | Peers no longer available since the last exchange |
+#+BEGIN_EXPORT latex
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+Field & Description \\
+\midrule
+\texttt{info\_hash} & Identifies the torrent this exchange belongs to \\
+\texttt{added}      & Peers newly known since the last exchange \\
+\texttt{dropped}    & Peers no longer available since the last exchange \\
+\bottomrule
+\end{tabular}
+\caption{Fields carried in a PEX gossip message.}
+\label{tab:pex-fields}
+\end{table}
+#+END_EXPORT

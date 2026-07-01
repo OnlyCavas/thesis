@@ -40,12 +40,24 @@ Each packet, regardless of protocol, is assembled identically on the wire:
 
 The first one-byte ID discriminates the protocol carried in the payload, following the BEP specification:
 
-| protocol ID  | Constant | Protocol         |
-|--------+----------+------------------|
-| {{{mark(0x00)}}} | (zero length) | Keep-alive    |
-| {{{mark(0x09)}}} | 9  | DHT (BEP 5)                |
-| {{{mark(0x14)}}} | 20       | BEP 10 extension (PEX, metadata)      |
-| {{{mark(0x13)}}}   | 19       | BEP handshake (standard)     |
+#+BEGIN_EXPORT latex
+\begin{table}[h]
+  \centering
+  \begin{tabular}{lll}
+    \toprule
+    Protocol ID & Constant & Protocol \\
+    \midrule
+    \texttt{0x00} & (zero length) & Keep-alive \\
+    \texttt{0x09} & 9  & DHT (BEP 5) \\
+    \texttt{0x14} & 20 & BEP 10 extension (PEX, metadata) \\
+    \texttt{0x13} & 19 & BEP handshake (standard) \\
+    \bottomrule
+  \end{tabular}
+  \caption{Packet protocol identifiers discriminating the multiplexed protocols carried after the length prefix, following the BitTorrent
+  BEP specification.}
+  \label{tab:protocol-ids}
+\end{table}
+#+END_EXPORT
 
 A keep-alive is a special case: a four-byte zero frame that carries no ID byte or payload and serves only to maintain the connection alive. The payload is serialised using Bencode, which is the natural encoding for DHT, as established by BEP 5, and was extended uniformly to PEX and BEP messages for consistency. The change was motivated by keeping a simpler codec that handles three protocols after the ID byte is read. However, a trade-off is justified by the absence of any QUIC-native BitTorrent implementation to date. Additionally, bidirectional streams extend the default packet by adding a reply handle, allowing the requesting stream to respond without additional routing.
 

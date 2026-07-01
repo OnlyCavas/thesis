@@ -12,20 +12,43 @@ This scenario establishes the experimental baseline by verifying the functional 
 
 Before any transfer, each joining node must solve a *difficulty = 24* proof-of-work puzzle. At this difficulty level the puzzle requires an adversary to find a nonce whose resulting hash falls strictly below a target of $2^{256-24} = 2^{232}$, equivalently requiring the first 24 bits to be zero, thereby requiring a computation on average $2^{24}$ ($16{,}777{,}216$) SHA256 iterations to forge a single identity successfully. Considering only software operations on *Machine 1*, to establish a realistic baseline for admission cost, the {{{gls(pow)}}} calculation execution time was measured across $10{,}000$ iterations on *Machine 1*.
 
-| Metric | Value |
-|--------+-------------------------|
-| Mean                | 801.06 ms  |
-| Median (P50)        | 554.52 ms  |
-| 95th percentile     | 2370.09 ms |
-| Iterations          | 10,000     |
+#+BEGIN_EXPORT latex
+\begin{table}[h]
+\centering
+\begin{tabular}{lr}
+\toprule
+Metric & Value \\
+\midrule
+Mean            & 801.06 ms  \\
+Median (P50)    & 554.52 ms  \\
+95th percentile & 2370.09 ms \\
+Iterations      & 10,000     \\
+\bottomrule
+\end{tabular}
+\caption{Proof-of-work admission computation time on Machine 1, measured over 10,000 iterations at difficulty 24.}
+\label{tab:pow-metrics}
+\end{table}
+#+END_EXPORT
 
 Considering a *difficulty = 24*, at the median admission cost of {{{mark(554.52 ms)}}} per identity, generating $1{,}000$ fake identities would require approximately {{{mark(9.2 minutes)}}} of sustained computation, rising to {{{mark(92.4 minutes)}}} for $10{,}000$ fake identities. Under the 95th percentile cost of {{{mark(2370 ms)}}}, the cost increases to {{{mark(39.5 minutes)}}} and {{{mark(6.6 hours)}}} respectively, showing that even in a favourable scenario for the attacker, large-scale Sybil attacks or derived attacks are economically impractical without specialised hardware.
 
-| difficulty level  | bit shift | 1000 identities | 10 000 identities |
-|-------------------+-----------+---------------+-------------------|
-| 24 (Measured) | $2^{0}$ = 1   | ~9.2 minutes | 1 hour and 32.4 minutes |
-| 28 (Inferred) | $2^{4}$ = 16  | ~2.5 hours | 24 hours and 38.7 minutes |
-| 32 (Inferred) | $2^{8}$ = 256 | ~39.4 hours | 16 days and 10.4 hours |
+#+BEGIN_EXPORT latex
+\begin{table}[h]
+\centering
+\begin{tabular}{llll}
+\toprule
+Difficulty level & Bit shift & 1{,}000 identities & 10{,}000 identities \\
+\midrule
+24 (measured) & $2^{0} = 1$   & $\sim$9.2 minutes & 1 hour and 32.4 minutes \\
+28 (inferred) & $2^{4} = 16$  & $\sim$2.5 hours   & 24 hours and 38.7 minutes \\
+32 (inferred) & $2^{8} = 256$ & $\sim$39.4 hours  & 16 days and 10.4 hours \\
+\bottomrule
+\end{tabular}
+\caption{Estimated cost of large-scale identity generation across proof-of-work difficulty levels; difficulty 24 is measured, 28 and 32
+are inferred by scaling.}
+\label{tab:pow-difficulty}
+\end{table}
+#+END_EXPORT
 
 Considering the results across the difficulty levels, *difficulty = 28* represents the optimal middle ground between usability and security in a software-only environment. A legitimate admission costs approximately {{{mark(8.87 seconds)}}} per DHT identity, which is acceptable for a one-time join operation and valid for a 30-minute lifespan (standard token validity). For an adversary attempting to generate $1{,}000$ fake identities at this difficulty, this would theoretically take approximately {{{mark(2.5 hours)}}} and {{{mark(24.65 hours)}}} of sustained computational effort to achieve $10{,}000$ fake identities.
 

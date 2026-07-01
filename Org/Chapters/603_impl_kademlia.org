@@ -36,19 +36,30 @@ For a node to be accepted and actively participate in the DHT, it must be admitt
 
 The token is a self-contained, signed data structure carrying the following fields:
 
-| Field         | Description                                          |
-|---------------+------------------------------------------------------|
-| {{{mark(swarm\_id)}}}  | Hash of the PGP swarm's public key             |
-| {{{mark(issuer\_ca\_cert)}}}  | PGP certificate             |
-| {{{mark(issuer\_ca\_cert\_sig)}}}  | PGP signature             |
-| {{{mark(trust\_level)}}}  | TEE-based trust level or software             |
-| {{{mark(bootstrap\_pk)}}}  | Public key of the issuing bootstrap node             |
-| {{{mark(node\_pk)}}}       | Public key of the admitted node                      |
-| {{{mark(pow\_nonce)}}}     | Nonce satisfying the proof-of-work                   |
-| {{{mark(pow\_challenge)}}} | Original challenge issued by the bootstrap           |
-| {{{mark(issued\_at)}}}     | Timestamp of issuance                                |
-| {{{mark(expires\_at)}}}    | Timestamp of expiry                                  |
-| {{{mark(signature)}}}     | Bootstrap's signature over all preceding fields      |
+#+BEGIN_EXPORT latex
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+Field & Description \\
+\midrule
+\texttt{swarm\_id}            & Hash of the PGP swarm's public key \\
+\texttt{issuer\_ca\_cert}      & PGP certificate \\
+\texttt{issuer\_ca\_cert\_sig}  & PGP signature \\
+\texttt{trust\_level}          & TEE-based trust level or software \\
+\texttt{bootstrap\_pk}         & Public key of the issuing bootstrap node \\
+\texttt{node\_pk}              & Public key of the admitted node \\
+\texttt{pow\_nonce}            & Nonce satisfying the proof-of-work \\
+\texttt{pow\_challenge}        & Original challenge issued by the bootstrap \\
+\texttt{issued\_at}            & Timestamp of issuance \\
+\texttt{expires\_at}           & Timestamp of expiry \\
+\texttt{signature}            & Bootstrap's signature over all preceding fields \\
+\bottomrule
+\end{tabular}
+\caption{Fields of the signed admission token issued by a bootstrap node upon successful swarm admission.}
+\label{tab:token-fields}
+\end{table}
+#+END_EXPORT
 
 *** Sybil and Eclipse Attacks
 :PROPERTIES:

@@ -5,11 +5,23 @@
 
 This scenario evaluates the effectiveness of the implemented security mitigations against three specific attack vectors. Each attack is executed by a dedicated malicious peer compiled with the corresponding adversarial feature flag, leveraging the Rust compiling system. The main objective is to demonstrate that the security layers are modular and operate independently at their protocol boundaries, without modifying the honest client code. Hence, demonstrating where attacks are detected and handled by the DHT and BEP layers, preventing adversarial nodes from interacting with the other extensions.
 
-| Attack vectors  | Feature flags | Defense layers | Mitigation actions |
-|--------+----------+------------------|
-| Token Forgery Attack  | {{{mark(ml\_forge\_token)}}} | DHT admission  | Connection closed |
-| Replay Attack  | {{{mark(ml\_replay\_token)}}} | DHT admission  | Connection closed |
-| Piece Substitution Attack  | {{{mark(ml\_piece\_sub)}}} | BEP piece verification  | Piece dropped |
+#+BEGIN_EXPORT latex
+\begin{table}[h]
+\centering
+\begin{tabular}{llll}
+\toprule
+Attack vector & Feature flag & Defence layer & Mitigation action \\
+\midrule
+Token Forgery Attack      & \texttt{ml\_forge\_token}  & DHT admission          & Connection closed \\
+Replay Attack             & \texttt{ml\_replay\_token} & DHT admission          & Connection closed \\
+Piece Substitution Attack & \texttt{ml\_piece\_sub}    & BEP piece verification & Piece dropped \\
+\bottomrule
+\end{tabular}
+\caption{Adversarial scenarios evaluated in Scenario 2, showing the feature flag that activates each attack, the protocol layer that
+detects it, and the resulting mitigation.}
+\label{tab:attack-summary}
+\end{table}
+#+END_EXPORT
 
 *** Token Forgery Attack
 :PROPERTIES:

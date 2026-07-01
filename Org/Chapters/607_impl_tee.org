@@ -30,13 +30,24 @@ Upon initialisation, the enclave derives its Ed25519 key pair deterministically 
 
 The current enclave implementation exposes exactly five functions to host from a shared protocol header:
 
-| Header        | Description                                      |
-|--------------+--------------------------------------------------|
-| {{{mark(OP\_HASH [0x01])}}} | Computes a sha256 digest from arbitrary data  |
-| {{{mark(OP\_SIGN [0x02])}}} | Produces an Ed25519 signature using the enclave's {{{latex(priv\_key)}}} |
-| {{{mark(OP\_POW [0x03])}}} | Runs proof-of-work computation entirely inside the enclave |
-| {{{mark(OP\_FETCH\_PUBKEY [0x04])}}}  | Exports the enclave's public key |
-| {{{mark(OP\_ATTEST [0x05])}}} | Produces remote attestation bounded to a arbitrary nonce |
+#+BEGIN_EXPORT latex
+\begin{table}[h]
+\centering
+\begin{tabular}{l p{0.6\textwidth}}
+\toprule
+Header & Description \\
+\midrule
+\texttt{OP\_HASH [0x01]}          & Computes a SHA256 digest from arbitrary data \\
+\texttt{OP\_SIGN [0x02]}          & Produces an Ed25519 signature using the enclave's \texttt{priv\_key} \\
+\texttt{OP\_POW [0x03]}           & Runs proof-of-work computation entirely inside the enclave \\
+\texttt{OP\_FETCH\_PUBKEY [0x04]}  & Exports the enclave's public key \\
+\texttt{OP\_ATTEST [0x05]}        & Produces remote attestation bound to an arbitrary nonce \\
+\bottomrule
+\end{tabular}
+\caption{Operations exposed by the enclave to the host through the shared protocol header.}
+\label{tab:enclave-ops}
+\end{table}
+#+END_EXPORT
 
 Each request follows the same structure and life cycle: it begins by initialising the enclave, sending the request, and awaiting the corresponding typed response via {{{mark(Keystone OCALL)}}}. Once read, destroys the enclave before returning to the host. It is worth noting that the private key is wiped after the end of each life cycle, regardless of the operation performed.
 

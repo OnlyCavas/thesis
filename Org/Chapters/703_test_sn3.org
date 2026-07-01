@@ -55,10 +55,22 @@ Considering the test results, the user must decide whether to accept these const
 
 To evaluate the performance differences between direct QUIC and QUIC-over-I2P, both transfers were measured on the same {{{mark(10 MB)}}} payload on the same hardware, providing a directly comparable baseline.
 
-| Transport          | Throughput (10 MB)     |
-|--------------------+------------------------|
-| Direct QUIC (LAN)  | 104.10 MB/s ± {{{mark(1.48)}}} (832.83 Mbps) |
-| QUIC over I2P      | 66.23 KB/s ± {{{mark(52.90)}}} (529.8530 Kbps)               |
+#+BEGIN_EXPORT latex
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+Transport & Throughput (10\,MB) \\
+\midrule
+Direct QUIC (LAN) & 104.10 $\pm$ 1.48 MB/s (832.83 Mbps) \\
+QUIC over I2P     & 66.23 $\pm$ 52.90 KB/s (529.85 Kbps) \\
+\bottomrule
+\end{tabular}
+\caption{Throughput of direct QUIC versus QUIC tunnelled over I2P for a 10\,MB payload, reported as mean $\pm$ one standard deviation over
+10 runs.}
+\label{tab:i2p-throughput}
+\end{table}
+#+END_EXPORT
 
 The slightly higher throughput observed in the {{{mark(1.5 GB)}}} (see Section {{{ref(eval_sn1)}}}) is explained by QUIC's congestion-control dynamics, with smaller transfers indicating that most of their duration is spent in slow start before reaching steady state. On the other hand, the larger transfer maintains peak throughput for longer, reaching {{{mark(948.47 Mbps)}}}.
 

@@ -12,18 +12,29 @@ This chapter evaluates the proof-of-concept implementation across three scenario
 
 The following scenarios are performed on two host machines within the same local home network (simulating a small private swarm), using a combination of local daemon processes and virtualization tools to access TEE technologies and virtualize the i2pd instance. This setup is sufficient to demonstrate the protocol correctness, peer discovery, authentication, and TEE integration on a real-world scenario without requiring a physical distributed network.
 
-| component  | details |
-|--------+----------+------------------|
-| {{{mark(Host OS)}}} (Machine 1) | Fedora Linux 43 ({{{latex(7.0.8-100.fc43.x86\_64)}}}) |
-| {{{mark(CPU / RAM)}}} (Machine 1) | 12th Gen Intel(R) Core(TM) i7-12700H / 16 GB (VT-x) |
-| {{{mark(Host OS)}}} (Machine 2) | Artix Linux ({{{latex(7.0.11-hardened1-1-hardened)}}}) |
-| {{{mark(CPU / RAM)}}} (Machine 2) | AMD Ryzen 7 3700X / 32 GB (AMD-V, no TEE) |
-| {{{mark(Rust Toolchain)}}} | rustc 1.96.0-nightly (b41f22de2 2026-03-08)       |
-| {{{mark(Keystone VM)}}} (Machine 1)  | RISC-V emulation via QEMU       |
-| {{{mark(I2P daemon)}}}   | i2pd instance via Podman       |
-| {{{mark(Network)}}} | Local LAN between two physical machines |
+#+BEGIN_EXPORT latex
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+Component & Details \\
+\midrule
+\texttt{Host OS} (Machine 1)     & Fedora Linux 43 (\texttt{7.0.8-100.fc43.x86\_64}) \\
+\texttt{CPU / RAM} (Machine 1)   & 12th Gen Intel(R) Core(TM) i7-12700H / 16 GB (VT-x) \\
+\texttt{Host OS} (Machine 2)     & Artix Linux (\texttt{7.0.11-hardened1-1-hardened}) \\
+\texttt{CPU / RAM} (Machine 2)   & AMD Ryzen 7 3700X / 32 GB (AMD-V, no TEE) \\
+\texttt{Rust Toolchain}          & rustc 1.96.0-nightly (b41f22de2 2026-03-08) \\
+\texttt{Keystone VM} (Machine 1) & RISC-V emulation via QEMU \\
+\texttt{I2P daemon}              & i2pd instance via Podman \\
+\texttt{Network}                 & Local LAN between two physical machines \\
+\bottomrule
+\end{tabular}
+\caption{Testbed hardware and software configuration across the two host machines.}
+\label{tab:testbed}
+\end{table}
+#+END_EXPORT
 
-Each remote peer runs as an independent {{{mark(bqti)}}} daemon instance, segregated using distinct IPC socket paths configured via the {{{mark(BQTI\_INSTANCE)}}} environment variable. The swarm trust anchor relies on a PGP key pair generated in the test setup, simulating a private swarm, which is manually distributed by copying the cryptographic material into the {{{mark(swarm)}}} directory within the internal {{{mark(bqti)}}} state of each node. 
+Each remote peer runs as an independent {{{mark(bqti)}}} daemon instance, segregated using distinct IPC socket paths configured via the {{{mark(BQTI\_INSTANCE)}}} environment variable. The swarm trust anchor relies on a PGP key pair generated in the test setup, simulating a private swarm, which is manually distributed by copying the cryptographic material into the {{{mark(swarm)}}} directory within the internal {{{mark(bqti)}}} state of each node.
 
 The following nodes must be configured: {{{mark(bootstrap)}}}, {{{mark(seeder)}}}, {{{mark(leech-tee)}}} on *Machine 1*, and  {{{mark(leech-soft)}}}, {{{mark(mal)}}} (malicious peer) on *Machine 2*, each directory representing a testing local remote peer.
 
