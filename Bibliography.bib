@@ -200,16 +200,20 @@
 }
 
 @inproceedings{quic_004,
-  title={A Survey on the Security Issues of QUIC},
-  ISSN={2768-0029},
-  url={https://ieeexplore.ieee.org/abstract/document/9955622},
-  DOI={10.1109/CSNet56116.2022.9955622},
-  abstractNote={A newly established multiplexed network protocol - QUIC, which is based on User Datagram Protocol (UDP), has emerged in recent years and gained a large share of Internet traffic quickly. Initially proposed by Google, the goal of QUIC is to achieve a higher Internet communication performance and eventually replace the Transmission Control Protocol (TCP) + Transport Layer Security (TLS) + HTTP/2 architecture. In particular, the 3rd version of the Hypertext Transfer Protocol - HTTP/3.0 is built on top of QUIC. A good number of research papers have been published recently to evaluate the performance and security of the QUIC protocol. In this paper, we conduct a comprehensive survey on the QUIC security issues and analyze its future research directions regarding security prospective. We investigate several topics including the QUIC protocol structure, QUIC security model, security issues related to QUIC protocol, and future research directions on QUIC Security. To the best of our knowledge, it is the one of first surveys that focus on the security of the QUIC protocol.},
-  booktitle={2022 6th Cyber Security in Networking Conference (CSNet)},
-  author={Joarder, Y A and Fung, Carol},
-  year={2022},
-  month=oct,
-  pages={1–8}
+  author = {Nawrocki, Marcin and Hiesgen, Raphael and Schmidt, Thomas C. and W\"{a}hlisch, Matthias},
+  title = {QUICsand: quantifying QUIC reconnaissance scans and DoS flooding events},
+  year = {2021},
+  isbn = {9781450391290},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3487552.3487840},
+  doi = {10.1145/3487552.3487840},
+  abstract = {In this paper, we present first measurements of Internet background radiation originating from the emerging transport protocol QUIC. Our analysis is based on the UCSD network telescope, correlated with active measurements. We find that research projects dominate the QUIC scanning ecosystem but also discover traffic from non-benign sources. We argue that although QUIC has been carefully designed to restrict reflective amplification attacks, the QUIC handshake is prone to resource exhaustion attacks, similar to TCP SYN floods. We confirm this conjecture by showing how this attack vector is already exploited in multi-vector attacks: On average, the Internet is exposed to four QUIC floods per hour and half of these attacks occur concurrently with other common attack types such as TCP/ICMP floods.},
+  booktitle = {Proceedings of the 21st ACM Internet Measurement Conference},
+  pages = {283–291},
+  numpages = {9},
+  location = {Virtual Event},
+  series = {IMC '21}
 }
 
 @inproceedings{quic_002,
