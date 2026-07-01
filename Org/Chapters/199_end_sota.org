@@ -9,11 +9,6 @@ The state of the art reveals that existing solutions address BitTorrent's vulner
 
 The following table {{{ref(tab:rw-comparison)}}} compares {{{mark(bqti)}}} with related work across the security dimensions it targets, grouped by category. {{{mark(bqti)}}} builds on baseline BitTorrent functionalities, such as *Kademlia DHT* with increased security-focused mitigations (e.g. *proof-of-work* at bootstrap admission, *rate-limiter*), *Piece Integrity* mechanisms enforced during piece transportation and local integrity checks, and a simplified version of {{{gls(tft)}}}. On top of the BitTorrent baseline, {{{mark(bqti)}}} defines its core evolution by shifting the trust anchor to a publicly signed manifest, assigning each {{{mark(bqti)}}} version to a specific {{{mark(enclave\_hash)}}}. Instead of relying on a third party, such as {{{gls(ias)}}}, it shifts the trust anchor toward the developer-protected signing key (see Section {{{ref(impl_tee_integration)}}}). Additionally, {{{mark(bqti)}}} ensures *authenticity*, *non-repudiation* and *integrity* by PGP-gating swarms, requiring a user to first load the PGP certificate advertised by the swarm maintainer before downloading any asset, so that both bootstrap and caller can establish a secure connection and authenticate each other. {{{mark(bqti)}}} is consequently the only system marked across every dimension, but has a partial Sybil cost by design, since the proof-of-work admission raises the economic cost for forged identities rather than preventing them.
 
-
-#+BEGIN_EXPORT latex
-\hspace*{15cm}
-#+END_EXPORT
-
 #+BEGIN_EXPORT latex
 \providecommand{\ye}{\CIRCLE}
 \providecommand{\pa}{\LEFTcircle}
