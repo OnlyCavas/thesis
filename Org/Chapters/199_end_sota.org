@@ -1,3 +1,58 @@
 #+LATEX: \addtocontents{toc}{}
 
 The state of the art reveals that existing solutions address BitTorrent's vulnerabilities in isolation. QUIC improves transport security and performance, TEE-based remote attestation provides hardware-root identity verification and code-execution trust, and I2P provides anonymity routing.Currently, no existing work combines all three technologies into a unified, modular P2P file-sharing protocol. This thesis proposes {{{mark(bqti)}}}, a proof-of-concept that addresses the gap by integrating QUIC with mTLS and long-lived, multiplexed connections for DHT, PEX and BitTorrent protocol layers. At the application layer, it implements the Kademlia DHT with proof-of-work admission, self-contained tokens, and PGP certificates, delegating the trust anchor to the swarm and defining a modular trust infrastructure that could evolve into a configurable, hardware-rooted system. Finally, integration with the I2P network demonstrates that meaningful security, attestation, and anonymity guarantees can coexist within a practical P2P transfer protocol.
+
+** Comparative Summary
+:PROPERTIES:
+:CUSTOM_ID: rw_comparison
+:END:
+
+The following table {{{ref(tab:rw-comparison)}}} compares {{{mark(bqti)}}} with related work across the security dimensions it targets, grouped by category. These categories include baseline BitTorrent functionalities, such as *Kademlia DHT* with increased security-focused mitigations (.i.e. *proof-of-work* at bootstrap admission, *rate-limiter*), *Piece Integrity* mechanisms enforced during piece transportation and local integrity checks, and a simplified version of {{{gls(tft)}}}. On top of the BitTorrent baseline, {{{mark(bqti)}}} defines its core evolution by shifting the trust anchor to a publicly signed manifest, assigning each {{{mark(bqti)}}} version to a specific {{{mark(enclave\_hash)}}}. Instead of relying on a third party, such as {{{gls(ias)}}}, it shifts the trust anchor toward the developer-protected signing key (see Section {{{ref(impl_tee_integration)}}}). Additionally, {{{mark(bqti)}}} ensures *autenticity*, *non-repudiation* and *integrity* by PGP-gating swarms, requiring a user to first load the PGP certificate advertised by the swarm maintainer before downloading any asset, so that both bootstrap and caller can establish a secure connection and authenticate each other.
+
+#+BEGIN_EXPORT latex
+\hspace*{15cm}
+#+END_EXPORT
+
+#+BEGIN_EXPORT latex
+\providecommand{\ye}{\CIRCLE}
+\providecommand{\pa}{\LEFTcircle}
+\providecommand{\no}{\Circle}
+\providecommand{\na}{\textemdash}
+
+\begin{table}[h]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+System
+  & \makecell{Encrypted\\Transport}
+  & \makecell{PGP-Gated\\Admission}
+  & \makecell{Hardware\\Attestation\\(TEE)}
+  & \makecell{Decentralized\\Trust Anchor}
+  & \makecell{Traffic\\Anonymity}
+  & \makecell{Sybil\\Cost} \\
+\midrule
+% \multicolumn{7}{l}{\textit{P2P File Sharing}} \\
+Standard BitTorrent  & \no & \no & \no & \no & \no & \no \\
+Tribler              & \no & \no & \no & \pa & \pa & \pa \\
+\addlinespace
+\multicolumn{7}{l}{\textit{Trusted Hardware}} \\
+Sanctum / Sanctuary  & \na & \na & \ye & \pa & \na & \na \\
+HyperEnclave         & \na & \na & \ye & \no & \na & \na \\
+SafeKeeper           & \ye & \na & \ye & \no & \na & \na \\
+WATZ                 & \na & \na & \ye & \no & \na & \na \\
+BITE                 & \ye & \na & \ye & \no & \na & \na \\
+\addlinespace
+\multicolumn{7}{l}{\textit{Anonymity}} \\
+I2P / Tor            & \ye & \na & \na & \no & \ye & \na \\
+\midrule
+\textbf{bqti (Proof-of-Concept)} & \ye & \ye & \ye & \ye & \ye & \pa \\
+\bottomrule
+\end{tabular}%
+}
+\caption{Comparison of \emph{bqti} against related work along the security dimensions it
+targets, grouped by category. \CIRCLE~= full, \LEFTcircle~= partial, \Circle~= in scope
+but absent, \textemdash~= out of scope for that system class.}
+\label{tab:rw-comparison}
+\end{table}
+#+END_EXPORT

@@ -180,6 +180,8 @@
 \usepackage{graphicx}
 \usepackage{epstopdf}
 \usepackage{booktabs}
+\usepackage{makecell}
+\usepackage{wasysym}
 \usepackage{rotating}
 \usepackage{listings}
 % \usepackage{lstpatch}
