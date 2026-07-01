@@ -9,8 +9,6 @@ Tor and I2P share the same goal of anonymous communication but differ fundamenta
 
 # A practical key difference between *Tor* and *I2P* lies in their interface implementations, which affect the effort required to build or adapt applications to run on these overlays, such as BitTorrent.
 
-# cite Privoxy
-
 In the case of *Tor*, it uses the standard {{{gls(socks)}}} proxy interface, which allows any application that supports it to route traffic through *Tor*, such as a web browser. More precisely, the Tor client will act as a local proxy, routing the configured traffic through the network. Even though it is possible to pipe traffic through Tor, the SOCKS interface only transmits TCP packets, which limits the performance of some P2P protocols that benefit from UDP, as well as some DHT operations and extensions. Additionally, some messages may leak metadata, including User-Agent strings and HTTP headers, unless filtered by an additional layer, for example, *Privoxy* {{{citep(privoxy_ref)}}}.
 
 On the other hand, *I2P* provides a native middleware API rather than a general-purpose proxy. Applications must either be explicitly adapted to implement I2P's streaming or be designed and built with I2P integration in mind, which results in higher development costs and better control over the anonymity properties. I2PSnark is an example of a BitTorrent client built natively for I2P.
