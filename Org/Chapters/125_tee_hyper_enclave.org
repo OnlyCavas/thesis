@@ -25,7 +25,7 @@ Beyond HyperEnclave, there are other academic and open source TEE implementation
 
 + *Komodo* {{{citep(tee_007_35)}}}, implements an SGX like enclave protection model on TrustZone backend.
 
-+ *Keystone* {{{citep(tee_007_49)}}}, another TEE that supports RISC-V platforms.
++ *Keystone* {{{citep(tee_keystone)}}} {{{citep(tee_007_49)}}}, another TEE that supports RISC-V platforms.
 
 + *Open-TEE* {{{citep(optee)}}} by Intel Collaborative Research Institute for Secure Computing
 
